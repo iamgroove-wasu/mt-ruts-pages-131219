@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ปฏิทินเกษตร — วช.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================ */
+  /* PROFESSIONAL DESIGN SYSTEM */
+  /* ============================================ */
+  :root {
+    --c-navy-50: #f0f4ff;
+    --c-navy-100: #dbe5fe;
+    --c-navy-200: #b6cdfe;
+    --c-navy-500: #3b5fb8;
+    --c-navy-600: #2a4894;
+    --c-navy-700: #1e3a8a;
+    --c-navy-800: #15296b;
+    --c-navy-900: #0a1e3f;
+    --c-slate-50: #f8fafc;
+    --c-slate-100: #f1f5f9;
+    --c-slate-200: #e2e8f0;
+    --c-slate-300: #cbd5e1;
+    --c-slate-400: #94a3b8;
+    --c-slate-500: #64748b;
+    --c-slate-600: #475569;
+    --c-slate-700: #334155;
+    --c-slate-800: #1e293b;
+    --c-slate-900: #0f172a;
+    --c-emerald-50: #ecfdf5;
+    --c-emerald-500: #10b981;
+    --c-emerald-600: #059669;
+    --c-emerald-700: #047857;
+    --c-amber-50: #fffbeb;
+    --c-amber-500: #f59e0b;
+    --c-amber-600: #d97706;
+    --c-rose-50: #fff1f2;
+    --c-rose-500: #f43f5e;
+    --c-rose-600: #e11d48;
+    --c-rose-700: #be123c;
+    --c-cyan-500: #06b6d4;
+    --c-sky-500: #0ea5e9;
+    --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 6px rgba(15,23,42,0.04), 0 2px 4px rgba(15,23,42,0.04);
+    --shadow-lg: 0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04);
+    --shadow-xl: 0 20px 25px rgba(15,23,42,0.08), 0 10px 10px rgba(15,23,42,0.04);
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body { font-family: 'Inter', 'Sarabun', sans-serif; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); color: var(--c-slate-900); letter-spacing: -0.011em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .navy { color: var(--c-navy-700); }
+  .bg-navy { background: var(--c-navy-700); }
+  /* Card refined */
+  .card { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition), transform var(--transition); }
+  .card:hover { box-shadow: var(--shadow-md); }
+  .card-elev { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+  /* Section title refined */
+  h2.page-title { font-family: 'Sarabun', sans-serif; font-size: 28px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.02em; }
+  h2.section-title { font-family: 'Sarabun', sans-serif; font-size: 18px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.01em; }
+  /* Zone tab refined */
+  .zone-tab { padding: 10px 14px; border-radius: var(--radius); font-weight: 600; font-size: 13px; background: white; border: 1.5px solid var(--c-slate-200); color: var(--c-slate-600); cursor: pointer; transition: all var(--transition); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .zone-tab:hover { border-color: var(--c-navy-300); color: var(--c-navy-700); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .zone-tab.active { background: var(--c-navy-700); color: white; border-color: var(--c-navy-700); box-shadow: 0 4px 12px rgba(30,58,138,0.25); }
+  /* Status pill refined */
+  .status-pill { padding: 5px 12px; border-radius: 999px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; letter-spacing: 0.01em; }
+  .status-danger { background: var(--c-rose-50); color: var(--c-rose-700); border: 1px solid rgba(225,29,72,0.25); }
+  .status-warn { background: var(--c-amber-50); color: var(--c-amber-600); border: 1px solid rgba(217,119,6,0.25); }
+  .status-ok { background: var(--c-emerald-50); color: var(--c-emerald-700); border: 1px solid rgba(4,120,87,0.25); }
+  /* Status dot refined */
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+  .status-active { background: var(--c-emerald-500); }
+  .status-warn { background: var(--c-amber-500); }
+  .status-danger { background: var(--c-rose-500); }
+  /* Hero refined */
+  .hero-card { background: linear-gradient(135deg, #f8fafc 0%, white 100%); border: 1px solid var(--c-slate-200); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-sm); }
+  .hero-title { font-family: 'Sarabun', sans-serif; font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: var(--c-navy-900); letter-spacing: -0.03em; line-height: 1.1; }
+  /* Project header refined */
+  .project-header { background: linear-gradient(135deg, #0a1e3f 0%, #15296b 50%, #1e3a8a 100%); color: white; padding: 16px 24px; box-shadow: 0 4px 20px rgba(10,30,63,0.25); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(251,191,36,0.3); }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 20px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 56px; width: auto; max-width: 92px; object-fit: contain; display: block; border-radius: 6px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); transition: transform var(--transition); }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 64px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.5), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', sans-serif; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; line-height: 1.45; margin-top: 6px; letter-spacing: -0.005em; word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.02em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 12px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+  /* Buttons refined */
+  button, .btn { font-family: 'Inter', sans-serif; font-weight: 600; transition: all var(--transition); cursor: pointer; }
+  button:active { transform: scale(0.98); }
+  /* Crop icon refined */
+  .crop-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; box-shadow: inset 0 0 0 3px white, 0 0 0 1px rgba(0,0,0,0.04); }
+  /* Day card refined */
+  .day-card { border-radius: var(--radius-md); padding: 14px 10px; text-align: center; transition: all var(--transition); cursor: pointer; border: 1.5px solid var(--c-slate-100); background: white; }
+  .day-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--c-navy-200); }
+  .day-card.today { background: linear-gradient(135deg, var(--c-navy-700) 0%, var(--c-navy-800) 100%); color: white; border-color: var(--c-navy-700); box-shadow: 0 6px 20px rgba(30,58,138,0.2); }
+  .day-card.today .day-temp { color: white; }
+  .weather-icon { font-size: 44px; line-height: 1; margin: 8px 0; }
+  /* Map marker refined */
+  .map-marker { background: white; border: 3px solid var(--c-navy-700); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform var(--transition); }
+  .map-marker.active { background: var(--c-navy-700); color: white; transform: scale(1.15); box-shadow: 0 6px 16px rgba(30,58,138,0.4); }
+  /* Hour cell refined */
+  .hour-cell { flex: 0 0 70px; text-align: center; padding: 10px 6px; border-radius: var(--radius-sm); background: white; border: 1px solid var(--c-slate-100); transition: background var(--transition); }
+  .hour-cell:hover { background: var(--c-navy-50); }
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--c-slate-100); }
+  ::-webkit-scrollbar-thumb { background: var(--c-slate-300); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-slate-400); }
+
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; }
+  .navy { color: #1e3a8a; } .bg-navy { background: #1e3a8a; }
+  .card { background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(15,23,42,0.06); }
+  .nav-link { padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; }
+  .nav-link.active { background: #1e3a8a; color: white; }
+  .nav-link:not(.active) { color: #475569; }
+  .month-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+  .month-cell { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; position: relative; }
+  .activity-bar { height: 4px; border-radius: 2px; position: absolute; bottom: 4px; left: 6px; right: 6px; }
+  .act-plant { background: #16a34a; }
+  .act-fert { background: #3b82f6; }
+  .act-harvest { background: #f59e0b; }
+  .crop-row { display: grid; grid-template-columns: 60px 1fr; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; }
+  .crop-row:hover { background: #f8fafc; }
+  .crop-emoji { font-size: 36px; text-align: center; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  /* PROJECT HEADER (elegant + responsive) */
+  .project-header { background: linear-gradient(180deg, #0c1e3e 0%, #1e3a8a 50%, #1e40af 100%); color: white; padding: 14px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 50; border-bottom: 2px solid #fbbf24; }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 18px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 58px; width: auto; max-width: 95px; object-fit: contain; display: block; border-radius: 4px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); transition: transform 0.2s; }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 60px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.4), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', 'Inter', serif; font-size: clamp(11px, 1.4vw, 15px); font-weight: 700; line-height: 1.4; margin-top: 6px; letter-spacing: -0.01em; text-shadow: 0 1px 3px rgba(0,0,0,0.3); word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.03em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 10px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+
+.header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-name { font-size: 12px; } }
+
+.logo-img { height: 40px; max-width: 72px; } }
+
+}
+  .logo-cluster { display: flex; align-items: center; gap: 8px; }
+  .logo-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); flex-shrink: 0; font-weight: 800; font-size: 12px; }
+  .logo-circle-1 { background: #1e3a8a; color: white; }
+  .logo-circle-2 { background: #f59e0b; color: white; }
+  .logo-circle-3 { background: #059669; color: white; font-size: 18px; }
+  .logo-label { font-size: 9px; color: #64748b; text-align: center; max-width: 56px; line-height: 1.1; }
+
+
+@media (min-width: 768px) {
+}
+.pi-card { text-align: right; font-size: 11px; }
+  .pi-card-label { color: #64748b; font-weight: 600; }
+  .pi-card-name { color: #0f172a; font-weight: 700; }
+  .pi-card-org { color: #64748b; font-size: 10px; }
+
+</style>
+</head>
+<body x-data="calendarApp()" x-init="init()">
+<!-- PROJECT HEADER (elegant) -->
+<header class="project-header">
+  <div class="project-header-inner">
+    <div class="project-header-row">
+      <!-- 3 Logos -->
+      <div class="logo-cluster">
+        <div class="logo-item">
+          <img src="assets/logos/logo-ruts.jpg" alt="มทร.ศรีวิชัย" class="logo-img" title="มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-wj.jpg" alt="วช." class="logo-img" title="สำนักงานการวิจัยแห่งชาติ (วช.)">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-doae.jpg" alt="DOAE" class="logo-img" title="กรมส่งเสริมการเกษตร">
+        </div>
+      </div>
+      <!-- Divider -->
+      <div class="header-divider"></div>
+      <!-- Project Name (elegant) -->
+      <div class="project-info">
+        <div class="project-eyebrow">โครงการวิจัย · สำนักงานการวิจัยแห่งชาติ (วช.)</div>
+        <div class="project-name">การเพิ่มประสิทธิภาพการใช้น้ำและเสริมความสามารถทางการประมงและการเกษตร</div>
+        <div class="project-tagline">ลุ่มน้ำทะเลสาบสงขลา · Songkhla Lake Basin</div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- END PROJECT HEADER --><header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex justify-between items-center h-16">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-navy flex items-center justify-center text-white text-xl">🌾</div>
+        <div><h1 class="text-base font-bold navy">ลุ่มน้ำทะเลสาบสงขลา</h1></div>
+      </a>
+      <nav x-data="{ open: false }" class="relative" @click.outside="open = false">
+        <button @click="open = !open" class="md:hidden flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm" aria-label="เปิดเมนู">
+          <span x-text="open ? '✕' : '☰'" class="text-lg leading-none"></span>
+          <span>เมนู</span>
+        </button>
+        <div :class="open ? 'flex' : 'hidden md:flex'" class="absolute md:relative right-0 md:right-auto top-full md:top-auto mt-2 md:mt-0 bg-white md:bg-transparent shadow-xl md:shadow-none rounded-xl md:rounded-none p-3 md:p-0 flex-col md:flex-row gap-1 z-50 min-w-[180px] md:min-w-0 border md:border-0 border-slate-200">
+          <a href="index.html" class="nav-link" @click="open = false">🏠 หน้าหลัก</a>
+          <a href="advisory.html" class="nav-link" @click="open = false">🌿 คำแนะนำ</a>
+          <a href="forecast.html" class="nav-link" @click="open = false">🌦️ พยากรณ์</a>
+          <a href="calendar.html" class="nav-link active" @click="open = false">📅 ปฏิทิน</a>
+        </div>
+      </nav>
+      <div class="text-xs text-slate-500">📅 ปฏิทินเกษตร</div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+  <!-- Hero -->
+  <section class="text-center">
+    <div class="text-6xl mb-2">📅</div>
+    <h1 class="text-2xl sm:text-3xl font-bold navy mb-1">ปฏิทินเกษตร</h1>
+    <p class="text-sm text-slate-600">8 พืช · ฤดูกาลเพาะปลูก · เก็บเกี่ยว</p>
+    <p class="text-xs text-slate-500 mt-1">📡 <span x-text="source"></span></p>
+  </section>
+
+  <!-- Legend -->
+  <section class="card p-4">
+    <div class="flex flex-wrap gap-4 text-xs justify-center">
+      <div><span class="legend-dot" style="background:#16a34a"></span>🌱 ปลูก</div>
+      <div><span class="legend-dot" style="background:#3b82f6"></span>💧 ใส่ปุ๋ย/ดูแล</div>
+      <div><span class="legend-dot" style="background:#f59e0b"></span>🌾 เก็บเกี่ยว</div>
+      <div><span class="legend-dot" style="background:#e2e8f0"></span>⚪ พักดิน</div>
+    </div>
+  </section>
+
+  <!-- Month Header -->
+  <section class="card p-4">
+    <div class="month-grid mb-2">
+      <template x-for="m in months" x-bind:key="m.short">
+        <div class="text-center text-xs font-bold text-slate-600 uppercase tracking-wider" x-text="m.short"></div>
+      </template>
+    </div>
+    <div class="border-t border-slate-200 pt-3 space-y-2">
+      <template x-for="crop in crops" x-bind:key="crop.id">
+        <div class="crop-row">
+          <div>
+            <div class="crop-emoji" x-text="crop.emoji"></div>
+            <div class="text-[10px] font-bold text-center mt-1 navy" x-text="crop.short_name"></div>
+          </div>
+          <div class="month-grid" style="gap: 3px;">
+            <template x-for="(act, idx) in crop.activities" x-bind:key="idx">
+              <div class="month-cell" :style="'background: ' + act.bg + ';'">
+                <span x-text="act.icon"></span>
+                <div class="activity-bar" :class="act.bar_class" x-show="act.bar"></div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </section>
+
+  <!-- Legend Footer -->
+  <section class="card p-4 bg-blue-50/30 border-blue-200">
+    <div class="flex items-start gap-3">
+      <div class="text-2xl">🌾</div>
+      <div class="flex-1">
+        <h3 class="font-bold text-sm navy">เกี่ยวกับปฏิทิน</h3>
+        <p class="text-xs text-slate-600 mt-1">ข้อมูลฤดูกาลเพาะปลูกจาก <strong>กรมส่งเสริมการเกษตร (DOAE)</strong> · <strong>กรมการข้าว</strong> · <strong>กรมประมง</strong> · ปรับให้เข้ากับภาคใต้ฝั่งตะวันออก (พัทลุง + สงขลา)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Actions -->
+  <section class="grid grid-cols-3 gap-3">
+    <a href="advisory.html" class="card p-4 text-center">
+      <div class="text-3xl mb-1">🌿</div>
+      <div class="text-xs font-bold navy">คำแนะนำ</div>
+    </a>
+    <a href="forecast.html" class="card p-4 text-center">
+      <div class="text-3xl mb-1">🌦️</div>
+      <div class="text-xs font-bold navy">พยากรณ์</div>
+    </a>
+    <a href="index.html" class="card p-4 text-center">
+      <div class="text-3xl mb-1">🏠</div>
+      <div class="text-xs font-bold navy">หน้าหลัก</div>
+    </a>
+  </section>
+
+</main>
+
+<footer class="text-center py-6 px-4 text-xs text-slate-500">
+  <p>🌾 วช. ทะเลสาบสงขลา · ✓ Verified from DOAE</p>
+</footer>
+
+<script>
+function calendarApp() {
+  return {
+    source: 'DOAE · กรมการข้าว · กรมประมง · ภาคใต้ฝั่งตะวันออก',
+    months: [
+      {short:'ม.ค.'}, {short:'ก.พ.'}, {short:'มี.ค.'}, {short:'เม.ย.'},
+      {short:'พ.ค.'}, {short:'มิ.ย.'}, {short:'ก.ค.'}, {short:'ส.ค.'},
+      {short:'ก.ย.'}, {short:'ต.ค.'}, {short:'พ.ย.'}, {short:'ธ.ค.'}
+    ],
+    // Activity types: 🌱 ปลูก (เขียว), 💧 ดูแล (น้ำเงิน), 🌾 เก็บเกี่ยว (อำพัน), ⚪ พัก (เทา)
+    crops: [
+      { id: 'rice', short_name: 'ข้าวสังข์หยด', emoji: '🌾',
+        activities: this.makeActivities([
+          {m: 7, t: 'plant', i: '🌱'}, {m: 8, t: 'fert', i: '💧'},
+          {m: 9, t: 'fert', i: '💧'}, {m: 10, t: 'fert', i: '💧'},
+          {m: 11, t: 'harvest', i: '🌾'}, {m: 0, t: 'rest', i: '⚪'},
+          {m: 1, t: 'rest', i: '⚪'}, {m: 2, t: 'rest', i: '⚪'},
+          {m: 3, t: 'plant', i: '🌱'}, {m: 4, t: 'fert', i: '💧'},
+          {m: 5, t: 'fert', i: '💧'}, {m: 6, t: 'harvest', i: '🌾'}
+        ])},
+      { id: 'betel', short_name: 'พลู', emoji: '🌿',
+        activities: this.makeActivities([
+          {m: 5, t: 'plant', i: '🌱'}, {m: 6, t: 'plant', i: '🌱'},
+          {m: 7, t: 'plant', i: '🌱'}, {m: 8, t: 'plant', i: '🌱'},
+          {m: 9, t: 'fert', i: '💧'}, {m: 10, t: 'fert', i: '💧'},
+          {m: 11, t: 'fert', i: '💧'}, {m: 0, t: 'harvest', i: '🌾'},
+          {m: 1, t: 'harvest', i: '🌾'}, {m: 2, t: 'harvest', i: '🌾'},
+          {m: 3, t: 'harvest', i: '🌾'}, {m: 4, t: 'harvest', i: '🌾'}
+        ])},
+      { id: 'banana', short_name: 'กล้วยหอมทอง', emoji: '🍌',
+        activities: this.makeActivities([
+          {m: 3, t: 'plant', i: '🌱'}, {m: 4, t: 'plant', i: '🌱'},
+          {m: 5, t: 'plant', i: '🌱'}, {m: 6, t: 'plant', i: '🌱'},
+          {m: 7, t: 'plant', i: '🌱'}, {m: 8, t: 'plant', i: '🌱'},
+          {m: 9, t: 'plant', i: '🌱'}, {m: 10, t: 'plant', i: '🌱'},
+          {m: 11, t: 'plant', i: '🌱'}, {m: 0, t: 'plant', i: '🌱'},
+          {m: 1, t: 'plant', i: '🌱'}, {m: 2, t: 'plant', i: '🌱'}
+        ])},
+      { id: 'coconut', short_name: 'มะพร้าว', emoji: '🥥',
+        activities: this.makeActivities([
+          {m: 0, t: 'fert', i: '💧'}, {m: 1, t: 'harvest', i: '🌾'},
+          {m: 2, t: 'harvest', i: '🌾'}, {m: 3, t: 'fert', i: '💧'},
+          {m: 4, t: 'harvest', i: '🌾'}, {m: 5, t: 'harvest', i: '🌾'},
+          {m: 6, t: 'harvest', i: '🌾'}, {m: 7, t: 'harvest', i: '🌾'},
+          {m: 8, t: 'fert', i: '💧'}, {m: 9, t: 'harvest', i: '🌾'},
+          {m: 10, t: 'harvest', i: '🌾'}, {m: 11, t: 'harvest', i: '🌾'}
+        ])},
+      { id: 'chili', short_name: 'พริก', emoji: '🌶️',
+        activities: this.makeActivities([
+          {m: 10, t: 'plant', i: '🌱'}, {m: 11, t: 'plant', i: '🌱'},
+          {m: 0, t: 'fert', i: '💧'}, {m: 1, t: 'fert', i: '💧'},
+          {m: 2, t: 'harvest', i: '🌾'}, {m: 3, t: 'harvest', i: '🌾'},
+          {m: 4, t: 'harvest', i: '🌾'}, {m: 5, t: 'rest', i: '⚪'},
+          {m: 6, t: 'rest', i: '⚪'}, {m: 7, t: 'rest', i: '⚪'},
+          {m: 8, t: 'plant', i: '🌱'}, {m: 9, t: 'plant', i: '🌱'}
+        ])},
+      { id: 'prawn', short_name: 'กุ้งก้ามกราม', emoji: '🦐',
+        activities: this.makeActivities([
+          {m: 0, t: 'plant', i: '🌱'}, {m: 1, t: 'plant', i: '🌱'},
+          {m: 2, t: 'plant', i: '🌱'}, {m: 3, t: 'plant', i: '🌱'},
+          {m: 4, t: 'fert', i: '💧'}, {m: 5, t: 'fert', i: '💧'},
+          {m: 6, t: 'fert', i: '💧'}, {m: 7, t: 'harvest', i: '🌾'},
+          {m: 8, t: 'harvest', i: '🌾'}, {m: 9, t: 'harvest', i: '🌾'},
+          {m: 10, t: 'harvest', i: '🌾'}, {m: 11, t: 'harvest', i: '🌾'}
+        ])},
+      { id: 'vegetable', short_name: 'ผัก', emoji: '🥬',
+        activities: this.makeActivities([
+          {m: 9, t: 'plant', i: '🌱'}, {m: 10, t: 'plant', i: '🌱'},
+          {m: 11, t: 'plant', i: '🌱'}, {m: 0, t: 'harvest', i: '🌾'},
+          {m: 1, t: 'harvest', i: '🌾'}, {m: 2, t: 'plant', i: '🌱'},
+          {m: 3, t: 'plant', i: '🌱'}, {m: 4, t: 'harvest', i: '🌾'},
+          {m: 5, t: 'harvest', i: '🌾'}, {m: 6, t: 'rest', i: '⚪'},
+          {m: 7, t: 'rest', i: '⚪'}, {m: 8, t: 'rest', i: '⚪'}
+        ])},
+      { id: 'coconut_bk', short_name: 'มะพร้าว (บ้านขาว)', emoji: '🥥',
+        activities: this.makeActivities([
+          {m: 0, t: 'fert', i: '💧'}, {m: 1, t: 'harvest', i: '🌾'},
+          {m: 2, t: 'harvest', i: '🌾'}, {m: 3, t: 'fert', i: '💧'},
+          {m: 4, t: 'harvest', i: '🌾'}, {m: 5, t: 'harvest', i: '🌾'},
+          {m: 6, t: 'harvest', i: '🌾'}, {m: 7, t: 'harvest', i: '🌾'},
+          {m: 8, t: 'fert', i: '💧'}, {m: 9, t: 'harvest', i: '🌾'},
+          {m: 10, t: 'harvest', i: '🌾'}, {m: 11, t: 'harvest', i: '🌾'}
+        ])}
+    ],
+    makeActivities(acts) {
+      // Create array of 12 months with activity or rest
+      const typeMap = {
+        plant:   { icon: '🌱', bg: '#dcfce7', bar_class: 'act-plant',   bar: true },
+        fert:    { icon: '💧', bg: '#dbeafe', bar_class: 'act-fert',    bar: true },
+        harvest: { icon: '🌾', bg: '#fef3c7', bar_class: 'act-harvest', bar: true },
+        rest:    { icon: '⚪', bg: '#f8fafc', bar_class: '',           bar: false }
+      };
+      const result = [];
+      for (let i = 0; i < 12; i++) {
+        const act = acts.find(a => a.m === i) || {t: 'rest'};
+        result.push({...typeMap[act.t], icon: act.i || typeMap[act.t].icon});
+      }
+      return result;
+    },
+    init() {}
+  };
+}
+</script>
+</body>
+</html>

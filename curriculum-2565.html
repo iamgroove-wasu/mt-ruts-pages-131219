@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หลักสูตร 2565 — อส.บ. เทคโนโลยีเครื่องกล (ต่อเนื่อง) | มทร.ศรีวิชัย</title>
+<meta name="description" content="รายละเอียดหลักสูตรอุตสาหกรรมศาสตรบัณฑิต สาขาวิชาเทคโนโลยีเครื่องกล (ต่อเนื่อง) หลักสูตรปรับปรุง พ.ศ. 2565 คณะวิศวกรรมศาสตร์ มทร.ศรีวิชัย">
+<meta property="og:title" content="หลักสูตร 2565 — เทคโนโลยีเครื่องกล มทร.ศรีวิชัย">
+<meta property="og:description" content="75 หน่วยกิต · 2 โมดูล · 320 ชม. ฝึกงาน · หลักสูตรเดิมก่อนปรับปรุงเป็น 2570">
+<link rel="icon" type="image/png" href="/images/logo-mt.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #1e3a8a;
+  --primary-dark: #1e293b;
+  --bg: #f8fafc;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --border: #e5e7eb;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --hero-from: #1e3a8a;
+  --hero-to: #3b82f6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* Top Bar */
+.topbar { background: white; padding: 0.75rem 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+.topbar-inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+.topbar img { height: 40px; }
+.topbar-text { font-size: 0.9rem; color: var(--text-light); }
+.topbar-text strong { display: block; color: var(--primary); font-size: 0.95rem; }
+.btn-back { padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+
+.btn-compare-nav { padding: 0.5rem 1rem; background: var(--accent); color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-right: 0.5rem; }
+
+/* Hero */
+.hero { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); color: white; padding: 3rem 0 2.5rem; }
+.hero-badge { display: inline-block; padding: 0.4rem 1rem; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem; font-weight: 500; }
+.hero h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.5rem; }
+.hero .subtitle { font-size: 1.25rem; font-weight: 600; opacity: 0.95; margin-bottom: 1.5rem; }
+.hero .stats { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem; }
+.hero .stat { background: rgba(255,255,255,0.12); padding: 0.75rem 1.25rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px); }
+.hero .stat-num { font-size: 1.5rem; font-weight: 800; font-family: 'Inter', sans-serif; }
+.hero .stat-label { font-size: 0.8rem; opacity: 0.9; }
+
+/* Banner */
+.upgrade-banner { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; padding: 1.5rem 0; text-align: center; }
+.upgrade-banner a { color: white; text-decoration: underline; font-weight: 700; }
+
+/* Sections */
+section { padding: 3rem 0; }
+section.white { background: white; }
+h2 { font-size: 1.75rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+h2 .accent-bar { width: 6px; height: 28px; background: var(--accent); border-radius: 3px; }
+.subtitle { color: var(--text-light); font-size: 1.05rem; margin-bottom: 2rem; }
+
+/* Highlights */
+.highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+.highlight-card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid #6b7280; transition: all 0.2s; }
+.highlight-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.highlight-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.highlight-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+.highlight-card p { color: var(--text-light); font-size: 0.95rem; }
+
+/* Curriculum Structure */
+.structure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.struct-card { background: white; padding: 1.25rem; border-radius: 10px; border: 1px solid var(--border); text-align: center; transition: all 0.2s; }
+.struct-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.struct-card .percent { font-size: 2rem; font-weight: 800; color: var(--primary); font-family: 'Inter', sans-serif; }
+.struct-card .label { font-size: 0.95rem; font-weight: 600; margin-top: 0.25rem; }
+.struct-card .detail { font-size: 0.8rem; color: var(--text-light); margin-top: 0.4rem; }
+
+/* Modules */
+.module-card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; transition: all 0.2s; }
+.module-card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+.module-card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.module-card .badge { padding: 0.3rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+.module-card .badge.m1 { background: #dbeafe; color: #1e3a8a; }
+.module-card .badge.m2 { background: #fef3c7; color: #92400e; }
+.module-card h3 { font-size: 1.15rem; color: var(--primary); }
+
+/* Careers */
+.career-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.career-card { background: white; padding: 1.25rem; border-radius: 10px; border: 1px solid var(--border); display: flex; gap: 0.75rem; transition: all 0.2s; }
+.career-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.career-card .icon { background: #6b7280; color: white; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.career-card h4 { font-size: 0.95rem; color: var(--primary); margin-bottom: 0.2rem; }
+.career-card p { font-size: 0.85rem; color: var(--text-light); }
+
+/* Notes */
+.notes-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 1.25rem; }
+.notes-box h4 { color: #92400e; font-size: 1rem; margin-bottom: 0.5rem; }
+.notes-box p { color: #78350f; font-size: 0.9rem; }
+
+/* CTA */
+.cta-section { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); color: white; padding: 2.5rem 0; text-align: center; }
+.cta-section h2 { color: white; justify-content: center; }
+.cta-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+.btn-cta { padding: 0.85rem 1.5rem; background: white; color: var(--primary); border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+.btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+.btn-cta.accent { background: var(--accent); color: white; }
+
+/* Footer */
+footer { background: var(--primary-dark); color: rgba(255,255,255,0.7); padding: 1.5rem 0; text-align: center; font-size: 0.85rem; }
+footer a { color: rgba(255,255,255,0.9); text-decoration: none; }
+footer a:hover { color: white; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 1.75rem; }
+  .hero .subtitle { font-size: 1.05rem; }
+  .hero .stats { gap: 0.75rem; }
+  .hero .stat { padding: 0.5rem 0.75rem; }
+  .hero .stat-num { font-size: 1.2rem; }
+  h2 { font-size: 1.4rem; }
+  .topbar-text { display: none; }
+}
+
+/* Courses Section */
+.courses-section { background: white; padding: 3rem 0; }
+.courses-section h2 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+.courses-section .section-subtitle { color: var(--text-light); margin-bottom: 2rem; }
+.course-cat-title { font-size: 1.2rem; color: var(--primary); margin: 2rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; display: flex; align-items: center; gap: 0.5rem; }
+.course-cat-title:not(:first-child) { margin-top: 2.5rem; }
+.course-cat-title:first-of-type { margin-top: 1.5rem; }
+.cat-count { font-size: 0.85rem; color: var(--text-light); font-weight: 400; }
+.course-table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 1rem; }
+.course-table { width: 100%; border-collapse: collapse; background: white; }
+.course-table thead { background: var(--primary); color: white; }
+.course-table th { padding: 0.75rem 1rem; text-align: left; font-weight: 600; font-size: 0.9rem; }
+.course-table th.th-code { width: 140px; }
+.course-table th.th-credit { width: 110px; text-align: center; }
+.course-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #f3f4f6; font-size: 0.92rem; }
+.course-table tbody tr:last-child td { border-bottom: none; }
+.course-table tbody tr:hover { background: #f8fafc; }
+.course-code { font-family: 'Inter', monospace; background: #e0e7ff; color: var(--primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500; }
+.course-name { color: var(--text); }
+.course-credit { text-align: center; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--primary); }
+@media (max-width: 768px) {
+  .course-table { font-size: 0.85rem; }
+  .course-table th, .course-table td { padding: 0.5rem; }
+  .course-code { font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="container topbar-inner">
+    <div class="topbar-left">
+      <img src="/images/logo-mt.png" alt="MT RUTS" onerror="this.style.display='none'">
+      <div class="topbar-text">
+        <strong>หลักสูตรเทคโนโลยีเครื่องกล</strong>
+        คณะวิศวกรรมศาสตร์ · มทร.ศรีวิชัย
+      </div>
+    </div>
+    <div>
+      <a href="/curriculum-2570.html" class="btn-compare-nav"><i class="fas fa-arrow-up"></i> ดู 2570 ใหม่</a>
+      <a href="https://mt-ruts.com" class="btn-back"><i class="fas fa-arrow-left"></i> กลับหน้าหลัก</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="hero-badge">📚 หลักสูตรปรับปรุง พ.ศ. 2565 (ฉบับก่อนหน้า)</span>
+    <h1>หลักสูตรอุตสาหกรรมศาสตรบัณฑิต</h1>
+    <h1 style="font-size:1.75rem; font-weight:600;">สาขาวิชาเทคโนโลยีเครื่องกล (ต่อเนื่อง)</h1>
+    <p class="subtitle">(หลักสูตรปรับปรุง พ.ศ. 2565) · B.Ind.Tech. (Mechanical Technology)</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">75</div><div class="stat-label">หน่วยกิต</div></div>
+      <div class="stat"><div class="stat-num">2 ปี</div><div class="stat-label">ระยะเวลา</div></div>
+      <div class="stat"><div class="stat-num">2</div><div class="stat-label">โมดูล</div></div>
+      <div class="stat"><div class="stat-num">320 ชม.</div><div class="stat-label">ฝึกงาน</div></div>
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">อาชีพ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Upgrade Banner -->
+<section class="upgrade-banner">
+  <div class="container">
+    <p>🆕 หลักสูตรนี้ถูกปรับปรุงเป็น <a href="/curriculum-2570.html">หลักสูตรปรับปรุง พ.ศ. 2570</a> แล้ว — เพิ่ม EV Track + AI & Digital</p>
+  </div>
+</section>
+
+<!-- Highlights -->
+<section class="white">
+  <div class="container">
+    <h2><span class="accent-bar"></span> จุดเด่น</h2>
+    <div class="highlights">
+      <div class="highlight-card">
+        <div class="icon">🏭</div>
+        <h3>2 โมดูลเลือก</h3>
+        <p>เทคโนโลยีเครื่องกล / เทคโนโลยียานยนต์สมัยใหม่ — เลือกเรียนตามสายอาชีพ</p>
+      </div>
+      <div class="highlight-card">
+        <div class="icon">⚙️</div>
+        <h3>ฝึกงาน 320 ชม.</h3>
+        <p>ฝึกงานในสถานประกอบการ + สหกิจศึกษา</p>
+      </div>
+      <div class="highlight-card">
+        <div class="icon">📐</div>
+        <h3>Modular System</h3>
+        <p>จัดรูปแบบการเรียนแบบโมดูล ให้นักศึกษาเลือกเรียนกลุ่มวิชาที่สนใจ</p>
+      </div>
+      <div class="highlight-card">
+        <div class="icon">🎓</div>
+        <h3>8 อาชีพ</h3>
+        <p>ครอบคลุมทั้งภาครัฐ เอกชน และศูนย์บริการยานยนต์ไฟฟ้า</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Curriculum Structure -->
+<section>
+  <div class="container">
+    <h2><span class="accent-bar"></span> โครงสร้างหลักสูตร (75 หน่วยกิต)</h2>
+    <p class="subtitle">แบ่งเป็น 3 หมวดหลัก — ใช้เกณฑ์มาตรฐานหลักสูตร พ.ศ. 2558</p>
+    <div class="structure-grid">
+      <div class="struct-card">
+        <div class="percent">18</div>
+        <div class="label">ศึกษาทั่วไป</div>
+        <div class="detail">24% · 4 กลุ่ม (คุณภาพชีวิต/พลเมือง/ภาษา/วิทย์)</div>
+      </div>
+      <div class="struct-card">
+        <div class="percent">51</div>
+        <div class="label">วิชาเฉพาะ</div>
+        <div class="detail">68% · พื้นฐาน 13 + บังคับ 26 + เลือก 12</div>
+      </div>
+      <div class="struct-card">
+        <div class="percent">6</div>
+        <div class="label">เลือกเสรี</div>
+        <div class="detail">8% · เปิดกว้างตามสนใจ</div>
+      </div>
+      <div class="struct-card">
+        <div class="percent">75</div>
+        <div class="label">รวมทั้งหมด</div>
+        <div class="detail">2 ปี · 320 ชม. ฝึกงาน</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 Modules -->
+<section class="white">
+  <div class="container">
+    <h2><span class="accent-bar"></span> 2 โมดูลวิชาชีพ</h2>
+    <p class="subtitle">นักศึกษาเลือกโมดูลที่ตรงสายอาชีพ — 12 หน่วยกิต</p>
+
+    <div class="module-card">
+      <div class="module-card-header">
+        <span class="badge m1">🏭 โมดูล 1</span>
+        <h3>เทคโนโลยีเครื่องกล</h3>
+      </div>
+      <p style="padding-left:1.5rem; color:var(--text-light);">รายวิชาในกลุ่มเครื่องกล ระบบท่อ การบำรุงรักษา และงานเชื่อม</p>
+    </div>
+
+    <div class="module-card">
+      <div class="module-card-header">
+        <span class="badge m2">🚗 โมดูล 2</span>
+        <h3>เทคโนโลยียานยนต์สมัยใหม่</h3>
+      </div>
+      <p style="padding-left:1.5rem; color:var(--text-light);">รายวิชาในกลุ่มยานยนต์ เครื่องยนต์ และเทคโนโลยียานยนต์</p>
+    </div>
+  </div>
+</section>
+
+<!-- Careers -->
+<section>
+  <div class="container">
+    <h2><span class="accent-bar"></span> 8 อาชีพหลังสำเร็จการศึกษา</h2>
+    <p class="subtitle">ครอบคลุมทั้งภาครัฐ เอกชน และอาชีพอิสระ</p>
+    <div class="career-grid">
+      <div class="career-card"><div class="icon"><i class="fas fa-industry"></i></div><div><h4>พนักงานควบคุมเครื่องจักร</h4><p>ในโรงงานอุตสาหกรรม</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-snowflake"></i></div><div><h4>พนักงานควบคุมหม้อไอน้ำ/เครื่องทำความเย็น</h4><p>และเครื่องปรับอากาศ</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-wrench"></i></div><div><h4>พนักงานซ่อมบำรุงเครื่องจักร</h4><p>ฝ่ายซ่อมและบำรุงรักษา</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-landmark"></i></div><div><h4>รับราชการ/รัฐวิสาหกิจ</h4><p>งานเครื่องกล เจ้าหน้าที่ฝ่ายเทคนิค</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-car-battery"></i></div><div><h4>พนักงาน EV</h4><p>อุตสาหกรรม/ศูนย์บริการยานยนต์ไฟฟ้า</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-drafting-compass"></i></div><div><h4>พนักงานเขียนแบบ/ออกแบบ</h4><p>ด้านเครื่องกล</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-chalkboard-teacher"></i></div><div><h4>ผู้สอนในสถาบันการศึกษา</h4><p>สายช่าง/อาชีวะ</p></div></div>
+      <div class="career-card"><div class="icon"><i class="fas fa-rocket"></i></div><div><h4>อาชีพอิสระ</h4><p>งานเครื่องกลหรืองานที่เกี่ยวข้อง</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Notes -->
+<section class="white">
+  <div class="container">
+    <h2><span class="accent-bar"></span> หมายเหตุ</h2>
+    <div class="notes-box">
+      <h4><i class="fas fa-info-circle"></i> เกี่ยวกับ PLOs/CLOs</h4>
+      <p>หลักสูตร 2565 ใช้เกณฑ์มาตรฐานหลักสูตร พ.ศ. 2558 (เก่า) ที่ใช้ "ผลการเรียนรู้ (CLOs)" ไม่ใช่ "ผลลัพธ์การเรียนรู้ (PLOs)" แบบหลักสูตร 2570 — รายละเอียดผลการเรียนรู้อยู่ในหมวดที่ 4 ของ มคอ.2 ปี 2565</p>
+    </div>
+    <div class="notes-box" style="margin-top:1rem;">
+      <h4><i class="fas fa-info-circle"></i> เกี่ยวกับเวอร์ชันปัจจุบัน</h4>
+      <p>หลักสูตร 2565 ถูกทดแทนด้วย <a href="/curriculum-2570.html" style="color:#92400e;font-weight:700;">หลักสูตรปรับปรุง พ.ศ. 2570</a> ที่เริ่มใช้ตั้งแต่ภาค 1/2570 — เพิ่ม EV Track, AI & Digital, 89 หน่วยกิต, 7 PLOs</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>สนใจหลักสูตรใหม่ 2570?</h2>
+    <p style="opacity:0.9; max-width:600px; margin:0 auto;">หลักสูตร 2570 เพิ่ม EV Track + AI & Digital + 89 หน่วยกิต — เริ่มใช้ภาค 1/2570</p>
+    <div class="cta-grid">
+      <a href="/curriculum-2570.html" class="btn-cta accent"><i class="fas fa-book"></i> ดูหลักสูตร 2570</a>
+      <a href="https://mt-ruts.com" class="btn-cta"><i class="fas fa-home"></i> กลับหน้าหลัก</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<!-- Courses -->
+<section class="courses-section" id="courses">
+  <div class="container">
+    <h2><span class="accent-bar"></span> 📚 รายวิชาในหลักสูตร (ครบ 83 รายการ)</h2>
+    <p class="subtitle">รายละเอียดทุกวิชาในหลักสูตร 2565 (จาก มคอ.2 ฉบับจริง that wasu ส่ง)</p>
+
+    <h3 class="course-cat-title">ศึกษาทั่วไป (18 หน่วยกิต) - 4 กลุ่ม <span class="cat-count">(12 วิชา)</span></h3>
+    <div class="course-table-wrap"><table class="course-table">
+      <thead><tr><th class="th-code">รหัสวิชา</th><th class="th-name">ชื่อวิชา</th><th class="th-credit">หน่วยกิต</th></tr></thead>
+      <tbody>
+        <tr><td><code class="course-code">00-018-001</code></td><td class="course-name">ศาสตร์พระราชา</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-034-005</code></td><td class="course-name">ศิลปะการพูด</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-023-001</code></td><td class="course-name">พลเมืองกับจิตสำนึกต่อสังคม</td><td class="course-credit">3(3-0-6)</td></tr>
+        <tr><td><code class="course-code">00-034-001</code></td><td class="course-name">มนุษย์กับวรรณกรรม</td><td class="course-credit">3(3-0-6)</td></tr>
+        <tr><td><code class="course-code">00-034-002</code></td><td class="course-name">ภาษาไทยเพื่อการสื่อสาร</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-034-003</code></td><td class="course-name">ทักษะการอ่านภาษาไทย</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-034-004</code></td><td class="course-name">ทักษะการเขียนภาษาไทย</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-034-006</code></td><td class="course-name">การอ่านและการเขียนเชิงวิชาการ</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-034-007</code></td><td class="course-name">การอ่านเพื่อการเรียนรู้ตลอดชีวิต</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-048-001</code></td><td class="course-name">เทคโนโลยีและนวัตกรรม</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-035-001</code></td><td class="course-name">สนทนาภาษาอังกฤษ</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">00-035-002</code></td><td class="course-name">การอ่านและการเขียนภาษาอังกฤษ</td><td class="course-credit">3(2-2-5)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="course-cat-title">หมวดวิชาเฉพาะ กลุ่มพื้นฐานวิชาชีพ (13 หน่วยกิต) <span class="cat-count">(6 วิชา)</span></h3>
+    <div class="course-table-wrap"><table class="course-table">
+      <thead><tr><th class="th-code">รหัสวิชา</th><th class="th-name">ชื่อวิชา</th><th class="th-credit">หน่วยกิต</th></tr></thead>
+      <tbody>
+        <tr><td><code class="course-code">04-421-001</code></td><td class="course-name">เทคโนโลยีและนวัตกรรม</td><td class="course-credit">3(2-2-5)</td></tr>
+        <tr><td><code class="course-code">04-421-101</code></td><td class="course-name">สู่งานเทคโนโลยีเครื่องกล</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-421-102</code></td><td class="course-name">เทคโนโลยีสารสนเทศทางอุตสาหกรรม</td><td class="course-credit">1(1-0-2)</td></tr>
+        <tr><td><code class="course-code">04-421-103</code></td><td class="course-name">ปฏิบัติการเทคโนโลยีสารสนเทศทางอุตสาหกรรม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-421-104</code></td><td class="course-name">จิตวิทยาอุตสาหกรรมและองค์กร</td><td class="course-credit">1(1-0-2)</td></tr>
+        <tr><td><code class="course-code">04-421-105</code></td><td class="course-name">วัสดุอุตสาหกรรม</td><td class="course-credit">2(2-0-4)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="course-cat-title">หมวดวิชาเฉพาะ กลุ่มวิชาชีพบังคับ (26 หน่วยกิต) <span class="cat-count">(16 วิชา)</span></h3>
+    <div class="course-table-wrap"><table class="course-table">
+      <thead><tr><th class="th-code">รหัสวิชา</th><th class="th-name">ชื่อวิชา</th><th class="th-credit">หน่วยกิต</th></tr></thead>
+      <tbody>
+        <tr><td><code class="course-code">04-421-206</code></td><td class="course-name">อาชีวอนามัยและความปลอดภัยในสถานประกอบการ</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-421-207</code></td><td class="course-name">การเป็นผู้ประกอบการ</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-421-208</code></td><td class="course-name">การพัฒนาทรัพยากรมนุษย์และการฝึกอบรม</td><td class="course-credit">1(1-0-2)</td></tr>
+        <tr><td><code class="course-code">04-421-209</code></td><td class="course-name">ปฏิบัติการการพัฒนาทรัพยากรมนุษย์และการฝึกอบรม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-422-101</code></td><td class="course-name">ไฟฟ้าอุตสาหกรรม</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-422-102</code></td><td class="course-name">ปฏิบัติการไฟฟ้าอุตสาหกรรม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-422-103</code></td><td class="course-name">กลศาสตร์วัสดุ</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-422-104</code></td><td class="course-name">เทคโนโลยีความร้อนและของไหล</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-422-105</code></td><td class="course-name">คอมพิวเตอร์ช่วยงานวิศวกรรมและการออกแบบ</td><td class="course-credit">1(1-0-2)</td></tr>
+        <tr><td><code class="course-code">04-422-106</code></td><td class="course-name">ปฏิบัติการคอมพิวเตอร์ช่วยงานวิศวกรรมและการออกแบบ</td><td class="course-credit">2(0-4-2)</td></tr>
+        <tr><td><code class="course-code">04-422-107</code></td><td class="course-name">การเตรียมโครงงานเทคโนโลยีเครื่องกล</td><td class="course-credit">1(1-0-2)</td></tr>
+        <tr><td><code class="course-code">04-422-108</code></td><td class="course-name">การเตรียมความพร้อมการฝึกงานและสหกิจศึกษา</td><td class="course-credit">1(0-2-1)</td></tr>
+        <tr><td><code class="course-code">04-422-109</code></td><td class="course-name">การฝึกงานทางเทคโนโลยีเครื่องกล</td><td class="course-credit">3(320)</td></tr>
+        <tr><td><code class="course-code">04-422-210</code></td><td class="course-name">วิศวกรรมการบำรุงรักษา</td><td class="course-credit">1(1-0-2)</td></tr>
+        <tr><td><code class="course-code">04-422-211</code></td><td class="course-name">ปฏิบัติการวิศวกรรมการบำรุงรักษา</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-422-212</code></td><td class="course-name">โครงงานเทคโนโลยีเครื่องกล</td><td class="course-credit">2(0-6-0)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="course-cat-title">หมวดวิชาเฉพาะ กลุ่มวิชาชีพเลือก (12 หน่วยกิต) - 2 โมดูล <span class="cat-count">(12 วิชา)</span></h3>
+    <div class="course-table-wrap"><table class="course-table">
+      <thead><tr><th class="th-code">รหัสวิชา</th><th class="th-name">ชื่อวิชา</th><th class="th-credit">หน่วยกิต</th></tr></thead>
+      <tbody>
+        <tr><td><code class="course-code">04-423-101</code></td><td class="course-name">นิวแมติกส์และไฮดรอลิกส์ในงานอุตสาหกรรม</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-423-102</code></td><td class="course-name">การประยุกต์นิวแมติกส์และไฮดรอลิกส์ในงานอุตสาหกรรม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-423-103</code></td><td class="course-name">ระบบอัตโนมัติและการควบคุม</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-423-104</code></td><td class="course-name">ปฏิบัติการระบบอัตโนมัติและการควบคุม</td><td class="course-credit">2(0-6-0)</td></tr>
+        <tr><td><code class="course-code">04-424-201</code></td><td class="course-name">ปฏิบัติการเครื่องจักรกลอุตสาหกรรม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-424-202</code></td><td class="course-name">เครื่องมือวัดและระบบควบคุม</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-424-203</code></td><td class="course-name">ปฏิบัติการเครื่องมือวัดและระบบควบคุม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-424-204</code></td><td class="course-name">เทคโนโลยีโรงผลิตกำลัง</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-424-205</code></td><td class="course-name">หม้อไอน้ำอุตสาหกรรม</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-424-206</code></td><td class="course-name">ปฏิบัติการหม้อไอน้ำอุตสาหกรรม</td><td class="course-credit">1(0-3-0)</td></tr>
+        <tr><td><code class="course-code">04-424-207</code></td><td class="course-name">เครื่องทำความเย็นอุตสาหกรรม</td><td class="course-credit">2(2-0-4)</td></tr>
+        <tr><td><code class="course-code">04-424-208</code></td><td class="course-name">ปฏิบัติการเครื่องทำความเย็นอุตสาหกรรม</td><td class="course-credit">1(0-3-0)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p><strong style="color:white;">คณะวิศวกรรมศาสตร์</strong> · มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+    <p style="margin-top:0.5rem;">ถนนราชดำเนินนอก ตำบลบ่อยาง อำเภอเมือง จังหวัดสงขลา 90000</p>
+    <p style="margin-top:0.5rem;"><a href="https://mt-ruts.com">mt-ruts.com</a> · <a href="mailto:wasu.s@rmutsv.ac.th">wasu.s@rmutsv.ac.th</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

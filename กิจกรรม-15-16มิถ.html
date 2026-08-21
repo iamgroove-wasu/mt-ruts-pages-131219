@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กิจกรรม 15-16 มิถุนายน 2569</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'TH Saraban', 'Kanit', sans-serif; background: #f0f4f8; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header .date { opacity: 0.9; font-size: 16px; }
+        .day-section { margin-bottom: 30px; }
+        .day-title { background: #2d5a87; color: white; padding: 12px 24px; font-size: 18px; margin-bottom: 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top; }
+        th { background: #e8eff7; width: 140px; font-weight: 600; }
+        tr:nth-child(even) { background: #fafbfc; }
+        .activity-input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+        .detail-input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; min-height: 60px; }
+        .time-input { width: 100px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .checkbox-area { padding: 20px; background: #f8f9fa; border-top: 2px solid #dee2e6; }
+        .checkbox-row { display: flex; gap: 30px; flex-wrap: wrap; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; }
+        .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; }
+        .food-summary { background: #fff3cd; padding: 20px; border-top: 2px solid #ffc107; }
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .food-item { background: white; padding: 12px; border-radius: 8px; }
+        .food-item label { display: block; margin-bottom: 6px; font-weight: 600; }
+        .food-item input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .footer { padding: 20px; background: #f8f9fa; border-top: 2px solid #dee2e6; text-align: center; }
+        .btn { background: #2d5a87; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background: #1e3a5f; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 กิจกรรมโครงการนักศึกษา ภาคฤดูร้อน 2569</h1>
+            <div class="date">วันที่ 15-16 มิถุนายน 2569 | สถานที่: ห้อง PLC</div>
+        </div>
+
+        <!-- วันที่ 15 -->
+        <div class="day-section">
+            <h2 class="day-title">🌙 วันที่ 15 มิถุนายน 2569</h2>
+            <table>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="08:30 - 09:00"></td>
+                    <td><input type="text" class="activity-input" placeholder="กิจกรรม"></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="text" class="time-input" value="09:00 - 10:00"></td>
+                    <td><input type="text" class="activity-input" value="พบอาจารย์ที่ปรึกษา"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">แนะนำการเรียนการสอน รายวิชา แผนการเรียน การลงทะเบียน ระบบแอปของมหาวิทยาลัย · เบรก 15 นาที ท้ายคาบ</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="10:00 - 11:00"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมละลายพฤติกรรม"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">จับกลุ่มทำความรู้จัก ถ่ายรูปกลุ่ม เกมชื่อ กิจกรรมใบดำตามคำทาง</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="11:00 - 12:00"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมเสริมรายวิชา"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">รายวิชา คำนวณ / เทอร์โมไดนามิกส์ / กลศาสตร์ แนะนำวิธีการแก้โจทย์ปัญหา · มีข้อสอบก่อนและหลังเรียน</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="12:00 - 13:00"></td>
+                    <td><input type="text" class="activity-input" value="พักรับประทานอาหารกลางวัน"></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="13:00 - 14:30"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมละลายพฤติกรรม"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">วิ่งเปลี่ยนร่าง (2 คนจับมือ + 1 คนอยู่ตรงกลาง) OX บิงโก</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="14:30 - 16:00"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมเสริมรายวิชา"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">รายวิชาคอมพิวเตอร์ แนะนำโปรแกรม สร้างเว็บไซต์เบื้องต้น · เบรก 15 นาที ท้ายคาบ</textarea></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- วันที่ 16 -->
+        <div class="day-section">
+            <h2 class="day-title">🌙 วันที่ 16 มิถุนายน 2569</h2>
+            <table>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="08:30 - 09:00"></td>
+                    <td><input type="text" class="activity-input" placeholder="กิจกรรม"></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="09:00 - 10:00"></td>
+                    <td><input type="text" class="activity-input" value="ศิษย์เก่ามาแนะนำประสบการณ์ทำงาน"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">พี่แมงศักดิ์ MT.25 อาชีพข้าราชการ · เบรก 15 นาที กินขนม</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="10:00 - 11:00"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมละลายพฤติกรรม"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">กิจกรรมการสื่อสาร บอกสิ่งดีๆ ให้เพื่อน กลุ่มละ 5 คน</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="11:00 - 12:30"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมเสริมรายวิชา"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">รายวิชาเขียนแบบ Auto CAD</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="12:30 - 14:00"></td>
+                    <td><input type="text" class="activity-input" value="พักรับประทานอาหารกลางวัน"></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="14:00 - 15:30"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมเสริมรายวิชา"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">รายวิชาเขียนแบบ Solidworks · เบรก 15 นาที กินขนม</textarea></td>
+                </tr>
+                <tr>
+                    <th>เวลา</th>
+                    <td><input type="text" class="time-input" value="15:30 - 16:00"></td>
+                    <td><input type="text" class="activity-input" value="กิจกรรมละลายพฤติกรรม"></td>
+                </tr>
+                <tr>
+                    <th>รายละเอียด</th>
+                    <td colspan="2"><textarea class="detail-input">กิจกรรมแก้ไขปัญหา กระต่ายเจ้าปัญหา</textarea></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- จำนวนคน -->
+        <div class="checkbox-area">
+            <h3 style="margin-bottom: 15px;">👥 จำนวนคน</h3>
+            <div class="checkbox-row">
+                <div class="checkbox-item">
+                    <label>น้อง (ผู้เข้าร่วม):</label>
+                    <input type="number" value="40" style="width: 80px; padding: 8px;"> คน
+                </div>
+                <div class="checkbox-item">
+                    <label>พี่ (สตาฟ):</label>
+                    <input type="number" value="23" style="width: 80px; padding: 8px;"> คน
+                </div>
+                <div class="checkbox-item">
+                    <label>แขก + อาจารย์:</label>
+                    <input type="number" value="10" style="width: 80px; padding: 8px;"> คน
+                </div>
+            </div>
+        </div>
+
+        <!-- อาหาร & ขนม -->
+        <div class="food-summary">
+            <h3 style="margin-bottom: 15px;">🍱 สรุปอาหาร & ขนม</h3>
+            <div class="food-grid">
+                <div class="food-item">
+                    <label>ขนมพักเบรก (ปกติ) - วันที่ 1</label>
+                    <input type="number" value="136"> ชุด
+                </div>
+                <div class="food-item">
+                    <label>ขนมพักเบรก (ปกติ) - วันที่ 2</label>
+                    <input type="number" value="146"> ชุด
+                </div>
+                <div class="food-item">
+                    <label>ขนมพักเบรก (สมทบ) - วันที่ 1</label>
+                    <input type="number" value="80"> ชุด
+                </div>
+                <div class="food-item">
+                    <label>ขนมพักเบรก (สมทบ) - วันที่ 2</label>
+                    <input type="number" value="80"> ชุด
+                </div>
+                <div class="food-item">
+                    <label>อาหารเที่ยง น้อง (2 วัน)</label>
+                    <input type="number" value="80"> กล่อง
+                </div>
+                <div class="food-item">
+                    <label>อาหารเที่ยง สมทบ</label>
+                    <input type="text" placeholder="น้อง 30 + พี่ 15 คน">
+                </div>
+            </div>
+        </div>
+
+        <!-- ผู้รับผิดชอบ -->
+        <div style="padding: 20px; background: #e8f5e9;">
+            <h3 style="margin-bottom: 15px;">👤 ผู้รับผิดชอบ</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div>
+                    <label>เบรกขนม + น้ำ:</label>
+                    <input type="text" value="คุณอังคณา + ศรัณยภัทร์" style="width: 100%; padding: 8px; margin-top: 5px;">
+                </div>
+                <div>
+                    <label>อุปกรณ์ + ลายแทงกิจกรรม:</label>
+                    <input type="text" value="คุณอังคณา" style="width: 100%; padding: 8px; margin-top: 5px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="btn" onclick="window.print()">🖨️ พิมพ์ / Save PDF</button>
+        </div>
+    </div>
+</body>
+</html>

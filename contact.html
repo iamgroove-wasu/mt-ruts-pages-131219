@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ติดต่อเรา | หลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง) มทร.ศรีวิชัย</title>
+<meta name="description" content="ติดต่อหลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง) คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย — ฟอร์มออนไลน์ ที่อยู่ เบอร์โทร เพจ Facebook">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --primary: #1E3A8A;
+  --primary-dark: #1E2F6E;
+  --secondary: #DC2626;
+  --accent: #F59E0B;
+  --mt-red: #DC2626;
+  --mt-yellow: #F59E0B;
+  --bg: #F9FAFB;
+  --bg-white: #FFFFFF;
+  --text: #111827;
+  --text-light: #6B7280;
+  --border: #E5E7EB;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun',sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+
+/* Top bar */
+.top-bar{background:var(--primary-dark);color:white;padding:.5rem 0;font-size:.875rem}
+.top-bar .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.top-bar a{color:white;text-decoration:none;margin-right:1rem;opacity:.9}
+.top-bar a:hover{opacity:1}
+.top-bar .ruts-logo{height:24px;vertical-align:middle;margin-right:.5rem}
+
+/* Hero */
+.hero{background:linear-gradient(180deg,#FFFFFF 0%,#F0F4FA 100%);color:var(--text);padding:2.5rem 0 3rem;text-align:center;position:relative;border-bottom:3px solid var(--accent)}
+.hero::before,.hero::after{content:none;display:none}
+.hero .container{position:relative;z-index:1}
+.hero .mt-logo{height:140px;width:auto;margin:0;display:block;transition:none}
+.hero-inner{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;text-align:left;max-width:1100px;margin:0 auto}
+.hero-logo-wrap{flex-shrink:0;display:flex;justify-content:center}
+.hero-content{text-align:left}
+.hero-content .crown,.hero-content .subtitle,.hero-content .cta{text-align:left;margin-left:0;margin-right:0}
+.hero .crown{font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--primary);margin-bottom:.5rem;font-weight:600;display:inline-block;padding-bottom:.4rem;border-bottom:2px solid var(--accent)}
+.hero h1{font-size:1.85rem;margin-bottom:.5rem;font-weight:700;line-height:1.3;color:var(--primary)}
+.hero .subtitle{font-size:1.05rem;color:var(--text);margin-bottom:1.25rem;font-weight:500}
+.hero .cta{margin-top:1.5rem}
+.btn{display:inline-block;padding:.75rem 1.5rem;border-radius:.375rem;font-weight:600;text-decoration:none;transition:all .2s;margin:.25rem;font-size:1rem;letter-spacing:.02em}
+.btn-primary{background:var(--secondary);color:white}
+.btn-primary:hover{background:#B91C1C;transform:translateY(-1px);box-shadow:0 4px 10px rgba(220,38,38,.25)}
+.btn-outline{border:2px solid var(--primary);color:var(--primary);background:white}
+.btn-outline:hover{background:var(--primary);color:white}
+
+/* Quick Links */
+.quick-links{padding:3rem 0;background:white}
+.quick-links h2{text-align:center;margin-bottom:2rem;color:var(--primary);font-size:1.75rem}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.25rem}
+.link-card{display:block;padding:1.5rem 1rem;background:white;border:2px solid var(--border);border-radius:.75rem;text-align:center;text-decoration:none;color:var(--text);transition:all .2s}
+.link-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 8px 20px rgba(30,58,138,.15)}
+.link-card .icon{font-size:2.25rem;color:var(--primary);margin-bottom:.5rem}
+.link-card .label{font-weight:500;font-size:.95rem}
+
+/* Sections */
+section{padding:4rem 0}
+section h2{text-align:center;margin-bottom:2.5rem;color:var(--primary);font-size:1.9rem}
+section h2 .sub{font-size:.95rem;color:var(--text-light);font-weight:400;display:block;margin-top:.5rem}
+
+/* About */
+.about-section{background:var(--bg)}
+.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.about-card{background:white;padding:1.5rem;border-radius:.75rem;border-left:4px solid var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.05);transition:all .2s}
+.about-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.about-card h3{color:var(--primary);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;font-size:1.1rem}
+.about-card h3 i{color:var(--accent)}
+.about-card p{color:var(--text-light);line-height:1.7}
+
+/* Career */
+.career-section{background:white}
+.career-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem}
+.career-item{padding:1.25rem;background:var(--bg);border-radius:.5rem;display:flex;align-items:flex-start;gap:1rem;transition:all .2s}
+.career-item:hover{background:#EEF2FF;transform:translateX(4px)}
+.career-item .num{flex-shrink:0;width:2.5rem;height:2.5rem;background:linear-gradient(135deg,var(--secondary),#B91C1C);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Inter',sans-serif}
+.career-item .text{flex:1;padding-top:.25rem}
+
+/* Staff */
+.staff-section{background:var(--bg)}
+.staff-subtitle{text-align:center;color:var(--text-light);margin-bottom:2.5rem;font-size:1rem}
+.staff-card{display:block;max-width:600px;margin:0 auto;padding:2rem;background:white;border-radius:.75rem;text-align:center;text-decoration:none;color:var(--text);box-shadow:0 2px 6px rgba(0,0,0,.05);transition:all .2s;border-top:4px solid var(--secondary)}
+.staff-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
+.staff-icon{font-size:3rem;color:var(--primary);margin-bottom:1rem}
+.staff-card h3{color:var(--primary);font-size:1.2rem;margin-bottom:.5rem}
+.staff-card p{color:var(--text-light);font-size:.95rem;margin-bottom:1rem}
+.staff-link{color:var(--secondary);font-weight:500}
+
+/* Program Info */
+.info-section{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:white}
+.info-section h2{color:white}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;text-align:center}
+.info-card{padding:1.75rem 1rem;background:rgba(255,255,255,.1);border-radius:.75rem;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);transition:all .2s}
+.info-card:hover{background:rgba(255,255,255,.15);transform:translateY(-3px)}
+.info-card .number{font-size:2.5rem;font-weight:700;margin-bottom:.25rem;font-family:'Inter',sans-serif;line-height:1}
+.info-card .label{font-size:.95rem;opacity:.95}
+
+/* Systems */
+.systems-section{background:white}
+.systems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.system-card{padding:1.5rem;background:var(--bg);border-radius:.75rem;border-top:4px solid var(--accent);transition:all .2s;display:flex;flex-direction:column}
+.system-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.1);background:white}
+.system-card .icon-text{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.system-card .icon-text i{font-size:1.5rem;color:var(--primary)}
+.system-card .icon-text h3{color:var(--primary);margin:0;font-size:1.1rem}
+.system-card p{color:var(--text-light);margin-bottom:1rem;font-size:.95rem;flex:1}
+.system-card a{color:var(--secondary);text-decoration:none;font-weight:500}
+.system-card a:hover{text-decoration:underline}
+
+/* News (placeholder) */
+.news-section{background:var(--bg)}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.news-card{background:white;border-radius:.75rem;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.05);transition:all .2s;display:flex;flex-direction:column}
+.news-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.news-card .img-placeholder{height:160px;background:linear-gradient(135deg,#E5E7EB,#D1D5DB);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:2rem}
+.news-card .img-placeholder i{opacity:.5}
+.news-card .news-img{width:100%;height:160px;object-fit:cover;display:block}
+.news-card .body{padding:1.25rem;display:flex;flex-direction:column;flex:1}
+.news-card .date{font-size:.85rem;color:var(--text-light);margin-bottom:.5rem}
+.news-card h3{color:var(--primary);font-size:1.1rem;margin-bottom:.5rem;line-height:1.4}
+.news-card .excerpt{color:var(--text-light);font-size:.95rem;margin-bottom:1rem;flex:1}
+.news-card .placeholder-badge{display:inline-block;background:#FEF3C7;color:#92400E;padding:.15rem .5rem;border-radius:.25rem;font-size:.75rem;font-weight:500;margin-bottom:.5rem;align-self:flex-start}
+.news-card a{color:var(--secondary);text-decoration:none;font-weight:500;font-size:.95rem}
+.news-card a:hover{text-decoration:underline}
+
+/* Achievements (placeholder) */
+.achievements-section{background:white}
+.achievements-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.achievement-card{padding:1.5rem;background:var(--bg);border-radius:.75rem;border-left:4px solid var(--accent);display:flex;gap:1rem;transition:all .2s}
+.achievement-card:hover{background:white;transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.achievement-card .icon-circle{flex-shrink:0;width:3rem;height:3rem;background:linear-gradient(135deg,var(--accent),#D97706);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem}
+.achievement-card .year{font-size:.85rem;color:var(--text-light);font-family:'Inter',sans-serif;font-weight:600}
+.achievement-card h3{color:var(--primary);font-size:1.05rem;margin:.25rem 0 .5rem}
+.achievement-card p{color:var(--text-light);font-size:.95rem}
+.achievement-card .placeholder-badge{display:inline-block;background:#FEF3C7;color:#92400E;padding:.15rem .5rem;border-radius:.25rem;font-size:.75rem;font-weight:500;margin-bottom:.25rem}
+
+/* Contact */
+.contact-section{background:var(--primary-dark);color:white;padding:3.5rem 0}
+.contact-section h2{color:white;margin-bottom:2rem}
+.contact-content{display:grid;grid-template-columns:1fr 1.2fr;gap:2.5rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.25rem}
+.contact-item{display:flex;gap:1rem;align-items:flex-start}
+.contact-item i{font-size:1.2rem;color:var(--accent);margin-top:.25rem;flex-shrink:0;width:1.5rem;text-align:center}
+.contact-item strong{display:block;margin-bottom:.25rem}
+.contact-item a{color:white;text-decoration:none}
+.contact-item a:hover{text-decoration:underline}
+.note{background:rgba(245,158,11,.15);border-left:4px solid var(--accent);padding:1.25rem;border-radius:.5rem;font-size:.95rem}
+.contact-form-wrap{background:white;color:var(--text);padding:2rem;border-radius:.5rem;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.contact-form-wrap h3{color:var(--primary);margin-bottom:.5rem;font-size:1.15rem;font-weight:700}
+.contact-form-wrap .form-intro{color:var(--text-light);font-size:.875rem;margin-bottom:1.25rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0}
+.form-group{display:flex;flex-direction:column;margin-bottom:1rem}
+.form-group label{font-size:.875rem;font-weight:600;color:var(--text);margin-bottom:.35rem}
+.form-group .required{color:var(--secondary);margin-left:.15rem}
+.form-group .optional{color:var(--text-light);font-weight:400;font-size:.75rem;margin-left:.25rem}
+.form-group input,.form-group select,.form-group textarea{font-family:inherit;font-size:.95rem;padding:.65rem .85rem;border:1px solid var(--border);border-radius:.375rem;background:white;color:var(--text);transition:border-color .15s,box-shadow .15s;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,138,.15)}
+.form-group input:invalid:not(:placeholder-shown):not(:focus),.form-group select:invalid:not(:focus),.form-group textarea:invalid:not(:placeholder-shown):not(:focus){border-color:var(--secondary)}
+.form-group textarea{resize:vertical;min-height:120px;line-height:1.6}
+.form-group select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.25rem;appearance:none;-webkit-appearance:none}
+.form-hint{font-size:.75rem;color:var(--text-light);margin-top:.25rem;align-self:flex-end}
+.form-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+.form-actions{margin-top:1.25rem}
+.form-actions .btn{display:inline-flex;align-items:center;gap:.5rem}
+.form-actions .btn:disabled{opacity:.6;cursor:not-allowed}
+.form-status{margin-top:1rem;font-size:.95rem;min-height:1rem}
+.form-status:empty{display:none}
+.form-status.loading,.form-status.success,.form-status.error{padding:.85rem 1rem;border-radius:.375rem;display:flex;align-items:center;gap:.5rem}
+.form-status.loading{background:#DBEAFE;color:var(--primary);border-left:3px solid var(--primary)}
+.form-status.success{background:#D1FAE5;color:#065F46;border-left:3px solid #10B981}
+.form-status.error{background:#FEE2E2;color:#991B1B;border-left:3px solid var(--secondary)}
+
+/* Footer */
+footer{background:#0F172A;color:rgba(255,255,255,.7);padding:1.5rem 0;text-align:center;font-size:.875rem}
+footer a{color:white;text-decoration:none}
+footer a:hover{text-decoration:underline}
+.visitor-counter{margin-bottom:1rem;color:white;font-size:1rem;font-weight:500}
+.visitor-counter i{color:var(--accent);margin-right:.5rem}
+.visitor-counter #visitor-count{font-weight:700;color:var(--accent);font-family:'Inter',sans-serif}
+
+/* Large desktop */
+@media (min-width:1024px){
+  .container{max-width:1320px;padding:0 2rem}
+  .hero{padding:2.5rem 0 3rem}
+  .hero .mt-logo{height:160px}
+  .hero h1{font-size:2rem}
+  .hero .subtitle{font-size:1.05rem}
+  .hero .tagline{font-size:1rem}
+  .hero .crown{font-size:.9rem}
+  section{padding:4rem 0}
+  section h2{font-size:1.9rem}
+}
+
+/* Tablet */
+@media (min-width:769px) and (max-width:1024px){
+  .hero{padding:2rem 0 2.5rem}
+  .hero .mt-logo{height:140px}
+  .hero h1{font-size:1.7rem}
+  .hero .subtitle{font-size:.95rem}
+  section h2{font-size:1.65rem}
+}
+
+/* Mobile */
+@media (max-width:768px){
+  body{font-size:15px}
+  .container{padding:0 1rem}
+
+  /* Top Bar - stack on mobile */
+  .top-bar{font-size:.8rem;padding:.25rem 0}
+  .top-bar .container{flex-direction:column;text-align:center;padding:.5rem 1rem;gap:.5rem}
+  .top-bar>div{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.25rem .75rem}
+  .top-bar a{margin-right:0;font-size:.78rem}
+
+  /* Hero */
+  .hero{padding:1.5rem 0 2rem}
+  .hero-inner{grid-template-columns:1fr;gap:1.25rem;text-align:center}
+  .hero-content,.hero-content .crown,.hero-content .subtitle,.hero-content .tagline,.hero-content .cta{text-align:center}
+  .hero .mt-logo{height:100px;margin-bottom:0}
+  .hero h1{font-size:1.25rem;line-height:1.3}
+  .hero .subtitle{font-size:.85rem;margin-bottom:.75rem}
+  .hero .tagline{font-size:.85rem;padding:.6rem .75rem;margin:.75rem auto;line-height:1.5}
+  .hero .crown{font-size:.7rem;letter-spacing:.05em;margin-bottom:.35rem}
+  .cta .btn{display:block;margin:.4rem auto;max-width:280px;padding:.75rem 1.5rem;font-size:.9rem}
+
+  /* Sections */
+  section{padding:2rem 0}
+  section h2{font-size:1.35rem;margin-bottom:1.5rem}
+  section h2 .sub{font-size:.85rem}
+
+  /* Quick Links grid - 2 columns */
+  .quick-links{padding:2rem 0}
+  .links-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+  .link-card{padding:1rem .5rem}
+  .link-card .icon{font-size:1.75rem;margin-bottom:.25rem}
+  .link-card .label{font-size:.8rem}
+
+  /* Career - 1 column */
+  .career-section{padding:2rem 0}
+  .career-grid{grid-template-columns:1fr;gap:.75rem}
+  .career-item{padding:1rem;gap:.75rem}
+  .career-item .num{width:2rem;height:2rem;font-size:.85rem}
+  .career-item .text{font-size:.9rem}
+
+  /* About - 1 column */
+  .about-grid{grid-template-columns:1fr;gap:1rem}
+
+  /* Systems - 1 column */
+  .systems-grid{grid-template-columns:1fr;gap:1rem}
+  .system-card{padding:1.25rem}
+
+  /* Staff */
+  .staff-card{padding:1.5rem}
+  .staff-icon{font-size:2.5rem}
+
+  /* News - 1 column */
+  .news-grid{grid-template-columns:1fr;gap:1rem}
+
+  /* Achievements - 1 column + center alignment */
+  .achievements-grid{grid-template-columns:1fr;gap:1rem}
+  .achievement-card{padding:1.25rem;flex-direction:column;text-align:center;align-items:center}
+  .achievement-card .icon-circle{margin:0 auto .5rem}
+
+  /* Program Info - 2 columns */
+  .info-section{padding:2rem 0}
+  .info-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+  .info-card{padding:1.25rem .75rem}
+  .info-card .number{font-size:1.85rem}
+  .info-card .label{font-size:.85rem}
+
+  /* Contact */
+  .contact-section{padding:2.5rem 0}
+  .contact-section h2{font-size:1.5rem}
+  .contact-content{grid-template-columns:1fr;gap:1.5rem}
+  .contact-info{gap:1rem}
+  .contact-item{font-size:.95rem}
+  .note{padding:1rem;font-size:.9rem}
+  .contact-form-wrap{padding:1.5rem}
+  .form-row{grid-template-columns:1fr;gap:0}
+
+  /* Footer */
+  footer{padding:1rem 0.5rem;font-size:.8rem}
+}
+
+/* Very small phones */
+@media (max-width:380px){
+  body{font-size:14px}
+  .hero{padding:1.25rem 0 1.5rem}
+  .hero .mt-logo{height:85px}
+  .hero h1{font-size:1.15rem;line-height:1.3}
+  .hero .tagline{font-size:.8rem;padding:.5rem .6rem}
+  .hero .crown{font-size:.65rem}
+  .links-grid{grid-template-columns:1fr}
+  .link-card .icon{font-size:1.5rem}
+  .link-card .label{font-size:.85rem}
+  .info-grid{grid-template-columns:1fr}
+  .info-card .number{font-size:2rem}
+}
+/* Page Header (contact page) */
+.page-header{background:linear-gradient(180deg,#FFFFFF 0%,#F0F4FA 100%);color:var(--text);padding:1.5rem 0 2rem;border-bottom:3px solid var(--accent)}
+.page-header .breadcrumb{margin-bottom:1rem;font-size:.9rem}
+.page-header .breadcrumb a{color:var(--primary);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:.35rem}
+.page-header .breadcrumb a:hover{text-decoration:underline}
+.page-header-inner{display:flex;gap:2rem;align-items:center}
+.page-header-logo{height:90px;width:auto;flex-shrink:0}
+.page-header .crown{font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--primary);margin-bottom:.5rem;font-weight:600;display:inline-block;padding-bottom:.4rem;border-bottom:2px solid var(--accent)}
+.page-header h1{font-size:1.6rem;margin-bottom:.5rem;font-weight:700;color:var(--primary)}
+.page-header .subtitle{font-size:1rem;color:var(--text);font-weight:500}
+@media (max-width:768px){
+  .page-header{padding:1rem 0 1.5rem}
+  .page-header-inner{flex-direction:column;text-align:center;gap:1rem}
+  .page-header-logo{height:75px}
+  .page-header h1{font-size:1.3rem}
+  .page-header .crown{font-size:.7rem}
+  .page-header .breadcrumb{margin-bottom:.75rem}
+}
+@media (max-width:380px){
+  .page-header-logo{height:65px}
+  .page-header h1{font-size:1.2rem}
+}
+/* Professional polish */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.reveal-init{opacity:0;transform:translateY(28px);transition:opacity .7s ease-out,transform .7s ease-out}
+.reveal-visible{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion: reduce){.reveal-init{opacity:1;transform:none;transition:none}}
+#visitor-count{transition:color .3s ease}
+#visitor-count strong{color:var(--accent);font-family:'Inter',sans-serif;font-weight:700;margin:0 .15rem}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:.25rem}
+.page-header .breadcrumb a,.btn{transition:all .25s cubic-bezier(.4,0,.2,1)}
+.btn-primary:hover{box-shadow:0 6px 16px rgba(220,38,38,.35)}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="container">
+    <div>
+      <img src="/assets/logo-ruts.jpg" alt="RUTS" class="ruts-logo">
+      <span>มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</span>
+    </div>
+    <div>
+      <a href="https://www.rmutsv.ac.th" target="_blank"><i class="fas fa-university"></i> เว็บมหาลัย</a>
+      <a href="https://eng.rmutsv.ac.th/ruts/mechanicaltechnology/" target="_blank"><i class="fas fa-globe"></i> เว็บคณะ</a>
+      <a href="https://www.facebook.com/profile.php?id=61572463624226" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="mailto:wasu.s@rmutsv.ac.th"><i class="fas fa-envelope"></i> ติดต่อ</a>
+    </div>
+  </div>
+</div>
+
+<!-- Page Header -->
+<header class="page-header">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/"><i class="fas fa-arrow-left"></i> กลับหน้าหลัก</a>
+    </nav>
+    <div class="page-header-inner">
+      <img src="/assets/logo-mt.png" alt="MT Mechanical Technology" class="page-header-logo">
+      <div>
+        <p class="crown">คณะวิศวกรรมศาสตร์ · มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+        <h1>📞 ติดต่อเรา</h1>
+        <p class="subtitle">หลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง)</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Contact -->
+<section class="contact-section">
+  <div class="container">
+    <h2>📞 ติดต่อเรา</h2>
+    <div class="contact-content">
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <strong>สาขาวิศวกรรมเครื่องกล</strong>
+            คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย<br>
+            ถนนราชดำเนินนอก ตำบลบ่อยาง อำเภอเมือง จังหวัดสงขลา 90000<br>
+            📞 074-317102, 074-317103
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-globe"></i>
+          <div><a href="https://www.rmutsv.ac.th" target="_blank">www.rmutsv.ac.th</a></div>
+        </div>
+        <div class="contact-item">
+          <i class="fab fa-facebook"></i>
+          <div><a href="https://www.facebook.com/profile.php?id=61572463624226" target="_blank">เพจหลักสูตรเทคโนโลยีเครื่องกล</a></div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <div><a href="mailto:wasu.s@rmutsv.ac.th">wasu.s@rmutsv.ac.th</a></div>
+        </div>
+      </div>
+      <div class="contact-form-wrap">
+        <h3>📬 ส่งข้อความถึงเรา</h3>
+        <p class="form-intro">กรอกข้อมูลด้านล่าง ทางหลักสูตรจะตอบกลับทางอีเมลภายใน 2 วันทำการ</p>
+        <form id="contact-form" class="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cf-name">ชื่อ-นามสกุล <span class="required">*</span></label>
+              <input type="text" id="cf-name" name="name" required maxlength="100" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="cf-email">อีเมล <span class="required">*</span></label>
+              <input type="email" id="cf-email" name="email" required maxlength="100" autocomplete="email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cf-phone">เบอร์โทร <span class="optional">(ไม่บังคับ)</span></label>
+              <input type="tel" id="cf-phone" name="phone" maxlength="20" autocomplete="tel">
+            </div>
+            <div class="form-group">
+              <label for="cf-subject">หัวข้อ <span class="required">*</span></label>
+              <select id="cf-subject" name="subject" required>
+                <option value="">-- เลือกหัวข้อ --</option>
+                <option value="สอบถามทั่วไป">สอบถามทั่วไป</option>
+                <option value="สมัครเรียน / ข้อมูลหลักสูตร">สมัครเรียน / ข้อมูลหลักสูตร</option>
+                <option value="ความร่วมมือทางวิชาการ">ความร่วมมือทางวิชาการ</option>
+                <option value="สหกิจศึกษา / ฝึกงาน">สหกิจศึกษา / ฝึกงาน</option>
+                <option value="ทุนการศึกษา">ทุนการศึกษา</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cf-message">ข้อความ <span class="required">*</span></label>
+            <textarea id="cf-message" name="message" required rows="5" maxlength="2000" placeholder="พิมพ์ข้อความของท่าน..."></textarea>
+            <small class="form-hint"><span id="char-count">0</span>/2000 ตัวอักษร</small>
+          </div>
+          <!-- Honeypot - ซ่อนจากผู้ใช้จริง -->
+          <div class="form-hp" aria-hidden="true">
+            <label>อย่ากรอก: <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="cf-submit">
+              <i class="fas fa-paper-plane"></i> <span class="btn-text">ส่งข้อความ</span>
+            </button>
+          </div>
+          <div class="form-status" id="cf-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="visitor-counter" title="สถิติผู้เข้าชมเว็บไซต์">
+      <i class="fas fa-users"></i>
+      <span id="visitor-count">กำลังโหลด...</span>
+    </div>
+    © 2569 สาขาวิศวกรรมเครื่องกล · คณะวิศวกรรมศาสตร์ · มทร.ศรีวิชัย<br>
+    Powered by <a href="https://mt-ruts.com">mt-ruts.com</a>
+  </div>
+</footer>
+
+<script>
+// Visitor counter - ดึงสถิติจาก API
+(function(){
+  const el = document.getElementById('visitor-count');
+  if (!el) return;
+  fetch('/api/visitor-counter.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {'Content-Type': 'application/json'}
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d && d.ok) {
+      el.innerHTML = 'วันนี้ <strong>' + d.today + '</strong> · ทั้งหมด <strong>' + d.total.toLocaleString('th-TH') + '</strong>';
+      el.classList.add('loaded');
+    } else {
+      el.textContent = '—';
+    }
+  })
+  .catch(() => { el.textContent = '—'; });
+})();
+
+  // Contact form AJAX
+  (function(){
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    const submitBtn = document.getElementById('cf-submit');
+    const statusEl = document.getElementById('cf-status');
+    const messageInput = document.getElementById('cf-message');
+    const charCount = document.getElementById('char-count');
+
+    if (messageInput && charCount) {
+      const updateCount = () => { charCount.textContent = messageInput.value.length; };
+      messageInput.addEventListener('input', updateCount);
+      updateCount();
+    }
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const btnText = submitBtn.querySelector('.btn-text');
+      const btnIcon = submitBtn.querySelector('i');
+      submitBtn.disabled = true;
+      if (btnText) btnText.textContent = 'กำลังส่ง...';
+      if (btnIcon) btnIcon.className = 'fas fa-spinner fa-spin';
+
+      setStatus('loading', '<i class="fas fa-spinner fa-spin"></i> กำลังส่งข้อความ...');
+
+      const data = {
+        name: form.elements.name.value.trim(),
+        email: form.elements.email.value.trim(),
+        phone: form.elements.phone.value.trim(),
+        subject: form.elements.subject.value,
+        message: form.elements.message.value.trim(),
+        website: form.elements.website.value
+      };
+
+      try {
+        const res = await fetch('/api/contact.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        const result = await res.json().catch(() => ({}));
+
+        if (res.ok && result.ok) {
+          setStatus('success', '<i class="fas fa-check-circle"></i> ' + (result.message || 'ส่งข้อความเรียบร้อย'));
+          form.reset();
+          if (charCount) charCount.textContent = '0';
+        } else {
+          setStatus('error', '<i class="fas fa-exclamation-circle"></i> ' + (result.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่'));
+        }
+      } catch (err) {
+        setStatus('error', '<i class="fas fa-exclamation-circle"></i> ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่');
+      } finally {
+        submitBtn.disabled = false;
+        if (btnText) btnText.textContent = 'ส่งข้อความ';
+        if (btnIcon) btnIcon.className = 'fas fa-paper-plane';
+      }
+    });
+
+    function setStatus(type, html) {
+      if (!statusEl) return;
+      statusEl.className = 'form-status ' + type;
+      statusEl.innerHTML = html;
+    }
+  })();
+
+  // Scroll-reveal animation
+  (function(){
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal-init').forEach(function(el){el.classList.add('reveal-visible');});
+      return;
+    }
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.05, rootMargin: '0px 0px -60px 0px'});
+    document.querySelectorAll('section').forEach(function(s){
+      s.classList.add('reveal-init');
+      observer.observe(s);
+    });
+  })();
+</script>
+
+</body>
+</html>

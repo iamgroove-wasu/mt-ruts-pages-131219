@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1e3a8a">
+<title>ปฏิทินการศึกษา ภาคเรียนที่ 1/2569 — คณะวิศวกรรมศาสตร์ มทร.ศรีวิชัย</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --primary-light: #3b82f6;
+    --green: #10b981;
+    --red: #dc2626;
+    --yellow: #f59e0b;
+    --gray: #f8fafc;
+    --gray-700: #334155;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Sarabun', 'Inter', sans-serif; background: var(--gray); color: #1e293b; margin: 0; padding: 0; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 700; }
+  .header { background: linear-gradient(135deg, var(--primary-dark), var(--primary-light)); color: white; padding: 2rem 1rem; box-shadow: var(--shadow); }
+  .header h1 { font-size: 1.75rem; margin: 0 0 0.5rem 0; }
+  .header p { margin: 0; opacity: 0.9; font-size: 0.95rem; }
+  .header .back { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.15); color: white; border-radius: 8px; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; }
+  .header .back:hover { background: rgba(255,255,255,0.25); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; }
+  .filter-bar .label { font-weight: 600; color: var(--gray-700); margin-right: 0.5rem; }
+  .filter-btn { padding: 0.5rem 1rem; border: 2px solid #e2e8f0; background: white; border-radius: 999px; cursor: pointer; font-size: 0.85rem; font-weight: 500; font-family: 'Sarabun', sans-serif; transition: all 0.2s; }
+  .filter-btn:hover { border-color: var(--primary); }
+  .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+  .stat-card { background: white; border-radius: 12px; padding: 1rem; box-shadow: var(--shadow); text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 800; font-family: 'Inter', sans-serif; line-height: 1; }
+  .stat-label { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }
+  .stat-green { color: var(--green); }
+  .stat-yellow { color: var(--yellow); }
+  .stat-red { color: var(--red); }
+  .stat-blue { color: var(--primary); }
+  .calendar { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+/* Semester Schedule */
+.semester-section { background: white; border-radius: 12px; padding: 1.25rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+.semester-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem; }
+.semester-card { background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%); border-radius: 10px; padding: 0.85rem; border-left: 4px solid var(--primary); }
+.semester-card.sem1 { border-left-color: var(--green); }
+.semester-card.sem2 { border-left-color: var(--primary); }
+.semester-card.sem3 { border-left-color: #f59e0b; }
+.sem-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.sem-name { font-weight: 700; font-size: 0.95rem; color: var(--primary-dark); }
+.sem-status { background: #d1fae5; color: #065f46; padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+.sem-status.upcoming { background: #fef3c7; color: #92400e; }
+.sem-dates { background: white; border-radius: 6px; padding: 0.5rem 0.65rem; }
+.sem-row { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 0.2rem 0; border-bottom: 1px dashed #f1f5f9; }
+.sem-row:last-child { border-bottom: none; }
+.sem-label { color: #64748b; }
+.sem-value { color: #1e293b; font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+.sem-source { font-size: 0.75rem; color: #64748b; margin: 0.75rem 0 0 0; }
+@media (max-width: 640px) {
+  .semester-grid { grid-template-columns: 1fr; }
+}
+  .week-card { background: white; border-radius: 12px; padding: 1rem; box-shadow: var(--shadow); border-left: 5px solid var(--primary); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
+  .week-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+  .week-card.instruction { border-left-color: var(--green); }
+  .week-card.exam { border-left-color: var(--red); background: #fef2f2; }
+  .week-card.holiday { border-left-color: var(--yellow); }
+  .week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .week-num { background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.85rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+  .week-card.instruction .week-num { background: var(--green); }
+  .week-card.exam .week-num { background: var(--red); }
+  .week-card.holiday .week-num { background: var(--yellow); }
+  .week-type { font-size: 0.75rem; color: #64748b; font-weight: 500; }
+  .week-range { font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; font-size: 0.95rem; line-height: 1.4; }
+  .week-events { background: #fef3c7; border-left: 3px solid var(--yellow); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; color: #78350f; margin-top: 0.5rem; }
+  .week-events div { margin: 0.15rem 0; }
+  .footer { background: #0f172a; color: rgba(255,255,255,0.7); padding: 1.5rem 1rem; text-align: center; font-size: 0.85rem; margin-top: 3rem; }
+  .footer a { color: white; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .header h1 { font-size: 1.4rem; }
+    .calendar { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <h1>📅 ปฏิทินการศึกษา ภาคเรียนที่ 1/2569</h1>
+    <p>ประจำภาคการศึกษาที่ 1 ปีการศึกษา 2569 · ระดับปริญญาตรี คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+    <a href="/" class="back"><i class="fas fa-arrow-left"></i> กลับหน้าหลัก</a>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Stats Summary -->
+  <section class="stats" aria-label="สรุปจำนวนสัปดาห์">
+    <div class="stat-card">
+      <div class="stat-num stat-blue">18</div>
+      <div class="stat-label">สัปดาห์ทั้งหมด</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num stat-green">16</div>
+      <div class="stat-label">สัปดาห์เรียน</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num stat-red">2</div>
+      <div class="stat-label">สัปดาห์สอบ</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num stat-yellow">5</div>
+      <div class="stat-label">วันหยุดพิเศษ</div>
+    </div>
+  </section>
+
+  <!-- Semester Schedule (ข้อมูลจริงจาก data/calendar.json) -->
+  <section class="semester-section" aria-label="ปฏิทินภาคการศึกษา ปีการศึกษา 2569">
+    <h2 style="font-size:1.1rem;color:var(--primary-dark);margin:0 0 0.75rem 0;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-calendar-check"></i> ภาคการศึกษา ปีการศึกษา 2569</h2>
+    <div class="semester-grid">
+      <div class="semester-card sem1">
+        <div class="sem-header">
+          <span class="sem-name">ภาคเรียนที่ 1/2569</span>
+          <span class="sem-status open">เปิดเทอม</span>
+        </div>
+        <div class="sem-dates">
+          <div class="sem-row"><span class="sem-label">📅 เปิดภาค</span><span class="sem-value">29 มิ.ย. 2569</span></div>
+          <div class="sem-row"><span class="sem-label">📝 ลงทะเบียน</span><span class="sem-value">15 - 28 มิ.ย. 2569</span></div>
+          <div class="sem-row"><span class="sem-label">📊 สอบปลายภาค</span><span class="sem-value">19 ต.ค. - 1 พ.ย. 2569</span></div>
+          <div class="sem-row"><span class="sem-label">🔒 ปิดภาค</span><span class="sem-value">~1 พ.ย. 2569</span></div>
+        </div>
+      </div>
+      <div class="semester-card sem2">
+        <div class="sem-header">
+          <span class="sem-name">ภาคเรียนที่ 2/2569</span>
+          <span class="sem-status upcoming">กำลังจะมา</span>
+        </div>
+        <div class="sem-dates">
+          <div class="sem-row"><span class="sem-label">📅 เปิดภาค</span><span class="sem-value">23 พ.ย. 2569</span></div>
+          <div class="sem-row"><span class="sem-label">📝 ลงทะเบียน</span><span class="sem-value">9 - 22 พ.ย. 2569</span></div>
+          <div class="sem-row"><span class="sem-label">📊 สอบปลายภาค</span><span class="sem-value">15 - 28 มี.ค. 2570</span></div>
+          <div class="sem-row"><span class="sem-label">🔒 ปิดภาค</span><span class="sem-value">~28 มี.ค. 2570</span></div>
+        </div>
+      </div>
+      <div class="semester-card sem3">
+        <div class="sem-header">
+          <span class="sem-name">ภาคฤดูร้อน/2569</span>
+          <span class="sem-status upcoming">กำลังจะมา</span>
+        </div>
+        <div class="sem-dates">
+          <div class="sem-row"><span class="sem-label">📅 เปิดภาค</span><span class="sem-value">19 เม.ย. 2570</span></div>
+          <div class="sem-row"><span class="sem-label">📝 ลงทะเบียน</span><span class="sem-value">ยังไม่ประกาศ</span></div>
+          <div class="sem-row"><span class="sem-label">📊 สอบปลายภาค</span><span class="sem-value">ยังไม่ประกาศ</span></div>
+          <div class="sem-row"><span class="sem-label">🔒 ปิดภาค</span><span class="sem-value">ยังไม่ประกาศ</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="sem-source">📄 ข้อมูลจาก: <code>data/calendar.json</code> (academicCalendar) · อัปเดตล่าสุด 2026-06-02</p>
+  </section>
+
+  <!-- Filter -->
+  <div class="filter-bar" role="toolbar" aria-label="ตัวกรองสัปดาห์">
+    <span class="label"><i class="fas fa-filter"></i> กรอง:</span>
+    <button class="filter-btn active" data-filter="all">ทั้งหมด (18)</button>
+    <button class="filter-btn" data-filter="instruction">📚 เรียน (16)</button>
+    <button class="filter-btn" data-filter="exam">📝 สอบ (2)</button>
+    <button class="filter-btn" data-filter="holiday">🔴 มีวันหยุด (4)</button>
+  </div>
+
+  <!-- Calendar -->
+  <section class="calendar" id="calendar" aria-label="ปฏิทินสัปดาห์การศึกษา"></section>
+</main>
+
+<footer class="footer">
+  <p><i class="fas fa-university"></i> คณะวิศวกรรมศาสตร์ · มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+  <p style="margin-top:0.5rem;"><a href="/">🏠 กลับหน้าหลัก mt-ruts.com</a> · <a href="https://weather.mt-ruts.com">🌦️ พยากรณ์อากาศ</a></p>
+</footer>
+
+<script>
+// Academic calendar — 18 weeks (นับเป็นสัปดาห์แต่ละ Mon-Sun)
+// ภาคเรียนที่ 1/2569 · คณะวิศวกรรมศาสตร์
+const calendarData = [
+  { week: 1,  type: "instruction", start: "29 มิถุนายน", end: "5 กรกฎาคม", events: [] },
+  { week: 2,  type: "instruction", start: "6 กรกฎาคม", end: "12 กรกฎาคม", events: [] },
+  { week: 3,  type: "instruction", start: "13 กรกฎาคม", end: "19 กรกฎาคม", events: [] },
+  { week: 4,  type: "instruction", start: "20 กรกฎาคม", end: "26 กรกฎาคม", events: [] },
+  { week: 5,  type: "instruction", start: "27 กรกฎาคม", end: "2 สิงหาคม", events: [
+    "28 ก.ค. - หยุดวันเฉลิมพระชนมพรรษา ร.10",
+    "29 ก.ค. - หยุดวันอาสาฬหบูชา",
+    "30 ก.ค. - หยุดวันเข้าพรรษา"
+  ] },
+  { week: 6,  type: "instruction", start: "3 สิงหาคม", end: "9 สิงหาคม", events: [
+    "3-7 ส.ค. - หยุดการเรียนการสอน"
+  ] },
+  { week: 7,  type: "instruction", start: "10 สิงหาคม", end: "16 สิงหาคม", events: [
+    "12 ส.ค. - หยุดวันแม่แห่งชาติ"
+  ] },
+  { week: 8,  type: "instruction", start: "17 สิงหาคม", end: "23 สิงหาคม", events: [] },
+  { week: 9,  type: "instruction", start: "24 สิงหาคม", end: "30 สิงหาคม", events: [] },
+  { week: 10, type: "instruction", start: "31 สิงหาคม", end: "6 กันยายน", events: [] },
+  { week: 11, type: "instruction", start: "7 กันยายน", end: "13 กันยายน", events: [] },
+  { week: 12, type: "instruction", start: "14 กันยายน", end: "20 กันยายน", events: [] },
+  { week: 13, type: "instruction", start: "21 กันยายน", end: "27 กันยายน", events: [] },
+  { week: 14, type: "instruction", start: "28 กันยายน", end: "4 ตุลาคม", events: [] },
+  { week: 15, type: "instruction", start: "5 ตุลาคม", end: "11 ตุลาคม", events: [
+    "13 ต.ค. - หยุดวันนวมินทรมหาราช"
+  ] },
+  { week: 16, type: "instruction", start: "12 ตุลาคม", end: "18 ตุลาคม", events: [] },
+  { week: 17, type: "exam",        start: "19 ตุลาคม", end: "25 ตุลาคม", events: [
+    "📝 สัปดาห์สอบ"
+  ] },
+  { week: 18, type: "exam",        start: "26 ตุลาคม", end: "1 พฤศจิกายน", events: [
+    "📝 สัปดาห์สอบ"
+  ] }
+];
+
+const typeNames = { instruction: "📚 เรียน", exam: "📝 สอบ", holiday: "🔴 มีวันหยุด" };
+
+function renderCalendar(filter) {
+  const container = document.getElementById("calendar");
+  let filtered;
+  if (filter === "all") {
+    filtered = calendarData;
+  } else if (filter === "holiday") {
+    filtered = calendarData.filter(w => w.events.length > 0);
+  } else {
+    filtered = calendarData.filter(w => w.type === filter);
+  }
+  container.innerHTML = filtered.map(w => {
+    const eventsHtml = w.events.length > 0
+      ? `<div class="week-events">${w.events.map(e => `<div>🔸 ${e}</div>`).join("")}</div>`
+      : "";
+    return `
+      <article class="week-card ${w.type}" data-week="${w.week}">
+        <header class="week-header">
+          <span class="week-num">สัปดาห์ที่ ${w.week}</span>
+          <span class="week-type">${typeNames[w.type] || ""}</span>
+        </header>
+        <div class="week-range">📅 ${w.start} - ${w.end} 2569</div>
+        ${eventsHtml}
+      </article>
+    `;
+  }).join("");
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#94a3b8;">ไม่มีสัปดาห์ที่ตรงกับ filter นี้</div>';
+  }
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderCalendar(btn.dataset.filter);
+  });
+});
+
+renderCalendar("all");
+</script>
+</body>
+</html>

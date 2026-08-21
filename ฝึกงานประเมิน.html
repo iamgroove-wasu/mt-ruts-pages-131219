@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบประเมินการฝึกงาน | มทร.ศรีวิชัย</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%); color: #333; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 16px 16px 0 0;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        .header p { font-size: 0.9rem; opacity: 0.8; }
+        
+        .content { background: white; padding: 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #1e3a5f; }
+        .form-group label .qnum { background: #1e3a5f; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-right: 8px; }
+        
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #1e3a5f; }
+        
+        .radio-group, .checkbox-group { display: flex; flex-wrap: wrap; gap: 15px; }
+        .radio-group label, .checkbox-group label { display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer; }
+        
+        .rating-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .rating-group label {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+            padding: 12px 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: normal;
+        }
+        .rating-group input { display: none; }
+        .rating-group input:checked + label {
+            border-color: #1e3a5f;
+            background: #1e3a5f;
+            color: white;
+        }
+        .rating-group label:hover { border-color: #2d5a87; }
+        
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,58,95,0.3); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e8e8e8;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3a5f, #2d5a87);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .success-msg .icon { font-size: 4rem; margin-bottom: 20px; }
+        .success-msg h2 { color: #059669; margin-bottom: 15px; }
+        .success-msg p { color: #666; line-height: 1.8; }
+        
+        .other-input {
+            display: none;
+            margin-top: 8px;
+            padding: 10px 15px;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            background: #fefbf0;
+        }
+        .other-input.show { display: block; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📋 แบบประเมินการฝึกงาน</h1>
+        <p>สาขาวิศวกรรมเครื่องกลและเทคโนโลยีเครื่องกล | มทร.ศรีวิชัย</p>
+    </div>
+    
+    <div class="content">
+        <div class="progress-bar"><div class="progress-bar-fill" id="progressBar"></div></div>
+        
+        <div class="info-box" style="background:#e8f4f8;border-left:4px solid #1e3a5f;padding:15px;margin-bottom:20px;border-radius:8px;">
+            <h3 style="margin:0 0 10px 0;color:#1e3a5f;">📋 คำชี้แจงสำหรับผู้กรอกแบบประเมินฝึกงาน</h3>
+            <p style="margin:0 0 10px 0;color:#333;font-size:14px;">
+                <strong>วัตถุประสงค์:</strong> แบบประเมินนี้ใช้เพื่อประเมินความพร้อมของนักศึกษาในการฝึกงานจริง ข้อมูลจะนำไปพัฒนาหลักสูตรและการจัดการฝึกงานต่อไป
+            </p>
+            <ul style="margin:0;padding-left:20px;color:#333;font-size:13px;">
+                <li>ประเมินทักษะความรู้ ความพร้อม และการสนับสนุนจากสถานประกอบการ</li>
+                <li>ผลการประเมินใช้สำหรับพัฒนาหลักสูตรให้ตรงกับความต้องการของอุตสาหกรรม</li>
+                <li>เป็นส่วนหนึ่งของการประกันคุณภาพการศึกษา (AUN-QA)</li>
+            </ul>
+            <p style="margin:10px 0 0 0;color:#666;font-size:12px;">
+                ⏱️ ใช้เวลาตอบประมาณ <strong>10-15 นาที</strong> | ข้อมูลจะถูกเก็บอย่างลับเป็นความลับ
+            </p>
+        </div>
+        
+        <form id="evalForm">
+            <!-- Hidden: ปีการศึกษาอัตโนมัติ -->
+            <input type="hidden" name="academicYear" id="academicYear" value="2568">
+            
+            <!-- Section A: ข้อมูลทั่วไป (8 ข้อ) -->
+            <!-- ข้อ 1 ปีการศึกษา - ดึงจาก hidden field อัตโนมัติ -->
+            
+            <div class="form-group">
+                <label><span class="qnum">2</span> เพศ *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="gender" value="ชาย" required> 👨 ชาย</label>
+                    <label><input type="radio" name="gender" value="หญิง"> 👩 หญิง</label>
+                    <label><input type="radio" name="gender" value="ไม่ระบุ"> ⚧️ ไม่ระบุ</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">3</span> สาขาวิชา *</label>
+                <select name="major" required>
+                    <option value="">-- เลือกสาขาวิชา --</option>
+                    <option value="วิศวกรรมเครื่องกล">วิศวกรรมเครื่องกล</option>
+                    <option value="เทคโนโลยีเครื่องกล">เทคโนโลยีเครื่องกล</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">4</span> ชั้นปีที่ฝึกงาน *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="yearLevel" value="ปี 2" required> ปี 2</label>
+                    <label><input type="radio" name="yearLevel" value="ปี 3"> ปี 3</label>
+                    <label><input type="radio" name="yearLevel" value="ปี 4"> ปี 4</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">5</span> ประเภทธุรกิจของสถานประกอบการ *</label>
+                <select name="businessType" id="businessType" required onchange="toggleOther(this)">
+                    <option value="">-- เลือกประเภทธุรกิจ --</option>
+                    <option value="อุตสาหกรรมการผลิต">อุตสาหกรรมการผลิต</option>
+                    <option value="ก่อสร้าง">ก่อสร้าง</option>
+                    <option value="โรงไฟฟ้า">โรงไฟฟ้า</option>
+                    <option value="น้ำมันและแก๊ส">น้ำมันและแก๊ส</option>
+                    <option value="น้ำมันปาล์ม">น้ำมันปาล์ม</option>
+                    <option value="ธุรกิจอาคาร">ธุรกิจอาคาร</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <input type="text" name="businessTypeOther" id="businessTypeOther" class="other-input" placeholder="ระบุประเภทธุรกิจอื่นๆ">
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">6</span> จังหวัดที่ฝึกงาน *</label>
+                <select name="province" id="province" required onchange="toggleOther(this)">
+                    <option value="">-- เลือกจังหวัด --</option>
+                    <option value="สงขลา">สงขลา</option>
+                    <option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
+                    <option value="ภูเก็ต">ภูเก็ต</option>
+                    <option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
+                    <option value="ตรัง">ตรัง</option>
+                    <option value="พัทลุง">พัทลุง</option>
+                    <option value="ปัตตานี">ปัตตานี</option>
+                    <option value="ยะลา">ยะลา</option>
+                    <option value="สระแก้ว">สระแก้ว</option>
+                    <option value="กระบี่">กระบี่</option>
+                    <option value="ระนอง">ระนอง</option>
+                    <option value="พังงา">พังงา</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <input type="text" name="provinceOther" id="provinceOther" class="other-input" placeholder="ระบุจังหวัดอื่นๆ">
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">7</span> สถานประกอบการ (ชื่อบริษัท/โรงงาน) *</label>
+                <input type="text" name="company" required placeholder="ชื่อสถานประกอบการ">
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">8</span> ตำแหน่งที่ฝึกงาน *</label>
+                <select name="position" id="position" required onchange="toggleOther(this)">
+                    <option value="">-- เลือกตำแหน่ง --</option>
+                    <option value="ผู้ช่วยวิศวกร">ผู้ช่วยวิศวกร</option>
+                    <option value="ผู้ช่วยช่างเทคนิค">ผู้ช่วยช่างเทคนิค</option>
+                    <option value="ผู้ช่วยช่างเครื่องกล">ผู้ช่วยช่างเครื่องกล</option>
+                    <option value="ผู้ช่วยช่างไฟฟ้า">ผู้ช่วยช่างไฟฟ้า</option>
+                    <option value="ผู้ช่วยช่างอิเล็กทรอนิกส์">ผู้ช่วยช่างอิเล็กทรอนิกส์</option>
+                    <option value="ผู้ช่วยช่างแอโรบินิกส์">ผู้ช่วยช่างแอโรบินิกส์</option>
+                    <option value="ผู้ช่วยช่างโลหะ">ผู้ช่วยช่างโลหะ</option>
+                    <option value="ผู้ช่วยช่างเชื่อม">ผู้ช่วยช่างเชื่อม</option>
+                    <option value="ผู้ช่วยช่างกลึง">ผู้ช่วยช่างกลึง</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <input type="text" name="positionOther" id="positionOther" class="other-input" placeholder="ระบุตำแหน่งอื่นๆ">
+            </div>
+            
+            <!-- Section B: คะแนนความพึงพอใจ (8 ข้อ, 1-5) -->
+            <div class="form-group">
+                <label><span class="qnum">9</span> ความเหมาะสมของงานที่ได้รับมอบหมาย *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating1" value="1" id="r1_1" required><label for="r1_1">1</label>
+                    <input type="radio" name="rating1" value="2" id="r1_2"><label for="r1_2">2</label>
+                    <input type="radio" name="rating1" value="3" id="r1_3"><label for="r1_3">3</label>
+                    <input type="radio" name="rating1" value="4" id="r1_4"><label for="r1_4">4</label>
+                    <input type="radio" name="rating1" value="5" id="r1_5"><label for="r1_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">10</span> คุณภาพการถ่ายทอดความรู้ของพี่เลี้ยง *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating2" value="1" id="r2_1" required><label for="r2_1">1</label>
+                    <input type="radio" name="rating2" value="2" id="r2_2"><label for="r2_2">2</label>
+                    <input type="radio" name="rating2" value="3" id="r2_3"><label for="r2_3">3</label>
+                    <input type="radio" name="rating2" value="4" id="r2_4"><label for="r2_4">4</label>
+                    <input type="radio" name="rating2" value="5" id="r2_5"><label for="r2_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">11</span> ความเพียงพอของอุปกรณ์และสภาพการทำงาน *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating3" value="1" id="r3_1" required><label for="r3_1">1</label>
+                    <input type="radio" name="rating3" value="2" id="r3_2"><label for="r3_2">2</label>
+                    <input type="radio" name="rating3" value="3" id="r3_3"><label for="r3_3">3</label>
+                    <input type="radio" name="rating3" value="4" id="r3_4"><label for="r3_4">4</label>
+                    <input type="radio" name="rating3" value="5" id="r3_5"><label for="r3_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">12</span> ความสอดคล้องของความรู้จากหลักสูตรกับงานจริง *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating4" value="1" id="r4_1" required><label for="r4_1">1</label>
+                    <input type="radio" name="rating4" value="2" id="r4_2"><label for="r4_2">2</label>
+                    <input type="radio" name="rating4" value="3" id="r4_3"><label for="r4_3">3</label>
+                    <input type="radio" name="rating4" value="4" id="r4_4"><label for="r4_4">4</label>
+                    <input type="radio" name="rating4" value="5" id="r4_5"><label for="r4_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">13</span> ทักษะที่ได้พัฒนาจากการฝึกงาน *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating5" value="1" id="r5_1" required><label for="r5_1">1</label>
+                    <input type="radio" name="rating5" value="2" id="r5_2"><label for="r5_2">2</label>
+                    <input type="radio" name="rating5" value="3" id="r5_3"><label for="r5_3">3</label>
+                    <input type="radio" name="rating5" value="4" id="r5_4"><label for="r5_4">4</label>
+                    <input type="radio" name="rating5" value="5" id="r5_5"><label for="r5_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">14</span> การสนับสนุนและให้คำแนะนำจากสถานประกอบการ *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating6" value="1" id="r6_1" required><label for="r6_1">1</label>
+                    <input type="radio" name="rating6" value="2" id="r6_2"><label for="r6_2">2</label>
+                    <input type="radio" name="rating6" value="3" id="r6_3"><label for="r6_3">3</label>
+                    <input type="radio" name="rating6" value="4" id="r6_4"><label for="r6_4">4</label>
+                    <input type="radio" name="rating6" value="5" id="r6_5"><label for="r6_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">15</span> ความพร้อมของนักศึกษาในการปฏิบัติงานจริง *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating7" value="1" id="r7_1" required><label for="r7_1">1</label>
+                    <input type="radio" name="rating7" value="2" id="r7_2"><label for="r7_2">2</label>
+                    <input type="radio" name="rating7" value="3" id="r7_3"><label for="r7_3">3</label>
+                    <input type="radio" name="rating7" value="4" id="r7_4"><label for="r7_4">4</label>
+                    <input type="radio" name="rating7" value="5" id="r7_5"><label for="r7_5">5</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">16</span> ความพึงพอใจโดยรวมต่อการฝึกงาน *</label>
+                <div class="rating-group">
+                    <input type="radio" name="rating8" value="1" id="r8_1" required><label for="r8_1">1</label>
+                    <input type="radio" name="rating8" value="2" id="r8_2"><label for="r8_2">2</label>
+                    <input type="radio" name="rating8" value="3" id="r8_3"><label for="r8_3">3</label>
+                    <input type="radio" name="rating8" value="4" id="r8_4"><label for="r8_4">4</label>
+                    <input type="radio" name="rating8" value="5" id="r8_5"><label for="r8_5">5</label>
+                </div>
+            </div>
+            
+            <!-- Section C: ตัวเลือก (4 ข้อ) -->
+            <div class="form-group">
+                <label><span class="qnum">17</span> ทักษะที่ได้ใช้มากที่สุดในการฝึกงาน *</label>
+                <select name="mainSkill" id="mainSkill" required onchange="toggleOther(this)">
+                    <option value="">-- เลือกทักษะ --</option>
+                    <option value="การซ่อมบำรุง">การซ่อมบำรุง</option>
+                    <option value="การตรวจสอบ">การตรวจสอบ</option>
+                    <option value="การควบคุมเครื่องจักร">การควบคุมเครื่องจักร</option>
+                    <option value="การเขียนแบบ">การเขียนแบบ</option>
+                    <option value="การวัดขนาด">การวัดขนาด</option>
+                    <option value="การเชื่อมโลหะ">การเชื่อมโลหะ</option>
+                    <option value="การตัดแต่ง">การตัดแต่ง</option>
+                    <option value="การประกอบชิ้นส่วน">การประกอบชิ้นส่วน</option>
+                    <option value="การใช้โปรแกรม">การใช้โปรแกรม</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <input type="text" name="mainSkillOther" id="mainSkillOther" class="other-input" placeholder="ระบุทักษะอื่นๆ">
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">18</span> สิ่งที่ควรพัฒนาของหลักสูตร *</label>
+                <select name="improveCourse" id="improveCourse" required onchange="toggleOther(this)">
+                    <option value="">-- เลือกสิ่งที่ควรพัฒนา --</option>
+                    <option value="เนื้อหาทฤาษณะ">เนื้อหาทฤาษณะ</option>
+                    <option value="ภาคปฏิบัติมากขึ้น">ภาคปฏิบัติมากขึ้น</option>
+                    <option value="อุปกรณ์การเรียน">อุปกรณ์การเรียน</option>
+                    <option value="ความเชื่อมโยงกับอุตสาหกรรม">ความเชื่อมโยงกับอุตสาหกรรม</option>
+                    <option value="เวลาฝึกงาน">เวลาฝึกงาน</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <input type="text" name="improveCourseOther" id="improveCourseOther" class="other-input" placeholder="ระบุสิ่งที่ควรพัฒนาอื่นๆ">
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">19</span> ลักษณะงานหลักที่ทำ *</label>
+                <select name="workType" id="workType" required onchange="toggleOther(this)">
+                    <option value="">-- เลือกลักษณะงาน --</option>
+                    <option value="ซ่อมบำรุง">ซ่อมบำรุง</option>
+                    <option value="ตรวจสอบ">ตรวจสอบ</option>
+                    <option value="ประกอบ">ประกอบ</option>
+                    <option value="ผลิต">ผลิต</option>
+                    <option value="ออกแบบ">ออกแบบ</option>
+                    <option value="ควบคุม">ควบคุม</option>
+                    <option value="บันทึกข้อมูล">บันทึกข้อมูล</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <input type="text" name="workTypeOther" id="workTypeOther" class="other-input" placeholder="ระบุลักษณะงานอื่นๆ">
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">20</span> แนะนำให้เพื่อนรุ่นต่อไปฝึกงานที่นี่หรือไม่ *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="recommend" value="ใช่" required> ✅ แนะนำ</label>
+                    <label><input type="radio" name="recommend" value="ไม่แนะนำ"> ❌ ไม่แนะนำ</label>
+                </div>
+            </div>
+            
+            <!-- Section D: คำถามเปิด (3 ข้อ) -->
+            <div class="form-group">
+                <label><span class="qnum">21</span> สิ่งที่ภูมิใจมากที่สุดจากการฝึกงาน</label>
+                <textarea name="proud" placeholder="เช่น ได้เรียนรู้การซ่อมเครื่องจักรจริง, ได้รับประสบการณ์การทำงานร่วมกับผู้อื่น"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">22</span> ข้อเสนอแนะเพื่อพัฒนาหลักสูตร</label>
+                <textarea name="suggestCourse" placeholder="เช่น ควรเพิ่มวิชา..., ควรปรับเนื้อหา..., ควรเพิ่มภาคปฏิบัติ..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label><span class="qnum">23</span> ข้อเสนอแนะสำหรับสถานประกอบการ</label>
+                <textarea name="suggestCompany" placeholder="เช่น ควรมีการสอนเพิ่มเติมในเรื่อง..., ควรมีพี่เลี้ยงดูแลใกล้ชิด"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit" id="submitBtn">📨 ส่งแบบประเมิน</button>
+        </form>
+        
+        <div class="success-msg" id="successMsg">
+            <div class="icon">✅</div>
+            <h2>ขอบคุณที่ร่วมแสดงความคิดเห็น!</h2>
+            <p>ความคิดเห็นของคุณจะถูกนำไปพัฒนาหลักสูตรให้ดียิ่งขึ้นต่อไปค่ะ 🌸</p>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = 'ฝึกงาน-api.php';
+
+const TOTAL_FIELDS = 23;
+
+// Toggle other input field
+function toggleOther(selectEl) {
+    const otherInput = selectEl.nextElementSibling;
+    if (selectEl.value === 'อื่นๆ') {
+        if (otherInput && otherInput.classList.contains('other-input')) {
+            otherInput.classList.add('show');
+            otherInput.required = true;
+        }
+    } else {
+        if (otherInput && otherInput.classList.contains('other-input')) {
+            otherInput.classList.remove('show');
+            otherInput.required = false;
+            otherInput.value = '';
+        }
+    }
+    updateProgress();
+}
+
+// Update progress bar
+function updateProgress() {
+    const form = document.getElementById('evalForm');
+    const filled = form.querySelectorAll('[required]');
+    let count = 0;
+    filled.forEach(f => {
+        if (f.type === 'radio') {
+            if (form.querySelector(`input[name="${f.name}"]:checked`)) count++;
+        } else if (f.value.trim()) {
+            // Check if other input is shown and has value
+            const otherInput = document.getElementById(f.id + 'Other');
+            if (f.value === 'อื่นๆ' && otherInput && otherInput.value.trim()) {
+                count++;
+            } else if (f.value !== 'อื่นๆ') {
+                count++;
+            }
+        }
+    });
+    const pct = Math.round((count / filled.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// Track all inputs
+document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('change', updateProgress);
+    el.addEventListener('input', updateProgress);
+});
+
+// Form submission
+document.getElementById('evalForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ กำลังส่ง...';
+    
+    // Collect general data
+    const general = {
+        academicYear: document.getElementById('academicYear').value,
+        gender: document.querySelector('input[name="gender"]:checked')?.value || '',
+        major: document.querySelector('select[name="major"]').value,
+        yearLevel: document.querySelector('input[name="yearLevel"]:checked')?.value || '',
+        businessType: getValue('businessType', 'businessTypeOther'),
+        province: getValue('province', 'provinceOther'),
+        company: document.querySelector('input[name="company"]').value,
+        position: getValue('position', 'positionOther')
+    };
+    
+    // Collect ratings
+    const ratings = [
+        document.querySelector('input[name="rating1"]:checked')?.value || 0,
+        document.querySelector('input[name="rating2"]:checked')?.value || 0,
+        document.querySelector('input[name="rating3"]:checked')?.value || 0,
+        document.querySelector('input[name="rating4"]:checked')?.value || 0,
+        document.querySelector('input[name="rating5"]:checked')?.value || 0,
+        document.querySelector('input[name="rating6"]:checked')?.value || 0,
+        document.querySelector('input[name="rating7"]:checked')?.value || 0,
+        document.querySelector('input[name="rating8"]:checked')?.value || 0
+    ].map(Number);
+    
+    // Collect choices
+    const choices = {
+        mainSkill: getValue('mainSkill', 'mainSkillOther'),
+        improveCourse: getValue('improveCourse', 'improveCourseOther'),
+        workType: getValue('workType', 'workTypeOther'),
+        recommend: document.querySelector('input[name="recommend"]:checked')?.value || ''
+    };
+    
+    // Open questions
+    const openQuestions = {
+        proud: document.querySelector('textarea[name="proud"]').value,
+        suggestCourse: document.querySelector('textarea[name="suggestCourse"]').value,
+        suggestCompany: document.querySelector('textarea[name="suggestCompany"]').value
+    };
+    
+    try {
+        const resp = await fetch(API_URL + '?action=submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ general, ratings, choices, openQuestions })
+        });
+        
+        const data = await resp.json();
+        
+        if (data.success) {
+            document.getElementById('evalForm').classList.add('hidden');
+            document.getElementById('successMsg').style.display = 'block';
+        } else {
+            alert('❌ เกิดข้อผิดพลาด: ' + (data.error || 'ไม่ทราบสาเหตุ'));
+            btn.disabled = false;
+            btn.textContent = '📨 ส่งแบบประเมิน';
+        }
+    } catch (err) {
+        alert('❌ เกิดข้อผิดพลาด: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = '📨 ส่งแบบประเมิน';
+    }
+});
+
+// Helper to get value, handle "อื่นๆ"
+function getValue(selectName, otherId) {
+    const select = document.querySelector(`select[name="${selectName}"]`);
+    const otherInput = document.getElementById(otherId);
+    if (select.value === 'อื่นๆ' && otherInput && otherInput.value.trim()) {
+        return otherInput.value;
+    }
+    return select.value;
+}
+</script>
+</body>
+</html>

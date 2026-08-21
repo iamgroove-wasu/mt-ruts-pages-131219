@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌪️ Multi-Source AI Weather Forecast</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a1929; --card: #1a2332; --card-hover: #243447;
+    --text: #e8eef5; --text-dim: #94a3b8; --border: #2d3e54;
+    --accent: #6ee7b7; --warn: #fbbf24; --danger: #f87171;
+    --ai: #a78bfa; --ai-glow: rgba(167, 139, 250, 0.3);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", sans-serif;
+    background: linear-gradient(135deg, #0a1929 0%, #0f2942 100%);
+    color: var(--text); min-height: 100vh; padding: 24px;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(110,231,183,0.05));
+    border: 1px solid var(--ai-glow);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.1);
+  }
+  .header h1 {
+    font-size: 28px; margin-bottom: 8px;
+    background: linear-gradient(90deg, #a78bfa, #6ee7b7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header .subtitle { color: var(--text-dim); font-size: 14px; }
+  .header .badges { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; background: rgba(167, 139, 250, 0.15);
+    border: 1px solid var(--ai-glow); color: var(--ai);
+  }
+  .badge.green { background: rgba(110, 231, 183, 0.15); border-color: rgba(110, 231, 183, 0.3); color: var(--accent); }
+  .badge.red { background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.3); color: var(--danger); }
+  .badge.dim { opacity: 0.5; }
+
+  /* Sources panel */
+  .sources-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .sources-title {
+    font-size: 13px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .sources-list { display: flex; gap: 12px; flex-wrap: wrap; }
+  .source-item {
+    padding: 8px 14px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    font-size: 13px; display: flex; align-items: center; gap: 8px;
+  }
+  .source-item.active {
+    border-color: var(--accent);
+    background: rgba(110, 231, 183, 0.08);
+  }
+  .source-item.failed {
+    border-color: var(--danger);
+    background: rgba(248, 113, 113, 0.08);
+    opacity: 0.7;
+  }
+  .source-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .source-item.failed .source-dot { background: var(--danger); }
+  .source-weight { color: var(--text-dim); font-size: 11px; }
+
+  /* Zone selector */
+  .zone-selector {
+    display: flex; gap: 8px; margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .zone-btn {
+    padding: 8px 16px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text-dim); cursor: pointer; font-size: 13px;
+    transition: all 0.2s;
+  }
+  .zone-btn:hover { background: var(--card-hover); color: var(--text); }
+  .zone-btn.active {
+    background: var(--ai-glow); border-color: var(--ai);
+    color: var(--text);
+  }
+
+  /* Stats */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .stat-label { color: var(--text-dim); font-size: 12px; }
+  .stat-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+  .stat-sub { color: var(--text-dim); font-size: 11px; }
+  .stat-confidence {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; margin-top: 4px;
+  }
+  .stat-confidence.high { background: rgba(110, 231, 183, 0.15); color: var(--accent); }
+  .stat-confidence.med { background: rgba(251, 191, 36, 0.15); color: var(--warn); }
+  .stat-confidence.low { background: rgba(248, 113, 113, 0.15); color: var(--danger); }
+
+  /* Charts */
+  .chart-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  .chart-title { font-size: 16px; margin-bottom: 12px; }
+  .chart-wrap { height: 280px; position: relative; }
+
+  /* Daily cards */
+  .daily-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 8px; margin-top: 12px;
+  }
+  .daily-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 8px; text-align: center;
+  }
+  .daily-card .date { color: var(--text-dim); font-size: 11px; }
+  .daily-card .icon { font-size: 24px; margin: 4px 0; }
+  .daily-card .temp { font-size: 18px; font-weight: 700; }
+  .daily-card .precip { color: #93c5fd; font-size: 12px; margin-top: 4px; }
+  .daily-card .wind { color: var(--text-dim); font-size: 11px; margin-top: 2px; }
+  .daily-card .badge {
+    margin-top: 4px; font-size: 10px; padding: 2px 6px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center; color: var(--text-dim); font-size: 11px;
+    padding: 16px; margin-top: 24px;
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .spinner {
+    display: inline-block; width: 32px; height: 32px;
+    border: 3px solid var(--border); border-top-color: var(--ai);
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Legend */
+  .legend {
+    display: flex; gap: 16px; font-size: 11px;
+    color: var(--text-dim); margin-top: 8px; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-line { width: 16px; height: 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🌪️ Multi-Source AI Weather Forecast</h1>
+    <div class="subtitle">
+      Ensemble จาก 5 data sources · WeatherNext 2 + ECMWF + TMD + OpenWeather + SKA
+    </div>
+    <div class="badges" id="headerBadges">
+      <span class="badge">🤖 AI Ensemble</span>
+      <span class="badge">📊 Multi-Source</span>
+      <span class="badge green">🆓 Free + Open APIs</span>
+    </div>
+  </div>
+
+  <!-- Sources panel -->
+  <div class="sources-panel">
+    <div class="sources-title">📡 Data Sources (อัพเดทล่าสุด <span id="sourcesUpdated">-</span>)</div>
+    <div class="sources-list" id="sourcesList">
+      <div class="source-item"><div class="source-dot"></div>กำลังโหลด...</div>
+    </div>
+  </div>
+
+  <!-- Zone selector -->
+  <div class="zone-selector" id="zoneSelector"></div>
+
+  <!-- Loading -->
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div>กำลังโหลดข้อมูล Multi-Source Ensemble...</div>
+  </div>
+
+  <!-- Content (hidden until loaded) -->
+  <div id="content" style="display:none;">
+
+    <!-- Stats grid -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- Temperature chart -->
+    <div class="chart-card">
+      <div class="chart-title">🌡️ อุณหภูมิ — Multi-Source Range (7 วัน)</div>
+      <div class="chart-wrap"><canvas id="tempChart"></canvas></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-line" style="background:#fbbf24;"></div>Ensemble Mean</div>
+        <div class="legend-item"><div class="legend-line" style="background:rgba(110,231,183,0.5);"></div>Min-Max Range (sources)</div>
+      </div>
+    </div>
+
+    <!-- Precipitation chart -->
+    <div class="chart-card">
+      <div class="chart-title">🌧️ ปริมาณฝน — Multi-Source</div>
+      <div class="chart-wrap"><canvas id="precipChart"></canvas></div>
+    </div>
+
+    <!-- Wind chart -->
+    <div class="chart-card">
+      <div class="chart-title">💨 ความเร็วลม — Multi-Source</div>
+      <div class="chart-wrap"><canvas id="windChart"></canvas></div>
+    </div>
+
+    <!-- Daily cards -->
+    <div class="chart-card">
+      <div class="chart-title">📅 Daily Summary (7 วันข้างหน้า)</div>
+      <div class="daily-grid" id="dailyGrid"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Sources: WeatherNext 2 (Google) · ECMWF · TMD · OpenWeather · SKA Water · via weather-aggregator.php
+  </div>
+</div>
+
+<script>
+const ZONES = [
+  { id: 'songkhla', name: 'หาดใหญ่', emoji: '🏠' },
+  { id: 'khuan_maphrao', name: 'ควนมะพร้าว', emoji: '🌾' },
+  { id: 'tha_khae', name: 'ท่าแค', emoji: '🌳' },
+  { id: 'khao_chai_son', name: 'เขาชัยสน', emoji: '⛰️' },
+  { id: 'ban_mai', name: 'บ้านใหม่', emoji: '🏘️' },
+  { id: 'ban_khao', name: 'บ้านขาว', emoji: '🏘️' },
+];
+
+let currentZone = 'songkhla';
+let tempChart, precipChart, windChart;
+
+const SOURCE_WEIGHTS = {
+  'WeatherNext': 0.30, 'ECMWF': 0.25, 'TMD': 0.20,
+  'OpenWeather': 0.15, 'SKA': 0.10,
+};
+
+function renderZoneSelector() {
+  const html = ZONES.map(z => `
+    <button class="zone-btn ${z.id === currentZone ? 'active' : ''}" data-zone="${z.id}">
+      ${z.emoji} ${z.name}
+    </button>
+  `).join('');
+  document.getElementById('zoneSelector').innerHTML = html;
+  document.querySelectorAll('.zone-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentZone = btn.dataset.zone;
+      renderZoneSelector();
+      loadForecast();
+    });
+  });
+}
+
+async function loadForecast() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('content').style.display = 'none';
+
+  try {
+    const res = await fetch(`/weather-aggregator.php?zone=${currentZone}&format=summary`);
+    const data = await res.json();
+    renderSources(data);
+    renderStats(data);
+    renderDaily(data);
+    renderCharts(data);
+  } catch (e) {
+    alert('โหลดข้อมูลไม่สำเร็จ: ' + e.message);
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+function renderSources(data) {
+  const used = data.sources_used || [];
+  const failed = data.sources_failed || [];
+  const all = ['WeatherNext', 'ECMWF', 'TMD', 'OpenWeather', 'SKA'];
+
+  const html = all.map(name => {
+    const isActive = used.includes(name);
+    const isFailed = failed.includes(name);
+    const weight = SOURCE_WEIGHTS[name] || 0;
+    const cls = isActive ? 'active' : (isFailed ? 'failed' : '');
+    const status = isActive ? '✅' : (isFailed ? '⚠️' : '⏸️');
+    return `
+      <div class="source-item ${cls}">
+        <div class="source-dot"></div>
+        <span>${status} <b>${name}</b></span>
+        <span class="source-weight">${(weight*100).toFixed(0)}%</span>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('sourcesList').innerHTML = html;
+  document.getElementById('sourcesUpdated').textContent =
+    new Date(data.fetched_at || Date.now()).toLocaleString('th-TH');
+}
+
+function confClass(c) {
+  if (c == null) return 'low';
+  if (c >= 0.85) return 'high';
+  if (c >= 0.60) return 'med';
+  return 'low';
+}
+
+function confLabel(c) {
+  if (c == null) return '—';
+  if (c >= 0.85) return '🎯 High';
+  if (c >= 0.60) return '⚠️ Medium';
+  return '❓ Low';
+}
+
+function renderStats(data) {
+  // รองรับทั้ง format summary (data.today) และ full (data.daily[0])
+  const today = data.today || data.daily?.[0];
+  if (!today) return;
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">อุณหภูมิเฉลี่ยวันนี้</div>
+      <div class="stat-value">${today.temp_mean}°C</div>
+      <div class="stat-sub">${today.temp_min}° – ${today.temp_max}°C</div>
+      <div class="stat-confidence ${confClass(today.temp_mean_confidence)}">${confLabel(today.temp_mean_confidence)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ฝนวันนี้</div>
+      <div class="stat-value">${today.precip_mm} mm</div>
+      <div class="stat-sub">Ensemble mean (${(today.sources || []).length} sources)</div>
+      <div class="stat-confidence ${confClass(today.precip_mm_confidence)}">${confLabel(today.precip_mm_confidence)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ลมสูงสุดวันนี้</div>
+      <div class="stat-value">${today.wind_max} km/h</div>
+      <div class="stat-sub">Max จาก multi-source</div>
+      <div class="stat-confidence ${confClass(today.wind_max_confidence)}">${confLabel(today.wind_max_confidence)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ความกดอากาศ</div>
+      <div class="stat-value">${today.pressure ?? '—'} hPa</div>
+      <div class="stat-sub">Mean sea level</div>
+    </div>
+  `;
+}
+
+function renderDaily(data) {
+  const daily = data.daily || [];
+  const html = daily.slice(0, 7).map(d => {
+    const date = new Date(d.date);
+    const dayName = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'][date.getDay()];
+    const dayNum = date.getDate();
+    const monthShort = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'][date.getMonth()];
+    const icon = d.precip_mm > 5 ? '🌧️' : (d.precip_mm > 1 ? '⛅' : (d.temp_max > 32 ? '☀️' : '🌤️'));
+    const sourcesCount = (d.sources || []).length;
+    const conf = d.temp_mean_confidence;
+    return `
+      <div class="daily-card">
+        <div class="date">${dayName} ${dayNum} ${monthShort}</div>
+        <div class="icon">${icon}</div>
+        <div class="temp">${d.temp_min ?? '—'}° – ${d.temp_max ?? '—'}°</div>
+        <div class="precip">🌧️ ${d.precip_mm ?? '—'} mm</div>
+        <div class="wind">💨 ${d.wind_max ?? '—'} km/h</div>
+        <div class="badge ${confClass(conf)}">${confLabel(conf)}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('dailyGrid').innerHTML = html;
+}
+
+function renderCharts(data) {
+  const daily = data.daily || (data.today ? [data.today] : []);
+
+  const labels = daily.map(d => {
+    const date = new Date(d.date);
+    return `${date.getDate()}/${date.getMonth()+1}`;
+  });
+
+  // Temperature: mean line + min/max range band
+  if (tempChart) tempChart.destroy();
+  tempChart = new Chart(document.getElementById('tempChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Max', data: daily.map(d => d.temp_max), borderColor: 'transparent', backgroundColor: 'rgba(110, 231, 183, 0.2)', fill: '+1', pointRadius: 0 },
+        { label: 'Min', data: daily.map(d => d.temp_min), borderColor: 'transparent', backgroundColor: 'rgba(110, 231, 183, 0.2)', fill: false, pointRadius: 0 },
+        { label: 'Mean', data: daily.map(d => d.temp_mean), borderColor: '#fbbf24', borderWidth: 2, fill: false, pointRadius: 4, tension: 0.3 },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { ticks: { color: '#94a3b8', callback: v => v + '°C' }, grid: { color: '#2d3e54' } },
+        x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3e54' } },
+      },
+    },
+  });
+
+  // Precipitation
+  if (precipChart) precipChart.destroy();
+  precipChart = new Chart(document.getElementById('precipChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Mean', data: daily.map(d => d.precip_mm || 0), backgroundColor: 'rgba(147, 197, 253, 0.6)', borderColor: '#93c5fd', borderWidth: 1 },
+        { label: 'Max', data: daily.map(d => d.precip_mm_max || 0), backgroundColor: 'rgba(248, 113, 113, 0.3)', borderColor: '#f87171', borderWidth: 1, type: 'line', fill: false, pointRadius: 0, tension: 0.3 },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        y: { ticks: { color: '#94a3b8', callback: v => v + ' mm' }, grid: { color: '#2d3e54' } },
+        x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3e54' } },
+      },
+    },
+  });
+
+  // Wind
+  if (windChart) windChart.destroy();
+  windChart = new Chart(document.getElementById('windChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Max wind', data: daily.map(d => d.wind_max || 0), borderColor: '#fbbf24', backgroundColor: 'rgba(251, 191, 36, 0.2)', fill: true, tension: 0.3, pointRadius: 4 },
+        { label: 'Min', data: daily.map(d => d.wind_max_min || 0), borderColor: '#6ee7b7', fill: false, tension: 0.3, pointRadius: 0 },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        y: { ticks: { color: '#94a3b8', callback: v => v + ' km/h' }, grid: { color: '#2d3e54' } },
+        x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3e54' } },
+      },
+    },
+  });
+}
+
+renderZoneSelector();
+loadForecast();
+setInterval(() => { if (document.visibilityState === 'visible') loadForecast(); }, 30 * 60 * 1000);
+</script>
+</body>
+</html>

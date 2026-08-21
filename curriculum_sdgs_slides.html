@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หลักสูตรเทคโนโลยีเครื่องกล × SDGs</title>
+  
+  <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/3.0.23/tailwind.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;700;900&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; background: #0f172a; color: #fff; overflow: hidden; }
+    .slides-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; }
+    .slide { width: 100%; height: 100%; max-width: 450px; max-height: 800px; aspect-ratio: 9/16; position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; transform: translateX(100%); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
+    .slide.active { opacity: 1; transform: translateX(0); }
+    .slide.prev { opacity: 0; transform: translateX(-100%); }
+    .light-spot { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; pointer-events: none; }
+    .spot-blue { width: 250px; height: 250px; background: #3b82f6; top: -80px; right: -80px; animation: float1 25s ease-in-out infinite; }
+    .spot-green { width: 200px; height: 200px; background: #10b981; bottom: -60px; left: -60px; animation: float2 20s ease-in-out infinite; }
+    .spot-cyan { width: 150px; height: 150px; background: #06b6d4; top: 40%; left: 50%; transform: translate(-50%, -50%); animation: float3 15s ease-in-out infinite; }
+    @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-40px, 20px); } 50% { transform: translate(20px, 40px); } 75% { transform: translate(40px, -15px); } }
+    @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(30px, -30px); } 66% { transform: translate(-20px, 20px); } }
+    @keyframes float3 { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.2); } }
+    .slide-content { position: relative; z-index: 10; text-align: center; width: 100%; }
+    .progress-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 100; }
+    .progress-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+    .progress-dot.active { background: #fff; transform: scale(1.4); }
+    .page-number { position: fixed; bottom: 45px; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: rgba(255,255,255,0.4); z-index: 100; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; background: rgba(16, 185, 129, 0.3); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.5); margin-bottom: 0.75rem; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem; text-align: left; }
+    .sdg-icon { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 0.5rem; font-weight: 900; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+    
+    <!-- Slide 1: Cover -->
+    <div class="slide active">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">SDGs</p>
+        <h1 class="text-2xl font-black mb-3 leading-tight">การขับเคลื่อน<br>โลกอย่างยั่งยืน</h1>
+        <p class="text-lg font-light text-gray-300">× หลักสูตรเทคโนโลยีเครื่องกล</p>
+        <p class="text-sm font-light text-gray-500 mt-6">มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+      </div>
+    </div>
+    
+    <!-- Slide 2: SDGs Overview -->
+    <div class="slide">
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">17</p>
+        <h1 class="text-2xl font-black mb-3">เป้าหมายการพัฒนาที่ยั่งยืน</h1>
+        <h2 class="text-lg font-bold text-emerald-400 mb-3">UN SDGs 2030</h2>
+        
+        <div class="grid grid-cols-5 gap-1 mb-3">
+          <div class="sdg-icon bg-red-500 text-white">1</div>
+          <div class="sdg-icon bg-red-500 text-white">2</div>
+          <div class="sdg-icon bg-yellow-500 text-black">3</div>
+          <div class="sdg-icon bg-blue-500 text-white">4</div>
+          <div class="sdg-icon bg-cyan-500 text-white">5</div>
+          <div class="sdg-icon bg-blue-600 text-white">6</div>
+          <div class="sdg-icon bg-yellow-400 text-black">7</div>
+          <div class="sdg-icon bg-blue-700 text-white">8</div>
+          <div class="sdg-icon bg-orange-500 text-white">9</div>
+          <div class="sdg-icon bg-red-600 text-white">10</div>
+          <div class="sdg-icon bg-yellow-300 text-black">11</div>
+          <div class="sdg-icon bg-green-600 text-white">12</div>
+          <div class="sdg-icon bg-green-500 text-white">13</div>
+          <div class="sdg-icon bg-blue-400 text-white">14</div>
+          <div class="sdg-icon bg-green-700 text-white">15</div>
+          <div class="sdg-icon bg-blue-800 text-white">16</div>
+          <div class="sdg-icon bg-blue-900 text-white">17</div>
+        </div>
+        
+        <p class="text-gray-400 text-xs"> Thailand เข้าร่วม SDGs ตั้งแต่ 2015</p>
+      </div>
+    </div>
+    
+    <!-- Slide 3: SDGs 4 - การศึกษา -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">SDG 4</p>
+        <h1 class="text-2xl font-black mb-2">การศึกษาที่เท่าเทียม</h1>
+        
+        <div class="card mb-2">
+          <p class="text-emerald-300 font-bold text-sm">4.3 การเข้าถึงการศึกษาที่มีคุณภาพ</p>
+          <p class="text-gray-400 text-xs">เข้าถึงการศึกษาขั้นอุดมศึกษาในราคาที่เข้าถึงได้</p>
+        </div>
+        
+        <div class="card mb-2">
+          <p class="text-emerald-300 font-bold text-sm">4.4 ทักษะที่เกี่ยวข้องกับอาชีพ</p>
+          <p class="text-gray-400 text-xs">ทักษะเทคนิคและวิชาชีพสำหรับการจ้างงาน</p>
+        </div>
+        
+        <div class="text-left bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-2">
+          <p class="text-emerald-300 font-bold text-xs">→ หลักสูตรตอบโจทย์:</p>
+          <p class="text-gray-300 text-xs">อวท. เทคโนโลยีเครื่องกล (ต่อเนื่อง)</p>
+          <p class="text-gray-500 text-xs">เปิดโอกาสอุดมศึกษาสู่อาชีพวิชาชีพ</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 4: SDGs 7 - พลังงานสะอาด -->
+    <div class="slide">
+      <div class="light-spot spot-yellow"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag">SDG 7</p>
+        <h1 class="text-2xl font-black mb-2">พลังงานสะอาด</h1>
+        
+        <div class="card mb-2">
+          <p class="text-yellow-300 font-bold text-sm">7.2 พลังงานหมุนเวียน</p>
+          <p class="text-gray-400 text-xs">เพิ่มสัดส่วนพลังงานสะอาดในโครงสร้างพลังงาน</p>
+        </div>
+        
+        <div class="card mb-2">
+          <p class="text-yellow-300 font-bold text-sm">7.3 ประสิทธิภาพพลังงาน</p>
+          <p class="text-gray-400 text-xs">เพิ่มประสิทธิภาพการใช้พลังงาน</p>
+        </div>
+        
+        <div class="text-left bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-2">
+          <p class="text-yellow-300 font-bold text-xs">→ หลักสูตรตอบโจทย์:</p>
+          <p class="text-gray-300 text-xs">วิชา เทคโนโลยีโรงผลิตกำลัง</p>
+          <p class="text-gray-500 text-xs">เครื่องทำความเย็น หม้อไอน้ำ</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 5: SDGs 8 - เศรษฐกิจ -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag">SDG 8</p>
+        <h1 class="text-2xl font-black mb-2">การเติบโตและการจ้างงาน</h1>
+        
+        <div class="card mb-2">
+          <p class="text-blue-300 font-bold text-sm">8.2 งานที่มีคุณค่า</p>
+          <p class="text-gray-400 text-xs">เพิ่มผลิตภาพผ่านเทคโนโลยีและนวัตกรรม</p>
+        </div>
+        
+        <div class="card mb-2">
+          <p class="text-blue-300 font-bold text-sm">8.5 งานที่เหมาะสม</p>
+          <p class="text-gray-400 text-xs">การจ้างงานเต็มรูปแบบและค่าจ้างที่เป็นธรรม</p>
+        </div>
+        
+        <div class="text-left bg-blue-900/20 border border-blue-500/30 rounded-lg p-2">
+          <p class="text-blue-300 font-bold text-xs">→ หลักสูตรตอบโจทย์:</p>
+          <p class="text-gray-300 text-xs">นักเทคโนโลยีเครื่องกลสมรรถนะสูง</p>
+          <p class="text-gray-500 text-xs">ทักษะฝีมือ + ดิจิทัล = มีรายได้ดี</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 6: SDGs 9 - โครงสร้างพื้นฐาน -->
+    <div class="slide">
+      <div class="light-spot spot-orange"></div>
+      <div class="light-spot spot-blue"></div>
+      <div class="slide-content">
+        <p class="tag">SDG 9</p>
+        <h1 class="text-2xl font-black mb-2">อุตสาหกรรม นวัตกรรม โครงสร้าง</h1>
+        
+        <div class="card mb-2">
+          <p class="text-orange-300 font-bold text-sm">9.2 อุตสาหกรรมที่ยั่งยืน</p>
+          <p class="text-gray-400 text-xs">ส่งเสริมอุตสาหกรรมที่ครอบคลุมและยั่งยืน</p>
+        </div>
+        
+        <div class="card mb-2">
+          <p class="text-orange-300 font-bold text-sm">9.4 เทคโนโลยีและอุตสาหกรรม</p>
+          <p class="text-gray-400 text-xs">ยกระดับโครงสร้างพื้นฐานด้วยเทคโนโลยี</p>
+        </div>
+        
+        <div class="text-left bg-orange-900/20 border border-orange-500/30 rounded-lg p-2">
+          <p class="text-orange-300 font-bold text-xs">→ หลักสูตรตอบโจทย์:</p>
+          <p class="text-gray-300 text-xs">AI, IoT, Smart Factory</p>
+          <p class="text-gray-500 text-xs">อุตสาหกรรม 4.0 ในไทย</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 7: BCG x SDGs 12,13 -->
+    <div class="slide">
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">BCG</p>
+        <h1 class="text-2xl font-black mb-3">BCG Economy × SDGs</h1>
+        
+        <div class="grid grid-cols-3 gap-2 mb-3">
+          <div class="bg-green-600 rounded-lg p-2 text-center">
+            <p class="text-xl font-black">B</p>
+            <p class="text-xs">Bio</p>
+          </div>
+          <div class="bg-cyan-600 rounded-lg p-2 text-center">
+            <p class="text-xl font-black">C</p>
+            <p class="text-xs">Circular</p>
+          </div>
+          <div class="bg-green-500 rounded-lg p-2 text-center">
+            <p class="text-xl font-black">G</p>
+            <p class="text-xs">Green</p>
+          </div>
+        </div>
+        
+        <div class="space-y-2 text-left">
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold text-xs">SDG 12: การบริโภคที่ยั่งยืน</p>
+            <p class="text-gray-500 text-xs">• ลดขยะ • เศรษฐกิจหมุนเวียน</p>
+          </div>
+          <div class="card bg-cyan-900/20 border-cyan-500/30">
+            <p class="text-cyan-300 font-bold text-xs">SDG 13: การรับมือภูมิอากาศ</p>
+            <p class="text-gray-500 text-xs">• ลดคาร์บอน • ประสิทธิภาพพลังงาน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 8: S-Curve x New S-Curve -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag">S-Curve</p>
+        <h1 class="text-2xl font-black mb-3">S-Curve & New S-Curve</h1>
+        
+        <div class="text-left space-y-2 mb-3">
+          <div class="card">
+            <p class="text-blue-300 font-bold text-sm">S-Curve (เดิม)</p>
+            <p class="text-gray-400 text-xs">• อุตสาหกรรมเกษตร • อุตสาหกรรมเบา</p>
+            <p class="text-gray-500 text-xs">• อุตสาหกรรมหนัก</p>
+          </div>
+          
+          <div class="card">
+            <p class="text-green-300 font-bold text-sm">New S-Curve (ใหม่)</p>
+            <p class="text-gray-400 text-xs">• อุตสาหกรรมยานยนต์ไฟฟ้า</p>
+            <p class="text-gray-400 text-xs">• Smart Electronics</p>
+            <p class="text-gray-400 text-xs">• อุตสาหกรรมการบินและโลจิสติกส์</p>
+            <p class="text-gray-400 text-xs">• การแพทย์</p>
+            <p class="text-gray-400 text-xs">• เทคโนโลยีชีวภาพ</p>
+          </div>
+        </div>
+        
+        <div class="text-left bg-blue-900/20 border border-blue-500/30 rounded-lg p-2">
+          <p class="text-blue-300 font-bold text-xs">→ หลักสูตรตอบโจทย์:</p>
+          <p class="text-gray-300 text-xs">EV • Smart Control • Predictive Maintenance</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 9: Industry 4.0 -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">4.0</p>
+        <h1 class="text-2xl font-black mb-3">Industry 4.0</h1>
+        
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <div class="bg-purple-900/30 border border-purple-500/40 rounded-lg p-2 text-center">
+            <p class="text-2xl font-black text-purple-400">IoT</p>
+            <p class="text-xs text-gray-400">อินเทอร์เน็ตทุกสรรพสิ่ง</p>
+          </div>
+          <div class="bg-blue-900/30 border border-blue-500/40 rounded-lg p-2 text-center">
+            <p class="text-2xl font-black text-blue-400">AI</p>
+            <p class="text-xs text-gray-400">ปัญญาประดิษฐ์</p>
+          </div>
+          <div class="bg-cyan-900/30 border border-cyan-500/40 rounded-lg p-2 text-center">
+            <p class="text-2xl font-black text-cyan-400">Robots</p>
+            <p class="text-xs text-gray-400">หุ่นยนต์</p>
+          </div>
+          <div class="bg-green-900/30 border border-green-500/40 rounded-lg p-2 text-center">
+            <p class="text-2xl font-black text-green-400">Cloud</p>
+            <p class="text-xs text-gray-400">คลาวด์คอมพิวติ้ง</p>
+          </div>
+        </div>
+        
+        <div class="text-left bg-gray-800/50 rounded-lg p-2">
+          <p class="text-gray-300 text-xs">→ หลักสูตรเพิ่ม: วิชา AI และ Smart Control</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 10: Summary -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">สรุป</p>
+        <h1 class="text-xl font-black mb-3">หลักสูตร × SDGs</h1>
+        
+        <div class="space-y-2 text-left">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="sdg-icon bg-blue-500 text-white w-6 h-6">4</span>
+            <span class="text-gray-300">อวท. → การศึกษาที่เท่าเทียม</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="sdg-icon bg-yellow-400 text-black w-6 h-6">7</span>
+            <span class="text-gray-300">พลังงานสะอาด → ประสิทธิภาพ</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="sdg-icon bg-blue-700 text-white w-6 h-6">8</span>
+            <span class="text-gray-300">สมรรถนะสูง → งานที่มีคุณค่า</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="sdg-icon bg-orange-500 text-white w-6 h-6">9</span>
+            <span class="text-gray-300">Industry 4.0 → นวัตกรรม</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="sdg-icon bg-green-600 text-white w-6 h-6">12</span>
+            <span class="text-gray-300">BCG → เศรษฐกิจหมุนเวียน</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="sdg-icon bg-cyan-600 text-white w-6 h-6">13</span>
+            <span class="text-gray-300">ลดคาร์บอน → ยั่งยืน</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 11: Ending -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <span class="text-5xl text-gray-500 block mb-3">🌱</span>
+        <p class="text-xl font-bold mb-2">หลักสูตรเทคโน���ล���ีเครื่องกล</p>
+        <p class="text-gray-400 text-sm mb-2">ขับเคลื่อน SDGs สู่อนาคตที่ยั่งยืน</p>
+        
+        <div class="mt-6 pt-3 border-t border-gray-700">
+          <p class="text-gray-600 text-xs">มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+          <p class="text-gray-700 text-xs">สาขาวิชาเทคโนโลยีเครื่องกล</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="page-number" id="pageNumber">1 / 11</div>
+  
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const pageNumber = document.getElementById('pageNumber');
+    let currentSlide = 0;
+    
+    slides.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = `progress-dot ${index === 0 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(index));
+      progressBar.appendChild(dot);
+    });
+    
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active', 'prev');
+        if (index === currentSlide) slide.classList.add('active');
+        else if (index < currentSlide) slide.classList.add('prev');
+      });
+      
+      document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+      
+      pageNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+    
+    function nextSlide() { if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); } }
+    function prevSlide() { if (currentSlide > 0) { currentSlide--; updateSlides(); } }
+    function goToSlide(index) { currentSlide = index; updateSlides(); }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+    });
+    
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+    });
+  </script>
+</body>
+</html>

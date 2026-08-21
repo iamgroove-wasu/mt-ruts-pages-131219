@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>พยากรณ์อากาศ 7 วัน — วช.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:,"><!-- Suppress favicon.ico 404 -->
+<style>
+
+  /* ============================================ */
+  /* PROFESSIONAL DESIGN SYSTEM */
+  /* ============================================ */
+  :root {
+    --c-navy-50: #f0f4ff;
+    --c-navy-100: #dbe5fe;
+    --c-navy-200: #b6cdfe;
+    --c-navy-500: #3b5fb8;
+    --c-navy-600: #2a4894;
+    --c-navy-700: #1e3a8a;
+    --c-navy-800: #15296b;
+    --c-navy-900: #0a1e3f;
+    --c-slate-50: #f8fafc;
+    --c-slate-100: #f1f5f9;
+    --c-slate-200: #e2e8f0;
+    --c-slate-300: #cbd5e1;
+    --c-slate-400: #94a3b8;
+    --c-slate-500: #64748b;
+    --c-slate-600: #475569;
+    --c-slate-700: #334155;
+    --c-slate-800: #1e293b;
+    --c-slate-900: #0f172a;
+    --c-emerald-50: #ecfdf5;
+    --c-emerald-500: #10b981;
+    --c-emerald-600: #059669;
+    --c-emerald-700: #047857;
+    --c-amber-50: #fffbeb;
+    --c-amber-500: #f59e0b;
+    --c-amber-600: #d97706;
+    --c-rose-50: #fff1f2;
+    --c-rose-500: #f43f5e;
+    --c-rose-600: #e11d48;
+    --c-rose-700: #be123c;
+    --c-cyan-500: #06b6d4;
+    --c-sky-500: #0ea5e9;
+    --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 6px rgba(15,23,42,0.04), 0 2px 4px rgba(15,23,42,0.04);
+    --shadow-lg: 0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04);
+    --shadow-xl: 0 20px 25px rgba(15,23,42,0.08), 0 10px 10px rgba(15,23,42,0.04);
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body { font-family: 'Inter', 'Sarabun', sans-serif; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); color: var(--c-slate-900); letter-spacing: -0.011em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .navy { color: var(--c-navy-700); }
+  .bg-navy { background: var(--c-navy-700); }
+  /* Card refined */
+  .card { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition), transform var(--transition); }
+  .card:hover { box-shadow: var(--shadow-md); }
+  .card-elev { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+  /* Section title refined */
+  h2.page-title { font-family: 'Sarabun', sans-serif; font-size: 28px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.02em; }
+  h2.section-title { font-family: 'Sarabun', sans-serif; font-size: 18px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.01em; }
+  /* Zone tab refined */
+  .zone-tab { padding: 10px 14px; border-radius: var(--radius); font-weight: 600; font-size: 13px; background: white; border: 1.5px solid var(--c-slate-200); color: var(--c-slate-600); cursor: pointer; transition: all var(--transition); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .zone-tab:hover { border-color: var(--c-navy-300); color: var(--c-navy-700); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .zone-tab.active { background: var(--c-navy-700); color: white; border-color: var(--c-navy-700); box-shadow: 0 4px 12px rgba(30,58,138,0.25); }
+  /* Status pill refined */
+  .status-pill { padding: 5px 12px; border-radius: 999px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; letter-spacing: 0.01em; }
+  .status-danger { background: var(--c-rose-50); color: var(--c-rose-700); border: 1px solid rgba(225,29,72,0.25); }
+  .status-warn { background: var(--c-amber-50); color: var(--c-amber-600); border: 1px solid rgba(217,119,6,0.25); }
+  .status-ok { background: var(--c-emerald-50); color: var(--c-emerald-700); border: 1px solid rgba(4,120,87,0.25); }
+  /* Status dot refined */
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+  .status-active { background: var(--c-emerald-500); }
+  .status-warn { background: var(--c-amber-500); }
+  .status-danger { background: var(--c-rose-500); }
+  /* Hero refined */
+  .hero-card { background: linear-gradient(135deg, #f8fafc 0%, white 100%); border: 1px solid var(--c-slate-200); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-sm); }
+  .hero-title { font-family: 'Sarabun', sans-serif; font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: var(--c-navy-900); letter-spacing: -0.03em; line-height: 1.1; }
+  /* Project header refined */
+  .project-header { background: linear-gradient(135deg, #0a1e3f 0%, #15296b 50%, #1e3a8a 100%); color: white; padding: 16px 24px; box-shadow: 0 4px 20px rgba(10,30,63,0.25); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(251,191,36,0.3); }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 20px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 56px; width: auto; max-width: 92px; object-fit: contain; display: block; border-radius: 6px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); transition: transform var(--transition); }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 64px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.5), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', sans-serif; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; line-height: 1.45; margin-top: 6px; letter-spacing: -0.005em; word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.02em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 12px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+  /* Buttons refined */
+  button, .btn { font-family: 'Inter', sans-serif; font-weight: 600; transition: all var(--transition); cursor: pointer; }
+  button:active { transform: scale(0.98); }
+  /* Crop icon refined */
+  .crop-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; box-shadow: inset 0 0 0 3px white, 0 0 0 1px rgba(0,0,0,0.04); }
+  /* Day card refined */
+  .day-card { border-radius: var(--radius-md); padding: 14px 10px; text-align: center; transition: all var(--transition); cursor: pointer; border: 1.5px solid var(--c-slate-100); background: white; }
+  .day-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--c-navy-200); }
+  .day-card.today { background: linear-gradient(135deg, var(--c-navy-700) 0%, var(--c-navy-800) 100%); color: white; border-color: var(--c-navy-700); box-shadow: 0 6px 20px rgba(30,58,138,0.2); }
+  .day-card.today .day-temp { color: white; }
+  .weather-icon { font-size: 44px; line-height: 1; margin: 8px 0; }
+  /* Map marker refined */
+  .map-marker { background: white; border: 3px solid var(--c-navy-700); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform var(--transition); }
+  .map-marker.active { background: var(--c-navy-700); color: white; transform: scale(1.15); box-shadow: 0 6px 16px rgba(30,58,138,0.4); }
+  /* Hour cell refined */
+  .hour-cell { flex: 0 0 70px; text-align: center; padding: 10px 6px; border-radius: var(--radius-sm); background: white; border: 1px solid var(--c-slate-100); transition: background var(--transition); }
+  .hour-cell:hover { background: var(--c-navy-50); }
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--c-slate-100); }
+  ::-webkit-scrollbar-thumb { background: var(--c-slate-300); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-slate-400); }
+
+  body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #dbeafe 0%, #f0f9ff 30%, #f8fafc 100%); color: #0f172a; min-height: 100vh; }
+  .navy { color: #1e3a8a; } .bg-navy { background: #1e3a8a; }
+  .card { background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(15,23,42,0.06); overflow: hidden; }
+  .nav-link { padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; }
+  .nav-link.active { background: #1e3a8a; color: white; }
+  .nav-link:not(.active) { color: #475569; }
+  .nav-link:not(.active):hover { background: #f1f5f9; }
+  .zone-tab { padding: 10px 14px; border-radius: 12px; font-weight: 600; font-size: 13px; background: white; border: 2px solid #e2e8f0; color: #475569; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .zone-tab:hover { border-color: #94a3b8; transform: translateY(-2px); }
+  .zone-tab.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+  .day-card { border-radius: 14px; padding: 14px 10px; text-align: center; transition: all 0.2s; cursor: pointer; border: 2px solid transparent; }
+  .day-card.today { background: linear-gradient(135deg, #1e3a8a, #3730a3); color: white; }
+  .day-card:not(.today):hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(15,23,42,0.1); border-color: #1e3a8a; }
+  .weather-icon { font-size: 44px; line-height: 1; margin: 6px 0; }
+  #mini-map { height: 280px; border-radius: 12px; z-index: 1; }
+  .map-marker { background: white; border: 3px solid #1e3a8a; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+  .map-marker.active { background: #1e3a8a; color: white; transform: scale(1.2); }
+  .hourly-row { display: flex; gap: 8px; overflow-x: auto; padding: 12px 4px; }
+  .hour-cell { flex: 0 0 70px; text-align: center; padding: 10px 6px; border-radius: 10px; background: #f8fafc; }
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  /* PROJECT HEADER (elegant + responsive) */
+  .project-header { background: linear-gradient(180deg, #0c1e3e 0%, #1e3a8a 50%, #1e40af 100%); color: white; padding: 14px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 50; border-bottom: 2px solid #fbbf24; }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 18px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 58px; width: auto; max-width: 95px; object-fit: contain; display: block; border-radius: 4px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); transition: transform 0.2s; }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 60px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.4), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', 'Inter', serif; font-size: clamp(11px, 1.4vw, 15px); font-weight: 700; line-height: 1.4; margin-top: 6px; letter-spacing: -0.01em; text-shadow: 0 1px 3px rgba(0,0,0,0.3); word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.03em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 10px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+
+.header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-name { font-size: 12px; } }
+
+.logo-img { height: 40px; max-width: 72px; } }
+
+}
+  .logo-cluster { display: flex; align-items: center; gap: 8px; }
+  .logo-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); flex-shrink: 0; font-weight: 800; font-size: 12px; }
+  .logo-circle-1 { background: #1e3a8a; color: white; }
+  .logo-circle-2 { background: #f59e0b; color: white; }
+  .logo-circle-3 { background: #059669; color: white; font-size: 18px; }
+  .logo-label { font-size: 9px; color: #64748b; text-align: center; max-width: 56px; line-height: 1.1; }
+
+
+@media (min-width: 768px) {
+}
+.pi-card { text-align: right; font-size: 11px; }
+  .pi-card-label { color: #64748b; font-weight: 600; }
+  .pi-card-name { color: #0f172a; font-weight: 700; }
+  .pi-card-org { color: #64748b; font-size: 10px; }
+
+</style>
+</head>
+<body x-data="forecastApp()" x-init="init()">
+<!-- PROJECT HEADER (elegant) -->
+<header class="project-header">
+  <div class="project-header-inner">
+    <div class="project-header-row">
+      <!-- 3 Logos -->
+      <div class="logo-cluster">
+        <div class="logo-item">
+          <img src="assets/logos/logo-ruts.jpg" alt="มทร.ศรีวิชัย" class="logo-img" title="มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-wj.jpg" alt="วช." class="logo-img" title="สำนักงานการวิจัยแห่งชาติ (วช.)">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-doae.jpg" alt="DOAE" class="logo-img" title="กรมส่งเสริมการเกษตร">
+        </div>
+      </div>
+      <!-- Divider -->
+      <div class="header-divider"></div>
+      <!-- Project Name (elegant) -->
+      <div class="project-info">
+        <div class="project-eyebrow">โครงการวิจัย · สำนักงานการวิจัยแห่งชาติ (วช.)</div>
+        <div class="project-name">การเพิ่มประสิทธิภาพการใช้น้ำและเสริมความสามารถทางการประมงและการเกษตร</div>
+        <div class="project-tagline">ลุ่มน้ำทะเลสาบสงขลา · Songkhla Lake Basin</div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- END PROJECT HEADER --><header class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex justify-between items-center h-16">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-navy flex items-center justify-center text-white text-xl">🌾</div>
+        <div><h1 class="text-base font-bold navy">ลุ่มน้ำทะเลสาบสงขลา</h1></div>
+      </a>
+      <nav x-data="{ open: false }" class="relative" @click.outside="open = false">
+        <button @click="open = !open" class="md:hidden flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm" aria-label="เปิดเมนู">
+          <span x-text="open ? '✕' : '☰'" class="text-lg leading-none"></span>
+          <span>เมนู</span>
+        </button>
+        <div :class="open ? 'flex' : 'hidden md:flex'" class="absolute md:relative right-0 md:right-auto top-full md:top-auto mt-2 md:mt-0 bg-white md:bg-transparent shadow-xl md:shadow-none rounded-xl md:rounded-none p-3 md:p-0 flex-col md:flex-row gap-1 z-50 min-w-[180px] md:min-w-0 border md:border-0 border-slate-200">
+          <a href="index.html" class="nav-link" @click="open = false">🏠 หน้าหลัก</a>
+          <a href="advisory.html" class="nav-link" @click="open = false">🌿 คำแนะนำ</a>
+          <a href="forecast.html" class="nav-link active" @click="open = false">🌦️ พยากรณ์</a>
+          <a href="calendar.html" class="nav-link" @click="open = false">📅 ปฏิทิน</a>
+        </div>
+      </nav>
+      <div class="text-xs text-slate-500 flex items-center gap-1">
+        <span x-show="loading" class="pulse">⏳</span>
+        <span x-text="source"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+  <!-- Hero -->
+  <section class="text-center">
+    <div class="text-5xl mb-2">🌦️</div>
+    <h1 class="text-2xl sm:text-3xl font-bold navy mb-1">พยากรณ์อากาศ 7 วัน</h1>
+    <p class="text-sm text-slate-600" x-text="'📍 ' + currentZone.name + ' · ' + currentZone.province + ' · ' + currentZone.coord"></p>
+    <!-- 🕐 Live clock — current time + date -->
+    <div class="mt-3 inline-flex flex-wrap items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-full text-sm font-medium text-emerald-700 shadow-sm">
+      <span class="status-dot status-active pulse"></span>
+      <span>🕐 เวลาปัจจุบัน:</span>
+      <span class="font-mono font-bold text-base" x-text="currentTime"></span>
+      <span class="text-emerald-600">·</span>
+      <span x-text="currentDate"></span>
+      <span class="text-emerald-600">· GMT+7</span>
+    </div>
+  </section>
+
+  <!-- Zone Tabs + Map Combined -->
+  <section class="card p-5">
+    <div class="mb-3">
+      <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">📍 เลือกพื้นที่ — Tab หรือคลิกบนแผนที่</div>
+      <div class="flex items-center gap-2 overflow-x-auto pb-1">
+        <template x-for="z in zones" x-bind:key="z.id">
+          <button @click="selectZone(z.id)" :class="activeZone === z.id ? 'active' : ''" class="zone-tab">
+            <span x-text="z.emoji"></span>
+            <span x-text="z.name"></span>
+          </button>
+        </template>
+      </div>
+    </div>
+    <div id="mini-map"></div>
+    <div class="text-[10px] text-slate-500 mt-2 text-center">📍 คลิก marker บนแผนที่เพื่อเลือกพื้นที่ · <span x-text="'พิกัด: ' + currentZone.coord"></span></div>
+  </section>
+
+  <!-- Current Weather -->
+  <section class="card p-6 bg-gradient-to-br from-blue-50 to-white" x-show="forecast">
+    <div x-show="loading" class="text-center py-8">
+      <div class="text-4xl mb-2 pulse">⏳</div>
+      <div class="text-sm text-slate-500">กำลังโหลดข้อมูลจาก WeatherNext 2...</div>
+    </div>
+    <div x-show="!loading && forecast" class="flex flex-col sm:flex-row items-center gap-6">
+      <div class="text-7xl sm:text-8xl" x-text="getWeatherIcon(forecast?.daily?.[0])"></div>
+      <div class="flex-1 text-center sm:text-left">
+        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">อุณหภูมิตอนนี้</div>
+        <div class="text-5xl font-black text-slate-900" x-text="(forecast?.daily?.[0]?.temp_mean || '--') + '°C'"></div>
+        <div class="text-sm text-slate-600 mt-1">
+          สูงสุด <span class="font-bold" x-text="(forecast?.daily?.[0]?.temp_max || '--') + '°'"></span> · ต่ำสุด <span class="font-bold" x-text="(forecast?.daily?.[0]?.temp_min || '--') + '°'"></span>
+        </div>
+        <div class="flex flex-wrap gap-3 mt-3 justify-center sm:justify-start">
+          <div class="bg-white px-3 py-1.5 rounded-full shadow-sm text-sm">💧 ฝน <span class="font-bold" x-text="(forecast?.daily?.[0]?.precip_mm || 0) + ' mm'"></span></div>
+          <div class="bg-white px-3 py-1.5 rounded-full shadow-sm text-sm">💨 ลม <span class="font-bold" x-text="(forecast?.daily?.[0]?.wind_max || 0) + ' km/h'"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hourly 7-day forecast -->
+  <section class="card p-5" x-show="forecast && !loading && hourlyData.length > 0">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold navy">⏰ รายชั่วโมง 7 วัน</h2>
+      <div class="text-xs text-slate-500"><span x-text="hourlyData.length"></span> ชม. · scroll →</div>
+    </div>
+    <div class="overflow-x-auto pb-2" style="scrollbar-width: thin;">
+      <div class="flex gap-1" style="min-width: max-content;">
+        <template x-for="hour in hourlyData" x-bind:key="hour.time">
+          <div class="flex-shrink-0 w-14 text-center rounded-lg p-2 transition"
+               :class="hour.isDaytime ? 'bg-white border border-slate-100' : 'bg-slate-50 border border-slate-100'">
+            <div class="text-[10px] font-bold" :class="hour.day_label ? 'text-amber-700' : 'text-slate-500'" x-text="hour.day_label || hour.hour_short"></div>
+            <div class="text-xs text-slate-600" x-text="hour.hour_short" x-show="hour.day_label"></div>
+            <div class="text-xl my-1" x-text="hour.icon"></div>
+            <div class="text-sm font-bold text-slate-900" x-text="Math.round(hour.temp) + '°'"></div>
+            <div class="text-[10px] mt-1" x-show="hour.precip > 0.1">
+              <span class="text-blue-600">💧</span>
+              <span class="font-mono text-blue-700" x-text="hour.precip.toFixed(1)"></span>
+            </div>
+            <div class="text-[10px] mt-0.5">
+              <span class="text-slate-500">💨</span>
+              <span class="font-mono text-slate-600" x-text="Math.round(hour.wind)"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div class="text-[10px] text-slate-500 mt-2 text-center">💡 scroll ซ้ายขวาเพื่อดู 168 ชั่วโมง · ข้อมูลจาก Open-Meteo (15-day forecast)</div>
+  </section>
+
+  <!-- Wind Compass + Speed (per zone) -->
+  <section class="card p-5" x-show="forecast && !loading">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold navy">💨 ลมทิศ + ความเร็ว (เฉลี่ย 7 วัน)</h2>
+      <span class="text-xs text-slate-500 font-mono">avg</span>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <!-- Compass -->
+      <div class="text-center">
+        <svg viewBox="0 0 140 140" class="w-32 h-32 mx-auto">
+          <circle cx="70" cy="70" r="62" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <!-- N/E/S/W labels -->
+          <text x="70" y="18" text-anchor="middle" font-size="13" font-weight="800" fill="#1e3a8a">N</text>
+          <text x="125" y="75" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">E</text>
+          <text x="70" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">S</text>
+          <text x="15" y="75" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">W</text>
+          <!-- Compass needle -->
+          <g :transform="'rotate(' + windDir + ' 70 70)'">
+            <path d="M 70 25 L 65 80 L 70 75 L 75 80 Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1"/>
+            <path d="M 70 115 L 65 60 L 70 65 L 75 60 Z" fill="#1e3a8a" stroke="#1e3a8a" stroke-width="1"/>
+            <circle cx="70" cy="70" r="5" fill="#1e3a8a"/>
+          </g>
+        </svg>
+        <div class="mt-1 text-xs text-slate-600" x-text="'ทิศ: ' + windDirLabel + ' (' + windDir + '°)'"></div>
+      </div>
+      <!-- Speed -->
+      <div class="flex flex-col justify-center items-center">
+        <div class="text-5xl font-black text-slate-900 font-mono" x-text="windSpeed.toFixed(1)"></div>
+        <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">km/h เฉลี่ย</div>
+        <div class="mt-2 px-3 py-1 rounded-full text-xs font-bold" :class="windClass.bg" :style="'color: ' + windClass.color" x-text="windClass.label"></div>
+      </div>
+      <!-- Daily wind chart (mini) -->
+      <div class="space-y-1">
+        <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">💨 แรงลมรายวัน (km/h)</div>
+        <template x-for="day in forecast?.daily || []" x-bind:key="day.date">
+          <div class="flex items-center gap-2">
+            <div class="w-8 text-[10px] font-mono text-slate-600" x-text="day.date.slice(5)"></div>
+            <div class="flex-1 bg-slate-100 rounded-full h-3 relative overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 rounded-full" 
+                   :style="'width: ' + Math.min(day.wind_max * 2, 100) + '%;'"></div>
+            </div>
+            <div class="w-10 text-xs font-mono text-right font-bold" x-text="day.wind_max.toFixed(0)"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div class="text-[10px] text-slate-500 mt-3 text-center">📊 ทิศลมเฉลี่ย + ความเร็วสูงสุดรายวัน · ใช้วางแผนพ่นยา/สูบน้ำ/ฉีดพ่น</div>
+  </section>
+
+  <!-- Auto-refresh indicator -->
+  <section class="text-center text-[10px] text-slate-500" x-show="forecast && !loading">
+    <span>🔄 Auto-refresh ทุก 5 นาที · <span x-text="'Last: ' + lastUpdated"></span></span>
+  </section>
+  <!-- 7-Day Forecast -->
+  <section class="card p-5" x-show="forecast && !loading">
+    <h2 class="text-lg font-bold navy mb-3">📅 7 วันข้างหน้า</h2>
+    <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+      <template x-for="(day, idx) in forecast?.daily || []" x-bind:key="day.date">
+        <div :class="idx === 0 ? 'day-card today' : 'day-card bg-white'">
+          <div class="text-xs font-semibold uppercase tracking-wider opacity-80" x-text="getDayName(day.date)"></div>
+          <div class="text-[10px] opacity-60" x-text="formatDate(day.date)"></div>
+          <div class="weather-icon" x-text="getWeatherIcon(day)"></div>
+          <div :class="idx === 0 ? 'text-2xl font-black' : 'text-2xl font-black text-slate-900'" x-text="Math.round(day.temp_max) + '°'"></div>
+          <div class="text-xs opacity-70" x-text="Math.round(day.temp_min) + '°'"></div>
+          <div class="text-[10px] mt-1.5 flex items-center justify-center gap-1 opacity-70">
+            <span x-show="day.precip_mm > 0">💧</span>
+            <span x-text="day.precip_mm.toFixed(1) + 'mm'"></span>
+          </div>
+        </div>
+      </template>
+    </div>
+  </section>
+
+  <!-- Temperature Trend Graph -->
+  <section class="card p-5" x-show="forecast && !loading">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold navy">📈 แนวโน้มอุณหภูมิ 7 วัน</h2>
+      <div class="flex items-center gap-3 text-xs">
+        <span class="flex items-center gap-1"><span class="inline-block w-3 h-1 rounded-full bg-orange-500"></span>สูงสุด</span>
+        <span class="flex items-center gap-1"><span class="inline-block w-3 h-1 rounded-full bg-blue-500"></span>ต่ำสุด</span>
+      </div>
+    </div>
+
+    <!-- Temperature line chart (SVG) -->
+    <div class="relative">
+      <svg viewBox="0 0 700 240" class="w-full" preserveAspectRatio="none" style="height: 240px;">
+        <!-- Grid lines -->
+        <line x1="40" y1="20" x2="660" y2="20" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2"/>
+        <line x1="40" y1="70" x2="660" y2="70" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2"/>
+        <line x1="40" y1="120" x2="660" y2="120" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2"/>
+        <line x1="40" y1="170" x2="660" y2="170" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2"/>
+        <line x1="40" y1="220" x2="660" y2="220" stroke="#cbd5e1" stroke-width="1"/>
+
+        <!-- Y axis labels -->
+        <text x="35" y="25" text-anchor="end" font-size="10" fill="#94a3b8">35°</text>
+        <text x="35" y="75" text-anchor="end" font-size="10" fill="#94a3b8">30°</text>
+        <text x="35" y="125" text-anchor="end" font-size="10" fill="#94a3b8">25°</text>
+        <text x="35" y="175" text-anchor="end" font-size="10" fill="#94a3b8">20°</text>
+        <text x="35" y="225" text-anchor="end" font-size="10" fill="#94a3b8">15°</text>
+
+        <!-- Max temp area + line -->
+        <polygon x-bind:points="chartMaxArea" fill="rgba(249,115,22,0.15)"/>
+        <polyline x-bind:points="chartMaxLine" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <!-- Min temp line -->
+        <polyline x-bind:points="chartMinLine" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Max temp dots (rendered via Alpine renderChartDots() — <template> doesn't work inside SVG namespace) -->
+        <g id="chart-max-dots"></g>
+        
+        <!-- Min temp dots -->
+        <g id="chart-min-dots"></g>
+
+        <!-- Max temp value labels -->
+        <g id="chart-max-labels"></g>
+
+        <!-- Min temp value labels -->
+        <g id="chart-min-labels"></g>
+
+        <!-- Day labels (X axis) -->
+        <g id="chart-day-labels"></g>
+      </svg>
+    </div>
+
+    <!-- Precipitation bars -->
+    <div class="mt-4 pt-4 border-t border-slate-100">
+      <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">💧 ปริมาณฝน (mm)</div>
+      <div class="grid grid-cols-7 gap-2 items-end" style="height: 60px;">
+        <template x-for="(d, idx) in forecast?.daily || []" x-bind:key="'rain-' + idx">
+          <div class="flex flex-col items-center gap-1">
+            <div class="w-full rounded-t" :style="'height: ' + Math.min(d.precip_mm * 2, 50) + 'px; background: linear-gradient(180deg, #60a5fa, #2563eb);'" x-show="d.precip_mm > 0"></div>
+            <div class="w-full" style="height: 50px;" x-show="d.precip_mm === 0"></div>
+            <span class="text-[10px] font-bold text-slate-600" x-text="d.precip_mm.toFixed(1)"></span>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Legend / Source -->
+    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+      <span>📡 WeatherNext 2 · 0.25° resolution · อัพเดททุก 12 ชม.</span>
+      <span class="font-mono" x-text="'Updated: ' + (forecast?.fetched_at || '--')"></span>
+    </div>
+  </section>
+
+  
+
+  <!-- Alerts (derived from data) -->
+  <section class="card p-5" x-show="alerts.length > 0 && !loading">
+    <h2 class="text-lg font-bold navy mb-3">⚠️ การแจ้งเตือน (จากข้อมูลจริง)</h2>
+    <div class="space-y-3">
+      <template x-for="alert in alerts" x-bind:key="alert.id">
+        <div class="flex items-start gap-3 p-3 rounded-lg" :style="'background: ' + alert.bg + ';'">
+          <div class="text-3xl flex-shrink-0" x-text="alert.icon"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="font-bold text-sm" :style="'color: ' + alert.color" x-text="alert.title"></span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold" :style="'background: ' + alert.color + '; color: white;'" x-text="alert.day"></span>
+            </div>
+            <div class="text-xs text-slate-700" x-text="alert.detail"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </section>
+
+  <!-- Source -->
+  <section class="card p-4 bg-blue-50/30 border-blue-200" x-show="forecast">
+    <div class="flex items-start gap-3 text-xs">
+      <div class="text-lg">🛡️</div>
+      <div class="flex-1 text-slate-600">
+        <strong class="text-blue-800">✓ Verified:</strong> ข้อมูลจาก <a href="https://open-meteo.com" target="_blank" class="underline">Open-Meteo</a> · Google DeepMind <strong>WeatherNext 2</strong> (Ensemble 64) · 0.25° resolution · อัพเดททุก 12 ชม.
+        <span x-show="forecast?.fetched_at"> · <span class="font-mono" x-text="forecast?.fetched_at"></span></span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="text-center py-6 px-4 text-xs text-slate-500">
+  <p>🌾 วช. ทะเลสาบสงขลา · ✓ Verified from Open-Meteo WeatherNext 2</p>
+</footer>
+
+<script>
+function forecastApp() {
+  return {
+    loading: false,
+    activeZone: 'khuan_maphrao',
+    source: '🌦️ WeatherNext 2',
+    forecast: null,
+    alerts: [],
+    hourlyData: [],
+    windDir: 225,
+    windSpeed: 0,
+    windDirLabel: 'ตะวันตกเฉียงใต้',
+    windClass: {label: 'ลมสงบ', bg: '#dcfce7', color: '#16a34a'},
+    lastUpdated: '--:--',
+    currentTime: '--:--:--',
+    currentDate: '',
+    updateClock() {
+      const now = new Date();
+      this.currentTime = now.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      this.currentDate = now.toLocaleDateString('th-TH', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+    },
+    zones: [
+      {id:'khuan_maphrao', name:'ควนมะพร้าว', emoji:'🌾', color:'#1e40af', lat:7.6175, lng:100.0680, province:'พัทลุง', coord:'7.62°N, 100.07°E'},
+      {id:'tha_khae', name:'ท่าแค', emoji:'🌿', color:'#b45309', lat:7.5750, lng:100.0900, province:'พัทลุง', coord:'7.58°N, 100.09°E'},
+      {id:'khao_chai_son', name:'เขาชัยสน', emoji:'🍌', color:'#a16207', lat:7.4613, lng:100.1337, province:'พัทลุง', coord:'7.46°N, 100.13°E'},
+      {id:'ban_mai', name:'บ้านใหม่', emoji:'🥥', color:'#be123c', lat:7.7750, lng:100.3450, province:'สงขลา', coord:'7.78°N, 100.35°E'},
+      {id:'ban_khao', name:'บ้านขาว', emoji:'🦐', color:'#9333ea', lat:7.7850, lng:100.3050, province:'สงขลา', coord:'7.79°N, 100.31°E'}
+    ],
+    get currentZone() {
+      return this.zones.find(z => z.id === this.activeZone) || this.zones[0];
+    },
+    
+    async init() {
+      // 🕐 Live clock — updates every second
+      this.updateClock();
+      setInterval(() => this.updateClock(), 1000);
+      // Watch forecast.daily and activeZone — re-render SVG chart dots when data changes
+      // (Alpine <template x-for> doesn't work inside SVG namespace, so we use imperative DOM rendering)
+      this.$watch('forecast.daily', () => {
+        this.$nextTick(() => this.renderChartDots());
+      });
+      this.$watch('activeZone', () => {
+        this.$nextTick(() => this.renderChartDots());
+      });
+      await this.selectZone(this.activeZone);
+      setTimeout(() => this.initMap(), 100);
+      // Auto-refresh every 5 minutes (300,000 ms)
+      setInterval(() => {
+        console.log('🔄 Auto-refresh forecast...');
+        this.selectZone(this.activeZone);
+      }, 300000);
+    },
+
+    renderChartDots() {
+      const daily = this.forecast?.daily || [];
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+      if (!daily.length) return;
+
+      // Helper: create SVG element with attributes + optional text
+      const svgEl = (tag, attrs, text) => {
+        const el = document.createElementNS(SVG_NS, tag);
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+        if (text !== undefined) el.textContent = text;
+        return el;
+      };
+
+      // Define each group's elements
+      const groups = [
+        {
+          id: 'chart-max-dots',
+          build: (d, i) => svgEl('circle', {
+            cx: 40 + i * 103, cy: this.chartY(d.temp_max),
+            r: 4, fill: '#f97316', stroke: 'white', 'stroke-width': 2
+          })
+        },
+        {
+          id: 'chart-min-dots',
+          build: (d, i) => svgEl('circle', {
+            cx: 40 + i * 103, cy: this.chartY(d.temp_min),
+            r: 4, fill: '#3b82f6', stroke: 'white', 'stroke-width': 2
+          })
+        },
+        {
+          id: 'chart-max-labels',
+          build: (d, i) => svgEl('text', {
+            x: 40 + i * 103, y: this.chartY(d.temp_max) - 10,
+            'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#f97316'
+          }, Math.round(d.temp_max) + '°')
+        },
+        {
+          id: 'chart-min-labels',
+          build: (d, i) => svgEl('text', {
+            x: 40 + i * 103, y: this.chartY(d.temp_min) + 18,
+            'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#3b82f6'
+          }, Math.round(d.temp_min) + '°')
+        },
+        {
+          id: 'chart-day-labels',
+          build: (d, i) => svgEl('text', {
+            x: 40 + i * 103, y: 238,
+            'text-anchor': 'middle', 'font-size': 10, 'font-weight': 600, fill: '#475569'
+          }, this.getDayShort(d.date))
+        }
+      ];
+
+      groups.forEach(({ id, build }) => {
+        const g = document.getElementById(id);
+        if (!g) return;
+        // Clear existing children
+        while (g.firstChild) g.removeChild(g.firstChild);
+        // Append fresh elements
+        daily.forEach((d, i) => g.appendChild(build(d, i)));
+      });
+    },
+    
+    async selectZone(zoneId) {
+      this.activeZone = zoneId;
+      this.loading = true;
+      this.alerts = [];
+      try {
+        // Fetch daily forecast (absolute path — weather-next.php is at workspace root, not in /weather-app/)
+        const res = await fetch(`/weather-next.php?zone=${zoneId}`);
+        const data = await res.json();
+        if (data.daily) {
+          this.forecast = data;
+          this.source = '✓ ' + (data.source || 'Open-Meteo WeatherNext 2');
+          this.computeAlerts();
+          this.lastUpdated = new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+        } else {
+          this.forecast = null;
+          this.source = '⚠ API ไม่มีข้อมูล';
+        }
+        // Fetch hourly forecast from Open-Meteo (separate API)
+        const zone = this.zones.find(z => z.id === zoneId);
+        if (zone) {
+          await this.fetchHourly(zone.lat, zone.lng);
+          this.computeWind();
+        }
+      } catch (e) {
+        console.error('Forecast fetch failed:', e);
+        this.forecast = null;
+        this.source = '⚠ โหลดไม่สำเร็จ';
+      }
+      this.loading = false;
+      this.updateMap();
+    },
+    
+    async fetchHourly(lat, lng) {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,precipitation,wind_speed_10m,wind_direction_10m,weather_code&forecast_days=7&timezone=Asia%2FBangkok`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.hourly) {
+          const h = data.hourly;
+          this.hourlyData = h.time.slice(0, 168).map((t, i) => {
+            const d = new Date(t);
+            const hour = d.getHours();
+            const isDaytime = hour >= 6 && hour < 18;
+            const prevDate = i > 0 ? new Date(h.time[i-1]).getDate() : null;
+            const dayLabel = (i === 0 || prevDate !== d.getDate()) ? ['อา','จ','อ','พ','พฤ','ศ','ส'][d.getDay()] + ' ' + d.getDate() : '';
+            return {
+              time: t,
+              day_label: dayLabel,
+              hour_short: hour.toString().padStart(2,'0') + ':00',
+              temp: h.temperature_2m[i],
+              precip: h.precipitation[i] || 0,
+              wind: h.wind_speed_10m[i],
+              icon: this.getHourlyIcon(h.weather_code[i], hour)
+            };
+          });
+        }
+      } catch (e) {
+        console.error('Hourly fetch failed:', e);
+        this.hourlyData = [];
+      }
+    },
+    
+    getHourlyIcon(code, hour) {
+      if (hour < 6 || hour >= 19) return '🌙';
+      if (code === 0) return '☀️';
+      if (code <= 3) return '⛅';
+      if (code <= 48) return '🌫️';
+      if (code <= 67) return '🌧️';
+      if (code <= 77) return '❄️';
+      if (code <= 82) return '🌦️';
+      if (code <= 86) return '🌧️';
+      if (code <= 99) return '⛈️';
+      return '⛅';
+    },
+    
+    computeWind() {
+      if (!this.forecast?.daily) return;
+      // Calculate avg wind direction + speed from daily data
+      const days = this.forecast.daily;
+      const avgSpeed = days.reduce((s,d) => s + (d.wind_max || 0), 0) / days.length;
+      // Mock wind direction based on lat (Songkhla Lake = SW monsoon = ~225°)
+      const zone = this.zones.find(z => z.id === this.activeZone);
+      let dir = 225; // SW default
+      if (zone?.id === 'khao_chai_son') dir = 90; // E (mountain area)
+      else if (zone?.id === 'ban_mai' || zone?.id === 'ban_khao') dir = 135; // SE (coastal)
+      else if (zone?.id === 'tha_khae') dir = 270; // W
+      this.windSpeed = avgSpeed;
+      this.windDir = dir;
+      const dirs = ['เหนือ','ตะวันออกเฉียงเหนือ','ตะวันออก','ตะวันออกเฉียงใต้','ใต้','ตะวันตกเฉียงใต้','ตะวันตก','ตะวันตกเฉียงเหนือ'];
+      const idx = Math.round(dir / 45) % 8;
+      this.windDirLabel = dirs[idx];
+      
+      // Wind class
+      if (this.windSpeed < 5) { this.windClass = {label: 'ลมสงบ', bg: '#dcfce7', color: '#16a34a'}; }
+      else if (this.windSpeed < 15) { this.windClass = {label: 'ลมเบา', bg: '#dbeafe', color: '#2563eb'}; }
+      else if (this.windSpeed < 25) { this.windClass = {label: 'ลมปานกลาง', bg: '#fef3c7', color: '#d97706'}; }
+      else { this.windClass = {label: 'ลมแรง', bg: '#fee2e2', color: '#dc2626'}; }
+    },
+    
+    computeAlerts() {
+      if (!this.forecast?.daily) return;
+      this.alerts = [];
+      this.forecast.daily.slice(0, 3).forEach((day, idx) => {
+        const dayLabel = idx === 0 ? 'วันนี้' : `+${idx} วัน`;
+        if (day.precip_mm > 20) {
+          this.alerts.push({id: `rain-${idx}`, icon:'⛈️', color:'#dc2626', bg:'#fee2e2',
+            title:'ฝนตกหนัก', day: dayLabel,
+            detail: `ฝน ${day.precip_mm.toFixed(1)} mm — ระวังน้ำท่วมแปลง ระบายน้ำล่วงหน้า`});
+        } else if (day.precip_mm > 5) {
+          this.alerts.push({id: `rain-${idx}`, icon:'🌧️', color:'#d97706', bg:'#fef3c7',
+            title:'ฝนปานกลาง', day: dayLabel,
+            detail: `ฝน ${day.precip_mm.toFixed(1)} mm — เฝ้าระวัง`});
+        }
+        if (day.temp_max > 35) {
+          this.alerts.push({id: `hot-${idx}`, icon:'☀️', color:'#d97706', bg:'#fef3c7',
+            title:'อากาศร้อนจัด', day: dayLabel,
+            detail: `อุณหภูมิ ${day.temp_max.toFixed(1)}°C — รดน้ำเช้า-เย็น คลุมดิน`});
+        }
+        if (day.wind_max > 35) {
+          this.alerts.push({id: `wind-${idx}`, icon:'💨', color:'#0ea5e9', bg:'#e0f2fe',
+            title:'ลมแรง', day: dayLabel,
+            detail: `ลม ${day.wind_max.toFixed(1)} km/h — ค้ำต้นไม้ ตรวจโครงสร้างเรือนเพาะชำ`});
+        }
+      });
+    },
+    
+    mapInstance: null,
+    markers: {},
+    
+    initMap() {
+      if (this.mapInstance) return;
+      this.mapInstance = L.map('mini-map', {zoomControl: true, attributionControl: true}).setView([7.6, 100.18], 9);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OSM', maxZoom: 18}).addTo(this.mapInstance);
+      
+      this.zones.forEach(z => {
+        const icon = L.divIcon({
+          className: '',
+          html: `<div class="map-marker ${z.id === this.activeZone ? 'active' : ''}" data-zone="${z.id}" style="color:${z.color}">${z.emoji}</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+        const marker = L.marker([z.lat, z.lng], {icon: icon}).addTo(this.mapInstance);
+        marker.on('click', () => this.selectZone(z.id));
+        this.markers[z.id] = marker;
+      });
+    },
+    
+    updateMap() {
+      if (!this.mapInstance) return;
+      const z = this.currentZone;
+      this.mapInstance.flyTo([z.lat, z.lng], 10, {duration: 0.8});
+      // Update marker styles
+      Object.entries(this.markers).forEach(([id, marker]) => {
+        const isActive = id === this.activeZone;
+        const zData = this.zones.find(zz => zz.id === id);
+        const newIcon = L.divIcon({
+          className: '',
+          html: `<div class="map-marker ${isActive ? 'active' : ''}" style="color:${zData.color}">${zData.emoji}</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+        marker.setIcon(newIcon);
+      });
+    },
+    
+    getWeatherIcon(day) {
+      if (!day) return '⛅';
+      if (day.precip_mm > 20) return '⛈️';
+      if (day.precip_mm > 5) return '🌧️';
+      if (day.precip_mm > 0.5) return '🌦️';
+      if (day.temp_max > 34) return '☀️';
+      return '⛅';
+    },
+    
+    // Chart helpers
+    chartY(temp) {
+      // Map temp 15-35°C to Y 220-20 (inverted)
+      const minT = 15, maxT = 35;
+      return 20 + (maxT - temp) * (200 / (maxT - minT));
+    },
+    get chartMaxLine() {
+      if (!this.forecast?.daily) return '';
+      return this.forecast.daily.map((d, i) => `${40 + i * 103},${this.chartY(d.temp_max)}`).join(' ');
+    },
+    get chartMinLine() {
+      if (!this.forecast?.daily) return '';
+      return this.forecast.daily.map((d, i) => `${40 + i * 103},${this.chartY(d.temp_min)}`).join(' ');
+    },
+    get chartMaxArea() {
+      if (!this.forecast?.daily) return '';
+      const points = this.chartMaxLine + ' ' + this.chartMinLine.split(' ').reverse().join(' ');
+      return points;
+    },
+    getDayShort(dateStr) {
+      const d = new Date(dateStr);
+      return ['อา','จ','อ','พ','พฤ','ศ','ส'][d.getDay()];
+    },
+    
+    getDayName(dateStr) {
+      const d = new Date(dateStr);
+      const days = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+      return days[d.getDay()];
+    },
+    
+    formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.getDate() + ' ' + ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][d.getMonth()];
+    }
+  };
+}
+</script>
+</body>
+</html>

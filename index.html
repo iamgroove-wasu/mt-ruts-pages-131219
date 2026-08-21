@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>หลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง) | คณะวิศวกรรมศาสตร์ มทร.ศรีวิชัย</title>
+<meta name="description" content="หลักสูตรอุตสาหกรรมศาสตรบัณฑิต สาขาวิชาเทคโนโลยีเครื่องกล (ต่อเนื่อง) คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย — 75 หน่วยกิต ผ่าน AUN-QA ปี 2568">
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1E3A8A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MT-RUTS">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mt-ruts.com/">
+<meta property="og:title" content="หลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง) | มทร.ศรีวิชัย">
+<meta property="og:description" content="สร้างนักปฏิบัติมืออาชีพ พร้อมนวัตกรรมเพื่ออุตสาหกรรมเป้าหมาย — ผ่าน AUN-QA ปี 2568">
+<meta property="og:image" content="https://mt-ruts.com/assets/logo-mt.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://mt-ruts.com/">
+<meta property="twitter:title" content="หลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง) | มทร.ศรีวิชัย">
+<meta property="twitter:description" content="สร้างนักปฏิบัติมืออาชีพ พร้อมนวัตกรรมเพื่ออุตสาหกรรมเป้าหมาย — ผ่าน AUN-QA ปี 2568">
+<meta property="twitter:image" content="https://mt-ruts.com/assets/logo-mt.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --primary: #1E3A8A;
+  --primary-dark: #1E2F6E;
+  --secondary: #DC2626;
+  --accent: #F59E0B;
+  --mt-red: #DC2626;
+  --mt-yellow: #F59E0B;
+  --bg: #F9FAFB;
+  --bg-white: #FFFFFF;
+  --text: #111827;
+  --text-light: #6B7280;
+  --border: #E5E7EB;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun',sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+
+/* Top bar */
+.top-bar{background:var(--primary-dark);color:white;padding:.5rem 0;font-size:.875rem}
+.top-bar .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.top-bar a{color:white;text-decoration:none;margin-right:1rem;opacity:.9}
+.top-bar a:hover{opacity:1}
+.top-bar .ruts-logo{height:24px;vertical-align:middle;margin-right:.5rem}
+
+/* Hero */
+.hero{background:linear-gradient(180deg,#FFFFFF 0%,#F0F4FA 100%);color:var(--text);padding:2.5rem 0 3rem;text-align:center;position:relative;border-bottom:3px solid var(--accent)}
+.hero::before,.hero::after{content:none;display:none}
+.hero .container{position:relative;z-index:1}
+.hero .mt-logo{height:140px;width:auto;margin:0;display:block;transition:none}
+.hero-inner{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;text-align:left;max-width:1100px;margin:0 auto}
+.hero-logo-wrap{flex-shrink:0;display:flex;justify-content:center}
+.hero-content{text-align:left}
+.hero-content .crown,.hero-content .subtitle,.hero-content .cta{text-align:left;margin-left:0;margin-right:0}
+.hero .crown{font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--primary);margin-bottom:.5rem;font-weight:600;display:inline-block;padding-bottom:.4rem;border-bottom:2px solid var(--accent)}
+.hero h1{font-size:1.85rem;margin-bottom:.5rem;font-weight:700;line-height:1.3;color:var(--primary)}
+.hero .subtitle{font-size:1.05rem;color:var(--text);margin-bottom:1.25rem;font-weight:500}
+.hero .cta{margin-top:1.5rem}
+.btn{display:inline-block;padding:.75rem 1.5rem;border-radius:.375rem;font-weight:600;text-decoration:none;transition:all .2s;margin:.25rem;font-size:1rem;letter-spacing:.02em}
+.btn-primary{background:var(--secondary);color:white}
+.btn-primary:hover{background:#B91C1C;transform:translateY(-1px);box-shadow:0 4px 10px rgba(220,38,38,.25)}
+.btn-outline{border:2px solid var(--primary);color:var(--primary);background:white}
+.btn-outline:hover{background:var(--primary);color:white}
+
+/* Current Week */
+.current-week-section{padding:1.75rem 0;background:linear-gradient(135deg,#f0f4ff 0%,#e0e7ff 100%)}
+.current-week-card{background:white;border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-left:5px solid var(--primary);display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem 1rem;max-width:850px;margin:0 auto}
+.cw-badge{background:var(--primary);color:white;padding:0.2rem 0.75rem;border-radius:999px;font-size:0.75rem;font-weight:600;letter-spacing:0.02em}
+.cw-num{font-size:1.2rem;font-weight:700;color:var(--primary-dark);font-family:'Inter',sans-serif}
+.cw-dates{font-weight:600;color:var(--gray-700);font-size:0.95rem}
+.cw-events{font-size:0.85rem;color:#78350f;background:#fef3c7;padding:0.3rem 0.75rem;border-radius:6px;border-left:3px solid var(--accent)}
+.cw-link{color:var(--primary);text-decoration:none;font-weight:600;font-size:0.9rem;margin-left:auto;display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;border-radius:8px;transition:background 0.2s}
+.cw-link:hover{background:#f0f4ff}
+.cw-header-wrap{text-align:center;margin-bottom:0.75rem}
+.cw-header{color:var(--primary-dark);font-size:1.15rem;font-weight:700;margin:0 0 0.25rem 0;font-family:'Inter',sans-serif}
+.cw-header i{color:var(--primary);margin-right:0.3rem}
+.cw-subtitle{display:none}
+@media (max-width:768px){
+  .current-week-section{padding:1.25rem 0}
+  .current-week-card{padding:0.85rem;flex-direction:column;align-items:flex-start;gap:0.5rem}
+  .cw-link{margin-left:0;padding:0.4rem 0.7rem;font-size:0.85rem}
+  .cw-header{font-size:1rem}
+  .cw-subtitle{font-size:0.85rem}
+  .cw-num{font-size:0.95rem}
+  .cw-dates{font-size:0.85rem}
+  .cw-events{font-size:0.78rem;padding:0.25rem 0.6rem}
+  .cw-badge{font-size:0.7rem;padding:0.15rem 0.5rem}
+}
+@media (max-width:480px){
+  .cw-header{font-size:0.9rem}
+  .cw-subtitle{font-size:0.78rem}
+  .cw-num{font-size:0.85rem}
+  .cw-dates{font-size:0.78rem}
+  .cw-badge{font-size:0.65rem}
+  .cw-link{font-size:0.8rem}
+  .cw-link span{display:none}
+  .current-week-section{padding:1rem 0}
+}
+
+/* Quick Links */
+.quick-links{padding:3rem 0;background:white}
+.quick-links h2{text-align:center;margin-bottom:2rem;color:var(--primary);font-size:1.75rem}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.25rem}
+.link-card{display:block;padding:1.5rem 1rem;background:white;border:2px solid var(--border);border-radius:.75rem;text-align:center;text-decoration:none;color:var(--text);transition:all .2s}
+.link-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 8px 20px rgba(30,58,138,.15)}
+.link-card .icon{font-size:2.25rem;color:var(--primary);margin-bottom:.5rem}
+.link-card .label{font-weight:500;font-size:.95rem}
+
+/* PR Carousel */
+.pr-carousel{padding:2.5rem 0;background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 50%,#06b6d4 100%);background-size:200% 200%;color:white;position:relative;overflow:hidden;animation:gradientShift 8s ease infinite}
+.pr-carousel::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.18) 0%,transparent 7%),radial-gradient(circle at 70% 60%,rgba(255,255,255,.13) 0%,transparent 6%),radial-gradient(circle at 40% 80%,rgba(255,255,255,.1) 0%,transparent 5%);pointer-events:none;animation:particlesFloat 14s ease-in-out infinite}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes particlesFloat{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,-15px)}66%{transform:translate(-15px,20px)}}
+.pr-carousel h2{text-align:center;margin-bottom:1.5rem;color:white;font-size:1.75rem}
+.pr-frame{position:relative;max-width:100%;margin:0 auto;border-radius:1rem;overflow:hidden;box-shadow:0 0 0 2px rgba(59,130,246,.4),0 0 24px rgba(59,130,246,.45),0 12px 32px rgba(0,0,0,.18);background:white;perspective:1600px;perspective-origin:center 55%;animation:glowPulse 3s ease-in-out infinite alternate}
+.pr-frame:hover .pr-slide.active img{animation-play-state:paused;transform:scale(1.08) perspective(1500px) rotateX(2deg) rotateY(-3deg);transition:transform .4s ease}
+@keyframes glowPulse{0%{box-shadow:0 0 0 2px rgba(59,130,246,.3),0 0 20px rgba(59,130,246,.3),0 12px 32px rgba(0,0,0,.18)}100%{box-shadow:0 0 0 3px rgba(6,182,212,.6),0 0 40px rgba(6,182,212,.6),0 12px 32px rgba(0,0,0,.18)}}
+.pr-carousel-container{position:relative;max-width:100%;margin:0 auto;padding:0 1rem;overflow:hidden}
+.pr-track{display:flex;transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform;align-items:flex-start;transform-style:preserve-3d}
+.pr-slide{flex:0 0 100%;min-width:100%;display:block;position:relative;opacity:0;transform:scale(1) rotateY(0);transform-origin:center center;transition:opacity .55s ease,transform .65s cubic-bezier(.22,.61,.36,1);pointer-events:none;will-change:transform,opacity}
+.pr-slide.active{opacity:1}
+.pr-slide.active{opacity:1;transform:scale(1) rotateY(0deg);pointer-events:auto;filter:brightness(1);z-index:2}
+.pr-slide img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;border-radius:1rem}
+.pr-slide-link{display:block;width:100%;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.22,.61,.36,1),box-shadow .45s ease;border-radius:1rem;box-shadow:0 14px 32px rgba(0,0,0,.2),0 4px 10px rgba(0,0,0,.1)}
+.pr-slide-link:hover{transform:rotateY(3deg) scale(1.025);box-shadow:0 30px 60px rgba(0,0,0,.28),0 10px 20px rgba(0,0,0,.12),inset 0 0 0 1px rgba(255,255,255,.4)}
+.pr-slide-link img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;background:#e5e7eb;border-radius:1rem}
+.pr-slide-overlay{position:absolute;bottom:0;left:0;right:0;padding:.65rem 1rem;background:linear-gradient(transparent,rgba(0,0,0,.75));color:white;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:.5rem;pointer-events:none;font-weight:500;border-bottom-left-radius:1rem;border-bottom-right-radius:1rem}
+.pr-slide-overlay i{font-size:.95rem}
+.pr-slide-content{position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1.25rem 1rem;background:linear-gradient(transparent,rgba(0,0,0,.85));color:white;transform:translateY(100%);transition:transform .55s ease .15s;z-index:2;border-bottom-left-radius:1rem;border-bottom-right-radius:1rem}
+.pr-slide.active .pr-slide-content{transform:translateY(0)}
+.pr-slide-date{font-size:.85rem;opacity:.85;margin-bottom:.35rem}
+.pr-slide-title{font-size:1.15rem;font-weight:700;line-height:1.3}
+.pr-slide.active img{animation:kenBurns 7s ease-out forwards}
+.pr-slide.active::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.35) 50%,transparent 100%);animation:shine 1.5s ease-out;pointer-events:none;z-index:3}
+.pr-progress{position:absolute;bottom:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--primary),var(--primary-light));z-index:5;border-bottom-left-radius:1rem;border-bottom-right-radius:1rem}
+.pr-slide.active .pr-progress{animation:progressBar 6s linear forwards}
+@keyframes kenBurns{0%{transform:scale(1)}100%{transform:scale(1.08)}}
+@keyframes shine{0%{left:-100%}100%{left:200%}}
+@keyframes progressBar{0%{width:0%}100%{width:100%}}
+.pr-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:white;border:none;width:44px;height:44px;border-radius:50%;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+.pr-arrow:hover{background:rgba(0,0,0,.8);transform:translateY(-50%) scale(1.08)}
+.pr-arrow.prev{left:12px}
+.pr-arrow.next{right:12px}
+.pr-arrow:disabled{opacity:.3;cursor:not-allowed}
+.pr-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2}
+.pr-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.5);border:2px solid rgba(255,255,255,.8);cursor:pointer;transition:all .2s;padding:0}
+.pr-dot.active{background:white;width:28px;border-radius:5px}
+.pr-info{padding:1.25rem 1.5rem}
+.pr-title{font-size:1.15rem;font-weight:700;color:var(--primary);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.pr-desc{color:var(--text);font-size:.95rem;line-height:1.6;margin-bottom:.75rem}
+.pr-meta{display:flex;flex-wrap:wrap;gap:1rem;font-size:.9rem;color:var(--text-light)}
+.pr-meta span{display:inline-flex;align-items:center;gap:.35rem}
+@keyframes prInfoFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Sections */
+section{padding:4rem 0}
+section h2{text-align:center;margin-bottom:2.5rem;color:var(--primary);font-size:1.9rem}
+section h2 .sub{font-size:.95rem;color:var(--text-light);font-weight:400;display:block;margin-top:.5rem}
+
+/* About */
+/* Curriculum Compare Section */
+.compare-section{background:linear-gradient(135deg,#f0f4ff 0%,#e0e7ff 100%);padding:3.5rem 0}
+.compare-section h2{text-align:center;font-size:1.85rem;color:var(--primary);margin-bottom:.5rem}
+.compare-section .section-subtitle{text-align:center;color:var(--text-light);font-size:1.05rem;margin-bottom:2.5rem}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:1000px;margin:0 auto}
+.compare-card{background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.06);transition:all .3s;display:flex;flex-direction:column}
+.compare-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.12)}
+.compare-new{border:2px solid var(--primary);background:linear-gradient(135deg,#ffffff 0%,#f0f4ff 100%)}
+.compare-old{border:2px solid var(--border)}
+.compare-header{padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid var(--border)}
+.version-badge{display:inline-block;padding:.3rem .75rem;border-radius:20px;font-size:.75rem;font-weight:700;margin-bottom:.5rem;letter-spacing:.02em}
+.version-badge.new{background:var(--primary);color:white}
+.version-badge.old{background:#6b7280;color:white}
+.compare-card h3{color:var(--primary);font-size:1.2rem;font-weight:700;margin-bottom:.25rem}
+.compare-card .compare-header p{color:var(--text-light);font-size:.82rem;margin-top:.25rem}
+.compare-features{list-style:none;padding:0;margin:0 0 1.5rem 0;flex:1}
+.compare-features li{padding:.5rem 0;padding-left:1.5rem;position:relative;font-size:.92rem;color:var(--text);border-bottom:1px solid #f3f4f6;line-height:1.5}
+.compare-features li:last-child{border-bottom:none}
+.compare-features li::before{content:"✓";position:absolute;left:0;top:.5rem;color:#10b981;font-weight:700;font-size:1rem}
+.compare-features li strong{color:var(--primary)}
+.btn-compare{display:block;padding:.85rem 1.25rem;border-radius:10px;text-decoration:none;font-weight:600;text-align:center;transition:all .2s;font-size:.95rem}
+.btn-compare.primary{background:var(--primary);color:white;box-shadow:0 4px 12px rgba(30,58,138,.2)}
+.btn-compare.primary:hover{background:#1e40af;transform:translateY(-2px);box-shadow:0 6px 16px rgba(30,58,138,.3)}
+.btn-compare:not(.primary){background:#6b7280;color:white}
+.btn-compare:not(.primary):hover{background:#4b5563;transform:translateY(-2px)}
+@media (max-width:768px){.compare-grid{grid-template-columns:1fr;gap:1rem}.compare-card{padding:1.5rem}}
+
+/* Career */
+.career-section{background:white}
+.career-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem}
+.career-item{padding:1.25rem;background:var(--bg);border-radius:.5rem;display:flex;align-items:flex-start;gap:1rem;transition:all .2s}
+.career-item:hover{background:#EEF2FF;transform:translateX(4px)}
+.career-item .num{flex-shrink:0;width:2.5rem;height:2.5rem;background:linear-gradient(135deg,var(--secondary),#B91C1C);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Inter',sans-serif}
+.career-item .text{flex:1;padding-top:.25rem}
+
+/* Staff */
+.staff-section{background:var(--bg)}
+.staff-subtitle{text-align:center;color:var(--text-light);margin-bottom:2.5rem;font-size:1rem}
+.staff-card{display:block;max-width:600px;margin:0 auto;padding:2rem;background:white;border-radius:.75rem;text-align:center;text-decoration:none;color:var(--text);box-shadow:0 2px 6px rgba(0,0,0,.05);transition:all .2s;border-top:4px solid var(--secondary)}
+.staff-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
+.staff-icon{font-size:3rem;color:var(--primary);margin-bottom:1rem}
+.staff-card h3{color:var(--primary);font-size:1.2rem;margin-bottom:.5rem}
+.staff-card p{color:var(--text-light);font-size:.95rem;margin-bottom:1rem}
+.staff-link{color:var(--secondary);font-weight:500}
+
+/* Program Info */
+.info-section{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:white}
+.info-section h2{color:white}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;text-align:center}
+.info-card{padding:1.75rem 1rem;background:rgba(255,255,255,.1);border-radius:.75rem;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);transition:all .2s}
+.info-card:hover{background:rgba(255,255,255,.15);transform:translateY(-3px)}
+.info-card .number{font-size:2.5rem;font-weight:700;margin-bottom:.25rem;font-family:'Inter',sans-serif;line-height:1}
+.info-card .label{font-size:.95rem;opacity:.95}
+
+/* Course categories breakdown (collapsible) */
+.breakdown-title{color:white;text-align:center;margin:2.5rem 0 1.5rem;font-size:1.3rem;font-weight:700}
+.breakdown-title .hint{font-size:.8rem;font-weight:400;opacity:.7;display:block;margin-top:.25rem;font-style:italic}
+.category-card{background:rgba(255,255,255,.1);border-radius:.75rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);overflow:hidden;transition:background .2s}
+.category-card[open]{background:rgba(255,255,255,.13)}
+.category-card>summary{cursor:pointer;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;user-select:none;list-style:none;transition:background .2s}
+.category-card>summary::-webkit-details-marker{display:none}
+.category-card>summary::marker{display:none}
+.category-card>summary:hover{background:rgba(255,255,255,.06)}
+.category-card>summary:focus{outline:none}
+.category-card>summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.category-name{flex:1;font-weight:700;font-size:1.05rem;color:white;min-width:200px}
+.category-credits{background:var(--accent);color:white;padding:.3rem .85rem;border-radius:1rem;font-weight:700;font-size:.875rem;font-family:'Inter',sans-serif;white-space:nowrap}
+.category-toggle{color:var(--accent);font-size:1rem;transition:transform .3s;flex-shrink:0;width:1.25rem;text-align:center;line-height:1}
+.category-card[open]>.summary{border-bottom:1px solid rgba(255,255,255,.18)}
+.category-card[open] .category-toggle{transform:rotate(180deg)}
+.category-groups{list-style:none;padding:0 1.5rem;margin:0}
+.category-card[open] .category-groups{padding-bottom:1.25rem}
+.category-groups li{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px dashed rgba(255,255,255,.12);color:rgba(255,255,255,.9);font-size:.95rem;gap:1rem}
+.category-groups li:last-child{border-bottom:none}
+.category-groups li span:last-child{color:var(--accent);font-weight:600;font-family:'Inter',sans-serif;white-space:nowrap}
+.category-note{padding:1rem 1.5rem;color:rgba(255,255,255,.78);font-size:.9rem;margin:0;font-style:italic}
+
+/* Systems */
+.systems-section{background:white}
+.systems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.system-card{padding:1.5rem;background:var(--bg);border-radius:.75rem;border-top:4px solid var(--accent);transition:all .2s;display:flex;flex-direction:column}
+.system-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.1);background:white}
+.system-card .icon-text{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.system-card .icon-text i{font-size:1.5rem;color:var(--primary)}
+.system-card .icon-text h3{color:var(--primary);margin:0;font-size:1.1rem}
+.system-card p{color:var(--text-light);margin-bottom:1rem;font-size:.95rem;flex:1}
+.system-card a{color:var(--secondary);text-decoration:none;font-weight:500}
+.system-card a:hover{text-decoration:underline}
+
+/* News (placeholder) — dark theme ให้ข้อความสีขาวมองเห็น */
+.news-section{background:var(--primary-dark);color:white;padding:3.5rem 0}
+.news-section h2{color:white;margin-bottom:2rem}
+.news-section .section-footer a.btn-outline-primary{color:white;border-color:rgba(255,255,255,.6)}
+.news-section .section-footer a.btn-outline-primary:hover{background:white;color:var(--primary-dark);border-color:white}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;align-items:start}
+.news-card{background:white;border-radius:.75rem;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.05);transition:all .2s;display:flex;flex-direction:column}
+.news-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.news-card .img-placeholder{height:160px;background:linear-gradient(135deg,#E5E7EB,#D1D5DB);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:2rem}
+.news-card .img-placeholder i{opacity:.5}
+.news-card .news-img{width:100%;height:auto;max-height:400px;object-fit:contain;display:block;background:#f1f5f9}
+.news-card .body{padding:1.25rem;display:flex;flex-direction:column}
+.news-card .date{font-size:.85rem;color:var(--text-light);margin-bottom:.5rem}
+.news-card h3{color:var(--primary);font-size:1.1rem;margin-bottom:.5rem;line-height:1.4}
+.news-card .excerpt{color:var(--text-light);font-size:.95rem;margin-bottom:1rem;flex:1}
+.news-card .placeholder-badge{display:inline-block;background:#FEF3C7;color:#92400E;padding:.15rem .5rem;border-radius:.25rem;font-size:.75rem;font-weight:500;margin-bottom:.5rem;align-self:flex-start}
+.news-card a{color:var(--secondary);text-decoration:none;font-weight:500;font-size:.95rem}
+.news-card a:hover{text-decoration:underline}
+
+/* Achievements (placeholder) */
+.achievements-section{background:white}
+.achievements-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.achievement-card{padding:1.5rem;background:var(--bg);border-radius:.75rem;border-left:4px solid var(--accent);display:flex;gap:1rem;transition:all .2s}
+.achievement-card:hover{background:white;transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.achievement-card .icon-circle{flex-shrink:0;width:3rem;height:3rem;background:linear-gradient(135deg,var(--accent),#D97706);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem}
+.achievement-card .year{font-size:.85rem;color:var(--text-light);font-family:'Inter',sans-serif;font-weight:600}
+.achievement-card h3{color:var(--primary);font-size:1.05rem;margin:.25rem 0 .5rem}
+.achievement-card p{color:var(--text-light);font-size:.95rem}
+.achievement-card .placeholder-badge{display:inline-block;background:#FEF3C7;color:#92400E;padding:.15rem .5rem;border-radius:.25rem;font-size:.75rem;font-weight:500;margin-bottom:.25rem}
+
+/* Contact */
+.contact-section{background:var(--primary-dark);color:white;padding:3.5rem 0}
+.contact-section h2{color:white;margin-bottom:2rem}
+.contact-content{display:grid;grid-template-columns:1fr 1.2fr;gap:2.5rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.25rem}
+.contact-item{display:flex;gap:1rem;align-items:flex-start}
+.contact-item i{font-size:1.2rem;color:var(--accent);margin-top:.25rem;flex-shrink:0;width:1.5rem;text-align:center}
+.contact-item strong{display:block;margin-bottom:.25rem}
+.contact-item a{color:white;text-decoration:none}
+.contact-item a:hover{text-decoration:underline}
+.note{background:rgba(245,158,11,.15);border-left:4px solid var(--accent);padding:1.25rem;border-radius:.5rem;font-size:.95rem}
+.contact-form-wrap{background:white;color:var(--text);padding:2rem;border-radius:.5rem;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.contact-form-wrap h3{color:var(--primary);margin-bottom:.5rem;font-size:1.15rem;font-weight:700}
+.contact-form-wrap .form-intro{color:var(--text-light);font-size:.875rem;margin-bottom:1.25rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0}
+.form-group{display:flex;flex-direction:column;margin-bottom:1rem}
+.form-group label{font-size:.875rem;font-weight:600;color:var(--text);margin-bottom:.35rem}
+.form-group .required{color:var(--secondary);margin-left:.15rem}
+.form-group .optional{color:var(--text-light);font-weight:400;font-size:.75rem;margin-left:.25rem}
+.form-group input,.form-group select,.form-group textarea{font-family:inherit;font-size:.95rem;padding:.65rem .85rem;border:1px solid var(--border);border-radius:.375rem;background:white;color:var(--text);transition:border-color .15s,box-shadow .15s;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,138,.15)}
+.form-group input:invalid:not(:placeholder-shown):not(:focus),.form-group select:invalid:not(:focus),.form-group textarea:invalid:not(:placeholder-shown):not(:focus){border-color:var(--secondary)}
+.form-group textarea{resize:vertical;min-height:120px;line-height:1.6}
+.form-group select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.25rem;appearance:none;-webkit-appearance:none}
+.form-hint{font-size:.75rem;color:var(--text-light);margin-top:.25rem;align-self:flex-end}
+.form-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+.form-actions{margin-top:1.25rem}
+.form-actions .btn{display:inline-flex;align-items:center;gap:.5rem}
+.form-actions .btn:disabled{opacity:.6;cursor:not-allowed}
+.form-status{margin-top:1rem;font-size:.95rem;min-height:1rem}
+.form-status:empty{display:none}
+.form-status.loading,.form-status.success,.form-status.error{padding:.85rem 1rem;border-radius:.375rem;display:flex;align-items:center;gap:.5rem}
+.form-status.loading{background:#DBEAFE;color:var(--primary);border-left:3px solid var(--primary)}
+.form-status.success{background:#D1FAE5;color:#065F46;border-left:3px solid #10B981}
+.form-status.error{background:#FEE2E2;color:#991B1B;border-left:3px solid var(--secondary)}
+
+/* Stats section */
+.stats-section{background:var(--bg);padding:4rem 0}
+.stats-section .section-subtitle{text-align:center;color:var(--text-light);margin-bottom:2rem;font-size:.95rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
+.stat-card{background:white;padding:2rem 1.5rem;border-radius:.75rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);transition:all .25s}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
+.stat-card.highlight{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white}
+.stat-card.highlight .stat-label,.stat-card.highlight .stat-meta{color:rgba(255,255,255,.9)}
+.stat-number{font-size:2.5rem;font-weight:700;color:var(--primary);font-family:'Inter',sans-serif;line-height:1.1;margin-bottom:.25rem}
+.stat-card.highlight .stat-number{color:white}
+.stat-number span{font-size:1.25rem;color:var(--text-light);font-weight:500;margin-left:.15rem}
+.stat-card.highlight .stat-number span{color:rgba(255,255,255,.7)}
+.stat-label{font-weight:600;color:var(--text);margin-bottom:.35rem}
+.stat-meta{font-size:.8rem;color:var(--text-light)}
+
+/* Publications section (Aggregate Dashboard) */
+.publications-section{background:white;padding:4rem 0}
+.publications-section .section-subtitle{text-align:center;color:var(--text-light);margin-bottom:2rem;font-size:.95rem}
+.pub-dashboard{background:white;border:2px solid var(--border);border-radius:.75rem;padding:2rem;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.pub-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+.pub-stat-card{background:white;padding:1.5rem 1rem;border-radius:.5rem;text-align:center;border:1px solid var(--border);transition:all .25s}
+.pub-stat-card:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(0,0,0,.1)}
+.pub-stat-card.highlight{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none}
+.pub-stat-num{font-size:2.25rem;font-weight:700;color:var(--primary);font-family:'Inter',sans-serif;line-height:1.1}
+.pub-stat-card.highlight .pub-stat-num{color:white}
+.pub-stat-lbl{font-weight:600;color:var(--text);font-size:.95rem;margin-top:.25rem}
+.pub-stat-card.highlight .pub-stat-lbl{color:rgba(255,255,255,.95)}
+.pub-stat-sub{font-size:.75rem;color:var(--text-light);margin-top:.15rem}
+.pub-stat-card.highlight .pub-stat-sub{color:rgba(255,255,255,.75)}
+.pub-trend{margin-top:1.5rem;padding:1.5rem;background:var(--bg);border-radius:.5rem}
+.pub-trend h3{color:var(--primary);margin:0 0 1.5rem;font-size:1rem;text-align:center}
+.pub-bars{display:flex;align-items:flex-end;justify-content:space-around;gap:.75rem;height:160px;padding:0 .5rem}
+.pub-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.4rem;max-width:80px}
+.pub-bar-num{font-size:.95rem;font-weight:700;color:var(--primary);font-family:'Inter',sans-serif;line-height:1}
+.pub-bar-fill{width:100%;background:linear-gradient(180deg,var(--primary),var(--primary-dark));border-radius:.25rem .25rem 0 0;min-height:4px;transition:height .6s ease-out}
+.pub-bar-year{font-size:.75rem;color:var(--text-light);font-weight:500}
+.pub-areas-section{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.pub-areas-section h3{color:var(--primary);margin:0 0 1rem;font-size:1rem;font-weight:700}
+.pub-areas{display:flex;flex-wrap:wrap;gap:.5rem}
+.area-tag{background:var(--bg);color:var(--text);padding:.4rem .85rem;border-radius:1rem;font-size:.875rem;border:1px solid var(--border);transition:all .2s}
+.area-tag:hover{background:var(--primary);color:white;border-color:var(--primary)}
+
+/* Labs section */
+.labs-section{background:var(--bg);padding:4rem 0}
+.labs-section .section-subtitle{text-align:center;color:var(--text-light);margin-bottom:2rem;font-size:.95rem}
+.labs-slider{position:relative;margin:1.5rem 0 2.5rem}
+.labs-slider .slider-track{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:.5rem .25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.labs-slider .slider-track::-webkit-scrollbar{height:6px}
+.labs-slider .slider-track::-webkit-scrollbar-track{background:var(--bg);border-radius:3px}
+.labs-slider .slider-track::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media (min-width:1024px){
+  .labs-slider .slide,.achievements-slider .slide,.activities-section .slide{flex:0 0 calc((100% - 2rem) / 3);min-width:0}
+}
+@media (min-width:768px) and (max-width:1023px){
+  .labs-slider .slide,.achievements-slider .slide,.activities-section .slide{flex:0 0 calc((100% - 1rem) / 2);min-width:0}
+}
+@media (max-width:767px){
+  .labs-slider .slide,.achievements-slider .slide,.activities-section .slide{flex:0 0 100%;min-width:0}
+  .activities-section .slide img{height:240px !important}
+}
+.labs-slider .slide{min-width:0;scroll-snap-align:start;position:relative}
+.labs-slider .slide img{width:100%;height:320px;object-fit:cover;border-radius:.75rem;display:block;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .25s,box-shadow .25s;cursor:pointer;background:var(--bg)}
+.labs-slider .slide img:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.slide-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.6) 60%,transparent 100%);color:white;padding:2rem 1rem .85rem;border-radius:0 0 .75rem .75rem;font-size:.95rem;font-weight:600;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.5);pointer-events:none}
+.labs-grid-title{color:var(--primary);font-size:1.2rem;margin:2.5rem 0 1.25rem;text-align:center;font-weight:700}
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem}
+.lab-card{background:white;padding:1.5rem;border-radius:.75rem;border-left:4px solid var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.05);transition:all .25s}
+.lab-card:hover{transform:translateX(4px);box-shadow:0 6px 16px rgba(0,0,0,.1);border-left-color:var(--secondary)}
+.lab-icon{font-size:2.25rem;margin-bottom:.5rem;line-height:1}
+.lab-card h3{color:var(--primary);font-size:1.05rem;margin:0 0 .4rem;font-weight:700}
+.lab-card p{margin:0;color:var(--text-light);font-size:.875rem;line-height:1.5}
+
+@media (max-width:768px){
+@media (min-width:1024px){
+  .labs-slider .slide{flex:0 0 calc((100% - 2rem) / 3) !important;min-width:0}
+  .achievements-slider .slide{flex:0 0 calc((100% - 2rem) / 3) !important;min-width:0}
+  .activities-section .slide{flex:0 0 calc((100% - 2rem) / 3) !important;min-width:0}
+  .labs-slider .slide img{height:320px !important}
+  .achievements-slider .slide img{height:320px !important}
+  .activities-section .slide img{height:320px !important}
+}
+@media (min-width:768px) and (max-width:1023px){
+  .labs-slider .slide{flex:0 0 calc((100% - 1rem) / 2) !important;min-width:0}
+  .achievements-slider .slide{flex:0 0 calc((100% - 1rem) / 2) !important;min-width:0}
+  .activities-section .slide{flex:0 0 calc((100% - 1rem) / 2) !important;min-width:0}
+}
+  .labs-slider .slide{flex:0 0 100%}
+  .labs-slider .slide img{height:260px}
+  .activities-section .slide img{height:280px;object-fit:contain}
+}
+@media (max-width:480px){
+  .labs-slider .slide{flex:0 0 100%}
+  .labs-slider .slide img{height:240px}
+  .activities-section .slide img{height:280px;object-fit:contain}
+  .slide-caption{font-size:.85rem;padding:1.5rem .75rem .65rem}
+}
+
+/* Back to top button */
+.back-to-top{position:fixed;bottom:30px;right:30px;width:48px;height:48px;border-radius:50%;background:var(--primary);color:white;border:none;font-size:1.1rem;cursor:pointer;opacity:0;visibility:hidden;transition:all .25s;box-shadow:0 4px 12px rgba(30,58,138,.4);z-index:999;display:flex;align-items:center;justify-content:center}
+.back-to-top.visible{opacity:1;visibility:visible}
+.back-to-top:hover{background:var(--primary-dark);transform:translateY(-4px);box-shadow:0 6px 16px rgba(30,58,138,.5)}
+
+@media (max-width:768px){
+  .pub-stats-grid{grid-template-columns:repeat(2,1fr)}
+  .pub-bars{height:140px;gap:.5rem}
+  .pub-bar-num{font-size:.85rem}
+  .back-to-top{bottom:20px;right:20px;width:42px;height:42px;font-size:1rem}
+}
+
+/* Professional polish */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+/* Reveal animation removed — content always visible (v2.1 stable) */
+.reveal-visible{opacity:1;transform:translateY(0)}
+
+#visitor-count{transition:color .3s ease}
+#visitor-count strong{color:var(--accent);font-family:'Inter',sans-serif;font-weight:700;margin:0 .15rem}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:.25rem}
+.btn{transition:all .25s cubic-bezier(.4,0,.2,1)}
+.btn-primary:hover{box-shadow:0 6px 16px rgba(220,38,38,.35)}
+.btn-outline-primary:hover{box-shadow:0 4px 12px rgba(30,58,138,.2)}
+
+/* Achievements horizontal slider */
+.achievements-slider{position:relative;margin:1.5rem 0 1rem}
+.achievements-slider .slider-track{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:.5rem .25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.achievements-slider .slider-track::-webkit-scrollbar{height:6px}
+.achievements-slider .slider-track::-webkit-scrollbar-track{background:var(--bg);border-radius:3px}
+.achievements-slider .slider-track::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.achievements-slider .slider-track::-webkit-scrollbar-thumb:hover{background:var(--text-light)}
+.achievements-slider .slide{min-width:0;scroll-snap-align:start;position:relative}
+.achievements-slider .slide img{width:100%;height:320px;object-fit:contain;border-radius:.75rem;display:block;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .25s,box-shadow .25s;cursor:pointer;background:#f1f5f9}
+.achievements-slider .slide img:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.slider-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(30,58,138,.92);color:white;border:none;width:46px;height:46px;border-radius:50%;font-size:1.75rem;cursor:pointer;z-index:10;transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 4px 12px rgba(30,58,138,.35);font-family:inherit;padding:0}
+.slider-btn:hover{background:var(--primary);transform:translateY(-50%) scale(1.08)}
+.activities-section .slider-track{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:.5rem .25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.activities-section .slider-track::-webkit-scrollbar{height:6px}
+.activities-section .slider-track::-webkit-scrollbar-track{background:var(--bg);border-radius:3px}
+.activities-section .slider-track::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.activities-section .slide{min-width:0;scroll-snap-align:start;position:relative}
+.activities-section .slide img{width:100%;height:320px;object-fit:contain;border-radius:.75rem;display:block;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .25s,box-shadow .25s;cursor:pointer;background:#f1f5f9}
+.activities-section .slide img:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.slider-btn:active{transform:translateY(-50%) scale(.95)}
+.slider-btn:disabled{opacity:.3;cursor:not-allowed}
+.slider-btn.prev{left:-23px}
+.slider-btn.next{right:-23px}
+@media (max-width:768px){
+  .achievements-slider .slide{flex:0 0 calc((100% - 1rem) / 2)}
+  .slider-btn.prev{left:8px}
+  .slider-btn.next{right:8px}
+}
+@media (max-width:480px){
+  .achievements-slider .slide{flex:0 0 100%}
+}
+
+/* News + Achievements dynamic states */
+.loading-placeholder,.empty-state,.error-state{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--text-light)}
+.empty-state,.error-state{display:flex;flex-direction:column;align-items:center;gap:1rem}
+.empty-state i,.error-state i{font-size:3rem;opacity:.5}
+.empty-state p,.error-state p{margin:0}
+.empty-state .hint{font-size:.875rem;background:var(--bg);padding:.75rem 1rem;border-radius:.5rem}
+.empty-state code{background:var(--border);padding:.1rem .4rem;border-radius:.25rem;font-size:.85em;font-family:'Inter',monospace}
+.section-footer{text-align:center;margin-top:2rem}
+.hashtag-hint{text-align:center;color:var(--text-light);font-size:.875rem;margin-top:1.5rem}
+.hashtag-hint code{background:var(--bg);padding:.15rem .4rem;border-radius:.25rem;color:var(--secondary);font-weight:600;font-family:'Inter',monospace}
+.achievement-card img.achievement-img{width:100%;height:180px;object-fit:cover;border-radius:.5rem;margin-bottom:.75rem}
+.achievement-card .year{display:inline-block;background:var(--accent);color:white;padding:.15rem .6rem;border-radius:.25rem;font-size:.75rem;font-weight:600;margin-bottom:.5rem}
+.btn-outline-primary{border:2px solid var(--primary);color:var(--primary);background:white;display:inline-flex;align-items:center;gap:.5rem;text-decoration:none}
+.btn-outline-primary:hover{background:var(--primary);color:white}
+
+/* Footer */
+footer{background:#0F172A;color:rgba(255,255,255,.7);padding:1.5rem 0;text-align:center;font-size:.875rem}
+.admin-news-link{display:inline-flex;align-items:center;justify-content:center;width:10px;height:10px;padding:17px;margin-top:.1rem;background:rgba(255,255,255,.04);color:rgba(255,255,255,.5)!important;border:1px solid rgba(255,255,255,.1);border-radius:50%;font-size:.6rem;text-decoration:none!important;transition:all .2s;opacity:.4}
+.admin-news-link:hover{background:rgba(255,255,255,.16);color:white!important;border-color:rgba(255,255,255,.4);opacity:1}
+footer a{color:white;text-decoration:none}
+footer a:hover{text-decoration:underline}
+.visitor-counter{margin-bottom:1rem;color:white;font-size:1rem;font-weight:500}
+.visitor-counter i{color:var(--accent);margin-right:.5rem}
+.visitor-counter #visitor-count{font-weight:700;color:var(--accent);font-family:'Inter',sans-serif}
+
+/* Large desktop */
+@media (min-width:1024px){
+  .container{max-width:1320px;padding:0 2rem}
+  .hero{padding:2.5rem 0 3rem}
+  .hero .mt-logo{height:160px}
+  .hero h1{font-size:2rem}
+  .hero .subtitle{font-size:1.05rem}
+  .hero .tagline{font-size:1rem}
+  .hero .crown{font-size:.9rem}
+  section{padding:4rem 0}
+  section h2{font-size:1.9rem}
+}
+
+/* Tablet */
+@media (min-width:769px) and (max-width:1024px){
+  .hero{padding:2rem 0 2.5rem}
+  .hero .mt-logo{height:140px}
+  .hero h1{font-size:1.7rem}
+  .hero .subtitle{font-size:.95rem}
+  section h2{font-size:1.65rem}
+}
+
+/* Mobile */
+@media (max-width:768px){
+  body{font-size:15px}
+  .container{padding:0 1rem}
+
+  /* Top Bar - stack on mobile */
+  .top-bar{font-size:.8rem;padding:.25rem 0}
+  .top-bar .container{flex-direction:column;text-align:center;padding:.5rem 1rem;gap:.5rem}
+  .top-bar>div{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.25rem .75rem}
+  .top-bar a{margin-right:0;font-size:.78rem}
+
+  /* Hero */
+  .hero{padding:1.5rem 0 2rem}
+  .hero-inner{grid-template-columns:1fr;gap:1.25rem;text-align:center}
+  .hero-content,.hero-content .crown,.hero-content .subtitle,.hero-content .tagline,.hero-content .cta{text-align:center}
+  .hero .mt-logo{height:100px;margin-bottom:0}
+  .hero h1{font-size:1.25rem;line-height:1.3}
+  .hero .subtitle{font-size:.85rem;margin-bottom:.75rem}
+  .hero .tagline{font-size:.85rem;padding:.6rem .75rem;margin:.75rem auto;line-height:1.5}
+  .hero .crown{font-size:.7rem;letter-spacing:.05em;margin-bottom:.35rem}
+  .cta .btn{display:block;margin:.4rem auto;max-width:280px;padding:.75rem 1.5rem;font-size:.9rem}
+
+  /* Sections */
+  section{padding:2rem 0}
+  section h2{font-size:1.35rem;margin-bottom:1.5rem}
+  section h2 .sub{font-size:.85rem}
+
+  /* Quick Links grid - 2 columns */
+  .quick-links{padding:2rem 0}
+  .links-section{margin-bottom:1.5rem}
+  .links-section:last-child{margin-bottom:0}
+  .section-title{font-size:1rem;font-weight:600;color:var(--primary);margin-bottom:0.6rem;padding:0 0.25rem;text-align:left}
+  .links-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+  .link-card{padding:1rem .5rem}
+  .link-card .icon{font-size:1.75rem;margin-bottom:.25rem}
+  .link-card .label{font-size:.8rem}
+
+  /* PR Carousel Modal (Click to enlarge) */
+.pr-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);z-index:10000;display:none;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(8px)}
+.pr-modal.active{display:flex;animation:modalFadeIn .35s ease}
+@keyframes modalFadeIn{0%{opacity:0;transform:scale(.92)}100%{opacity:1;transform:scale(1)}}
+.pr-modal-img{max-width:90vw;max-height:80vh;object-fit:contain;border-radius:.5rem;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.pr-modal-close{position:absolute;top:1.5rem;right:2rem;background:rgba(255,255,255,.18);border:none;color:white;width:48px;height:48px;border-radius:50%;font-size:1.5rem;cursor:pointer;transition:background .2s}
+.pr-modal-close:hover{background:rgba(255,255,255,.35)}
+.pr-modal-title{color:white;font-size:1.1rem;text-align:center;margin-top:1rem;max-width:90vw}
+
+/* PR Carousel - mobile */
+  .pr-carousel{padding:1.5rem 0}
+  .pr-frame{border-radius:.5rem}
+  .pr-arrow{width:36px;height:36px;font-size:1.25rem}
+  .pr-arrow.prev{left:6px}
+  .pr-arrow.next{right:6px}
+  .pr-info{padding:1rem}
+  .pr-title{font-size:1rem}
+  .pr-desc{font-size:.9rem}
+  .pr-meta{font-size:.8rem;gap:.5rem}
+
+  /* Career - 1 column */
+  .career-section{padding:2rem 0}
+  .career-grid{grid-template-columns:1fr;gap:.75rem}
+  .career-item{padding:1rem;gap:.75rem}
+  .career-item .num{width:2rem;height:2rem;font-size:.85rem}
+  .career-item .text{font-size:.9rem}
+
+  /* About - 1 column */
+  .about-grid{grid-template-columns:1fr;gap:1rem}
+
+  /* Systems - 1 column */
+  .systems-grid{grid-template-columns:1fr;gap:1rem}
+  .system-card{padding:1.25rem}
+
+  /* Staff */
+  .staff-card{padding:1.5rem}
+  .staff-icon{font-size:2.5rem}
+
+  /* News - 1 column */
+  .news-grid{grid-template-columns:1fr;gap:1rem}
+
+  /* Achievements - 1 column + center alignment */
+  .achievements-grid{grid-template-columns:1fr;gap:1rem}
+  .achievement-card{padding:1.25rem;flex-direction:column;text-align:center;align-items:center}
+  .achievement-card .icon-circle{margin:0 auto .5rem}
+
+  /* Program Info - 2 columns */
+  .info-section{padding:2rem 0}
+  .info-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+  .info-card{padding:1.25rem .75rem}
+  .info-card .number{font-size:1.85rem}
+  .info-card .label{font-size:.85rem}
+
+  /* Contact */
+  .contact-section{padding:2.5rem 0}
+  .contact-section h2{font-size:1.5rem}
+  .contact-content{grid-template-columns:1fr;gap:1.5rem}
+  .contact-info{gap:1rem}
+  .contact-item{font-size:.95rem}
+  .note{padding:1rem;font-size:.9rem}
+  .contact-form-wrap{padding:1.5rem}
+  .form-row{grid-template-columns:1fr;gap:0}
+
+  /* Footer */
+  footer{padding:1rem 0.5rem;font-size:.8rem}
+}
+
+/* Very small phones */
+@media (max-width:380px){
+  body{font-size:14px}
+  .hero{padding:1.25rem 0 1.5rem}
+  .hero .mt-logo{height:85px}
+  .hero h1{font-size:1.15rem;line-height:1.3}
+  .hero .tagline{font-size:.8rem;padding:.5rem .6rem}
+  .hero .crown{font-size:.65rem}
+  .links-grid{grid-template-columns:1fr}
+  .link-card .icon{font-size:1.5rem}
+  .link-card .label{font-size:.85rem}
+  .info-grid{grid-template-columns:1fr}
+  .info-card .number{font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="container">
+    <div>
+      <img src="/assets/logo-ruts.jpg" alt="RUTS" class="ruts-logo">
+      <span>มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</span>
+    </div>
+    <div>
+      <a href="https://www.rmutsv.ac.th" target="_blank"><i class="fas fa-university"></i> เว็บมหาลัย</a>
+      <a href="https://eng.rmutsv.ac.th/ruts/mechanicaltechnology/" target="_blank"><i class="fas fa-globe"></i> เว็บคณะ</a>
+      <a href="https://www.facebook.com/profile.php?id=61572463624226" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="mailto:wasu.s@rmutsv.ac.th"><i class="fas fa-envelope"></i> ติดต่อ</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-logo-wrap">
+        <img src="/assets/logo-mt.png" alt="MT Mechanical Technology" class="mt-logo">
+      </div>
+      <div class="hero-content">
+        <p class="crown">คณะวิศวกรรมศาสตร์ · มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+    <h1>หลักสูตรอุตสาหกรรมศาสตรบัณฑิต<br>สาขาวิชาเทคโนโลยีเครื่องกล (ต่อเนื่อง)</h1>
+    <p class="subtitle">สร้างนักปฏิบัติมืออาชีพ พร้อมนวัตกรรมเพื่ออุตสาหกรรมเป้าหมาย</p>
+        <div class="cta">
+          <a href="#about" class="btn btn-primary">
+            <i class="fas fa-info-circle"></i> เกี่ยวกับหลักสูตร
+          </a>
+          <a href="/contact.html" class="btn btn-outline">
+            <i class="fas fa-envelope"></i> ติดต่อสอบถาม
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Current Week -->
+<section class="current-week-section">
+<section class="current-week-section">
+  <div class="container">
+    <div class="cw-header-wrap">
+      <h2 class="cw-header"><i class="fas fa-graduation-cap"></i>ภาคการศึกษาที่ 1 ปีการศึกษา 2569</h2>
+    </div>
+    <div class="current-week-card">
+      <span class="cw-badge">📅 สัปดาห์ปัจจุบัน</span>
+      <span class="cw-num">สัปดาห์ที่ <span id="cw-num">–</span></span>
+      <span class="cw-dates" id="cw-dates">📅 –</span>
+      <span class="cw-events" id="cw-events">–</span>
+      <a href="/academic-calendar.html" class="cw-link">ดูปฏิทินฉบับเต็ม <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+
+<script>
+// ★ Current Week Auto-Update (calculates from real date, not hardcoded)
+(function(){
+  const SEMESTER_START = new Date('2026-06-29');
+  const today = new Date();
+  const daysSince = Math.floor((today - SEMESTER_START) / 86400000);
+  const cwNum = document.getElementById('cw-num');
+  const cwDates = document.getElementById('cw-dates');
+  const cwEvents = document.getElementById('cw-events');
+  if(!cwNum) return;
+  if(daysSince < 0){
+    cwNum.textContent = '–';
+    cwDates.textContent = '–';
+    cwEvents.textContent = '–';
+    return;
+  }
+  const weekNum = Math.floor(daysSince / 7) + 1;
+  if(weekNum > 18){
+    cwNum.textContent = weekNum;
+    cwDates.textContent = '–';
+    cwEvents.textContent = '–';
+    return;
+  }
+  const weekStart = new Date(SEMESTER_START);
+  weekStart.setDate(weekStart.getDate() + (weekNum - 1) * 7);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+  const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  function fmtThai(d){
+    return d.getDate() + ' ' + thaiMonths[d.getMonth()] + ' ' + (d.getFullYear() + 543);
+  }
+  const events = {
+    '08-12':'หยุดวันแม่แห่งชาติ',
+    '10-23':'หยุดวันปิยมหาราช',
+    '12-05':'วันพ่อแห่งชาติ',
+    '12-10':'วันรัฐธรรมนูญ',
+  };
+  const weekEvents = [];
+  for(let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)){
+    const key = String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    if(events[key]) weekEvents.push(events[key]);
+  }
+  cwNum.textContent = weekNum;
+  cwDates.textContent = '📅 ' + fmtThai(weekStart) + ' - ' + fmtThai(weekEnd);
+  cwEvents.textContent = weekEvents.length > 0 ? '🔸 ' + weekEvents.join(' · ') : '–';
+})();
+</script>
+
+<!-- PR Carousel -->
+<section class="pr-carousel" style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);color:white;padding:3rem 0">
+  <div class="container">
+    <h2>📰 ข่าวสารและกิจกรรม</h2>
+    <div class="pr-frame" id="prCarousel">
+      <div class="pr-track"><!-- slides loaded dynamically by JS --></div>
+      <button class="pr-arrow prev" aria-label="สไลด์ก่อนหน้า">‹</button>
+      <button class="pr-arrow next" aria-label="สไลด์ถัดไป">›</button>
+      <div class="pr-dots"><!-- dots loaded dynamically by JS --></div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Links -->
+<section class="quick-links" style="background:#0f172a">
+  <div class="container">
+    <h2 style="color:white;text-shadow:0 1px 2px rgba(0,0,0,.5)">⚡ ทางลัดเข้าระบบ</h2>
+
+    <!-- 📅 Calendar Section -->
+    <div class="links-section">
+      <h3 class="section-title" style="color:#cbd5e1">📅 ปฏิทิน</h3>
+      <div class="links-grid">
+        <a href="/academic-calendar.html" class="link-card">
+          <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="label">ปฏิทินการศึกษา</div>
+        </a>
+        <a href="/internship-calendar.html" class="link-card">
+          <div class="icon"><i class="fas fa-briefcase"></i></div>
+          <div class="label">ปฏิทินการฝึกงาน</div>
+        </a>
+        <a href="/space_calendar.php" class="link-card" target="_blank">
+          <div class="icon"><i class="fas fa-calendar-week"></i></div>
+          <div class="label">ปฏิทินห้อง</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 🔧 System Section -->
+    <div class="links-section">
+      <h3 class="section-title" style="color:#cbd5e1">🔧 ระบบ</h3>
+      <div class="links-grid">
+        <a href="https://borrow.mt-ruts.com" class="link-card" target="_blank">
+          <div class="icon"><i class="fas fa-tools"></i></div>
+          <div class="label">ยืม-คืนเครื่องมือ</div>
+        </a>
+        <a href="https://dashboard.mt-ruts.com/project-tracking/login.php" class="link-card" target="_blank">
+          <div class="icon"><i class="fas fa-project-diagram"></i></div>
+          <div class="label">Project Tracking</div>
+        </a>
+        <a href="https://dashboard.mt-ruts.com/MT-AUNQA/" class="link-card" target="_blank">
+          <div class="icon"><i class="fas fa-clipboard-check"></i></div>
+          <div class="label">MT-AUNQA</div>
+        </a>
+        <a href="/space_reserve.php" class="link-card" target="_blank">
+          <div class="icon"><i class="fas fa-door-open"></i></div>
+          <div class="label">ขอใช้ห้อง</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Curriculum Compare -->
+<section class="compare-section" id="about">
+  <div class="container">
+    <h2>📚 เปรียบเทียบหลักสูตร — 2565 vs 2570</h2>
+    <p class="section-subtitle">เห็นความเปลี่ยนแปลงที่สำคัญในการปรับปรุงหลักสูตร</p>
+
+    <div class="compare-grid">
+      <!-- 2570 (LEFT - NEW) -->
+      <div class="compare-card compare-new">
+        <div class="compare-header">
+          <span class="version-badge new">🎓 2570 (NEW)</span>
+          <h3>หลักสูตรปรับปรุง พ.ศ. 2570</h3>
+          <p>เริ่มภาค 1/2570 · ผ่านสภามหาวิทยาลัย 18 มิ.ย. 69</p>
+        </div>
+        <ul class="compare-features">
+          <li><strong>89 หน่วยกิต</strong> · 2 ปี</li>
+          <li><strong>2 Tracks</strong> (อุตสาหกรรม + EV)</li>
+          <li><strong>AI & Digital</strong> ครบทุกชั้นปี</li>
+          <li><strong>EV Lab ใหม่</strong> · 6 ชุด training</li>
+          <li><strong>7 PLOs</strong> (สอดคล้อง มคอ. 2565)</li>
+          <li>ฝึกงาน <strong>320 ชม.</strong></li>
+          <li>AI บังคับในศึกษาทั่วไป</li>
+          <li>SDGs 4/7/8/9 + Net Zero 2593</li>
+        </ul>
+        <a href="/curriculum-2570.html" target="_blank" rel="noopener" class="btn-compare primary">📖 ดูรายละเอียด 2570 →</a>
+      </div>
+
+      <!-- 2565 (RIGHT) -->
+      <div class="compare-card compare-old">
+        <div class="compare-header">
+          <span class="version-badge old">📚 2565</span>
+          <h3>หลักสูตรปรับปรุง พ.ศ. 2565</h3>
+          <p>ใช้อยู่ก่อนหน้า · ปรับปรุงจาก 2560</p>
+        </div>
+        <ul class="compare-features">
+          <li><strong>75 หน่วยกิต</strong> · 2 ปี</li>
+          <li><strong>2 โมดูล</strong> (เครื่องกล + ยานยนต์สมัยใหม่)</li>
+          <li>Automation เบื้องต้น</li>
+          <li>— (ไม่มี EV)</li>
+          <li><strong>CLOs</strong> (มคอ.2 พ.ศ. 2558 เก่า)</li>
+          <li>ฝึกงาน <strong>320 ชม.</strong></li>
+          <li>4 กลุ่มศึกษาทั่วไป</li>
+          <li>8 อาชีพ</li>
+        </ul>
+        <a href="/curriculum-2565.html" target="_blank" rel="noopener" class="btn-compare">📖 ดูรายละเอียด 2565 →</a>
+      </div>
+    </div>
+
+    <!-- 🎓 GPA Simulator Quick Access -->
+    <div style="text-align:center;margin:2rem auto 1rem;max-width:900px">
+      <a href="/gpa-simulator.html" class="btn-compare primary" style="display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,#1e3a8a,#3b82f6);box-shadow:0 4px 16px rgba(30,58,138,.25)">
+        🧮 ลองคำนวณ GPA Simulator (หลักสูตร 2565 & 2570)
+      </a>
+      <p style="margin-top:.5rem;color:var(--text-muted);font-size:.85rem">
+        จำลองผลเกรดแยกเทอม · คำนวณ GPA/GPAX อัตโนมัติ · ไม่ต้อง login · เก็บข้อมูลในเครื่อง
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Career -->
+<section class="career-section">
+  <div class="container">
+    <h2>💼 อาชีพที่สามารถประกอบได้หลังสำเร็จการศึกษา</h2>
+    <div class="career-grid">
+      <div class="career-item">
+        <div class="num">1</div>
+        <div class="text">พนักงานควบคุมเครื่องจักรในโรงงานอุตสาหกรรม</div>
+      </div>
+      <div class="career-item">
+        <div class="num">2</div>
+        <div class="text">พนักงานควบคุมการทำงานของหม้อไอน้ำ เครื่องทำความเย็นและปรับอากาศ</div>
+      </div>
+      <div class="career-item">
+        <div class="num">3</div>
+        <div class="text">พนักงานฝ่ายซ่อมและบำรุงรักษาเครื่องจักร</div>
+      </div>
+      <div class="career-item">
+        <div class="num">4</div>
+        <div class="text">รับราชการ และพนักงานในรัฐวิสาหกิจที่เกี่ยวข้องกับงานเครื่องกล</div>
+      </div>
+      <div class="career-item">
+        <div class="num">5</div>
+        <div class="text">พนักงานในอุตสาหกรรมและศูนย์บริการยานยนต์ไฟฟ้า</div>
+      </div>
+      <div class="career-item">
+        <div class="num">6</div>
+        <div class="text">พนักงานเขียนแบบ และออกแบบด้านเครื่องกล</div>
+      </div>
+      <div class="career-item">
+        <div class="num">7</div>
+        <div class="text">ผู้สอนในสถาบันการศึกษา</div>
+      </div>
+      <div class="career-item">
+        <div class="num">8</div>
+        <div class="text">อาชีพอิสระในงานเครื่องกลหรืองานอื่น ๆ ที่เกี่ยวข้อง</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Staff -->
+<section class="staff-section">
+  <div class="container">
+    <h2>👨‍🏫 บุคลากรประจำหลักสูตร</h2>
+    <p class="staff-subtitle">ทีมอาจารย์ผู้รับผิดชอบและอาจารย์ประจำหลักสูตรสาขาวิชาเทคโนโลยีเครื่องกล</p>
+    <a href="https://eng.rmutsv.ac.th/ruts/mechanical-technology-2/" class="staff-card" target="_blank">
+      <div class="staff-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+      <h3>อาจารย์ผู้รับผิดชอบหลักสูตร</h3>
+      <p>ดูข้อมูลบุคลากร คุณวุฒิ ผลงานวิจัย และประสบการณ์สอนของอาจารย์ทั้งหมด</p>
+      <span class="staff-link">ดูข้อมูลเพิ่มเติม →</span>
+    </a>
+  </div>
+</section>
+
+<!-- Program Info -->
+<section class="info-section">
+  <div class="container">
+    <h2>📊 ข้อมูลหลักสูตร</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="number">75</div>
+        <div class="label">หน่วยกิต</div>
+      </div>
+      <div class="info-card">
+        <div class="number">2565</div>
+        <div class="label">ปรับปรุง พ.ศ.</div>
+      </div>
+      <div class="info-card">
+        <div class="number">2565</div>
+        <div class="label">เริ่มใช้ พ.ศ.</div>
+      </div>
+      <div class="info-card">
+        <div class="number">ต่อเนื่อง</div>
+        <div class="label">รูปแบบหลักสูตร</div>
+      </div>
+    </div>
+
+    <h3 class="breakdown-title">📚 โครงสร้างหลักสูตร (75 หน่วยกิต) <span class="hint">คลิกเพื่อย่อ/ขยาย</span></h3>
+
+    <details class="category-card">
+      <summary>
+        <span class="category-name">1. หมวดวิชาศึกษาทั่วไป</span>
+        <span class="category-credits">18 หน่วยกิต</span>
+        <span class="category-toggle">▼</span>
+      </summary>
+      <ul class="category-groups">
+        <li><span>1.1 กลุ่มวิชาคุณภาพชีวิตดี มีสุข</span><span>3 หน่วยกิต</span></li>
+        <li><span>1.2 กลุ่มวิชาพลเมืองดี วิถีประชาธิปไตย</span><span>3 หน่วยกิต</span></li>
+        <li><span>1.3 กลุ่มวิชาภาษาและการสื่อสาร</span><span>9 หน่วยกิต</span></li>
+        <li><span>1.4 กลุ่มวิชาวิทยาศาสตร์และเทคโนโลยี</span><span>3 หน่วยกิต</span></li>
+      </ul>
+    </details>
+
+    <details class="category-card">
+      <summary>
+        <span class="category-name">2. หมวดวิชาเฉพาะ</span>
+        <span class="category-credits">51 หน่วยกิต</span>
+        <span class="category-toggle">▼</span>
+      </summary>
+      <ul class="category-groups">
+        <li><span>2.1 กลุ่มวิชาพื้นฐานวิชาชีพ</span><span>13 หน่วยกิต</span></li>
+        <li><span>2.2 กลุ่มวิชาชีพบังคับ</span><span>26 หน่วยกิต</span></li>
+        <li><span>2.3 กลุ่มวิชาชีพเลือก</span><span>12 หน่วยกิต</span></li>
+      </ul>
+    </details>
+
+    <details class="category-card">
+      <summary>
+        <span class="category-name">3. หมวดวิชาเลือกเสรี</span>
+        <span class="category-credits">6 หน่วยกิต</span>
+        <span class="category-toggle">▼</span>
+      </summary>
+      <p class="category-note">นักศึกษาสามารถเลือกเรียนวิชาใดก็ได้ที่เปิดสอนในมหาวิทยาลัย โดยไม่จำเป็นต้องเป็นวิชาในหลักสูตร</p>
+    </details>
+  </div>
+</section>
+
+<!-- Graduate Stats (from AUN-QA) -->
+<section class="stats-section">
+  <div class="container">
+    <h2>📊 สถิติผลสำเร็จของบัณฑิต</h2>
+    <p class="section-subtitle">ข้อมูลจากการประเมิน AUN-QA ปีการศึกษา 2568</p>
+    <div class="stats-grid">
+      <div class="stat-card highlight">
+        <div class="stat-number">4.75<span>/5</span></div>
+        <div class="stat-label">ความพึงพอใจผู้ใช้บัณฑิต</div>
+        <div class="stat-meta">นายจ้าง 18 ราย</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">6<span>/6</span></div>
+        <div class="stat-label">PLOs บรรลุเป้า</div>
+        <div class="stat-meta">100% ทุกข้อ ✅</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">4.71<span>/5</span></div>
+        <div class="stat-label">คะแนนประเมินรวม</div>
+        <div class="stat-meta">177 รายการ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">88.42<span>%</span></div>
+        <div class="stat-label">ภาวะการมีงานทำ</div>
+        <div class="stat-meta">บัณฑิตได้งานหลังสำเร็จการศึกษา</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Publications (Aggregate Dashboard from OpenAlex) -->
+<section class="publications-section">
+  <div class="container">
+    <h2>🔬 ผลงานวิจัยและการตีพิมพ์</h2>
+    <p class="section-subtitle">ภาพรวมผลงานตีพิมพ์จากคณาจารย์ในหลักสูตร · ข้อมูลจาก OpenAlex API</p>
+
+    <div class="pub-dashboard">
+      <div class="pub-stats-grid">
+        <div class="pub-stat-card highlight">
+          <div class="pub-stat-num">15</div>
+          <div class="pub-stat-lbl">Publications</div>
+          <div class="pub-stat-sub">ผลงานวิจัยตีพิมพ์ทั้งหมด</div>
+        </div>
+        <div class="pub-stat-card">
+          <div class="pub-stat-num">91</div>
+          <div class="pub-stat-lbl">Citations</div>
+          <div class="pub-stat-sub">การอ้างอิงสะสม</div>
+        </div>
+        <div class="pub-stat-card">
+          <div class="pub-stat-num">5</div>
+          <div class="pub-stat-lbl">h-index</div>
+          <div class="pub-stat-sub">ดัชนีการอ้างอิง</div>
+        </div>
+        <div class="pub-stat-card">
+          <div class="pub-stat-num">3</div>
+          <div class="pub-stat-lbl">i10-index</div>
+          <div class="pub-stat-sub">ผลงานถูกอ้างอิง ≥10 ครั้ง</div>
+        </div>
+      </div>
+
+      <div class="pub-trend">
+        <h3>📈 แนวโน้มผลงานตีพิมพ์ (พ.ศ. 2563–2568)</h3>
+        <div class="pub-bars">
+          <div class="pub-bar">
+            <div class="pub-bar-num">1</div>
+            <div class="pub-bar-fill" style="height:17%"></div>
+            <div class="pub-bar-year">2563</div>
+          </div>
+          <div class="pub-bar">
+            <div class="pub-bar-num">6</div>
+            <div class="pub-bar-fill" style="height:100%"></div>
+            <div class="pub-bar-year">2564</div>
+          </div>
+          <div class="pub-bar">
+            <div class="pub-bar-num">2</div>
+            <div class="pub-bar-fill" style="height:33%"></div>
+            <div class="pub-bar-year">2565</div>
+          </div>
+          <div class="pub-bar">
+            <div class="pub-bar-num">3</div>
+            <div class="pub-bar-fill" style="height:50%"></div>
+            <div class="pub-bar-year">2566</div>
+          </div>
+          <div class="pub-bar">
+            <div class="pub-bar-num">1</div>
+            <div class="pub-bar-fill" style="height:17%"></div>
+            <div class="pub-bar-year">2567</div>
+          </div>
+          <div class="pub-bar">
+            <div class="pub-bar-num">1</div>
+            <div class="pub-bar-fill" style="height:17%"></div>
+            <div class="pub-bar-year">2568</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-areas-section">
+        <h3>🎯 สาขาวิจัยหลัก</h3>
+        <div class="pub-areas">
+          <span class="area-tag">🔥 Combustion / Gasification</span>
+          <span class="area-tag">💨 Biogas Purification</span>
+          <span class="area-tag">🌡️ Drying / Heat Transfer</span>
+          <span class="area-tag">💻 CFD</span>
+          <span class="area-tag">♻️ Pyrolysis</span>
+          <span class="area-tag">🚗 EV Technology</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Labs & Facilities -->
+<section class="labs-section">
+  <div class="container">
+    <h2>🔬 ห้องปฏิบัติการและครุภัณฑ์</h2>
+    <p class="section-subtitle">ห้องปฏิบัติการสนับสนุนการเรียนการสอนและงานวิจัย</p>
+
+    <div class="labs-slider">
+      <button class="slider-btn prev" aria-label="ก่อนหน้า" type="button">‹</button>
+      <div class="slider-track" id="labs-track"><!-- loaded dynamically by JS --></div>
+      <button class="slider-btn next" aria-label="ถัดไป" type="button">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- Student Systems -->
+<section class="systems-section">
+  <div class="container">
+    <h2>🔗 ระบบสำหรับนักศึกษาและอาจารย์</h2>
+    <div class="systems-grid">
+      <div class="system-card">
+        <div class="icon-text">
+          <i class="fas fa-tools"></i>
+          <h3>ยืม-คืนเครื่องมือวัด (ME)</h3>
+        </div>
+        <p>ระบบจัดการการยืม-คืนเครื่องมือวัด สาขาวิศวกรรมเครื่องกล</p>
+        <a href="https://borrow.mt-ruts.com" target="_blank">เข้าใช้งาน →</a>
+      </div>
+      <div class="system-card">
+        <div class="icon-text">
+          <i class="fas fa-project-diagram"></i>
+          <h3>Project Tracking</h3>
+        </div>
+        <p>ระบบติดตามโครงงานนักศึกษา</p>
+        <a href="https://dashboard.mt-ruts.com/project-tracking/login.php" target="_blank">เข้าใช้งาน →</a>
+      </div>
+      <div class="system-card">
+        <div class="icon-text">
+          <i class="fas fa-clipboard-check"></i>
+          <h3>MT-AUNQA</h3>
+        </div>
+        <p>ระบบประกันคุณภาพหลักสูตรตามมาตรฐาน AUN-QA</p>
+        <a href="https://dashboard.mt-ruts.com/MT-AUNQA/" target="_blank">เข้าใช้งาน →</a>
+      </div>
+      <div class="system-card">
+        <div class="icon-text">
+          <i class="fas fa-file-alt"></i>
+          <h3>แบบฟอร์มคำร้อง</h3>
+        </div>
+        <p>แบบฟอร์มออนไลน์สำหรับนักศึกษา ขอเอกสาร ลงทะเบียน และคำร้องต่าง ๆ</p>
+        <a href="https://reg.rmutsv.ac.th/ruts/forms/" target="_blank" rel="noopener">เข้าใช้งาน →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Achievements (Horizontal Slider) -->
+<section class="achievements-section">
+  <div class="container">
+    <h2>🏆 ผลงานและรางวัล</h2>
+    <div class="achievements-slider">
+      <button class="slider-btn prev" aria-label="ก่อนหน้า" type="button">‹</button>
+      <div class="slider-track" id="achievements-track"><!-- loaded dynamically by JS --></div>
+      <button class="slider-btn next" aria-label="ถัดไป" type="button">›</button>
+    </div>
+    <p class="hashtag-hint">โพสต์ที่มี <code>#ผลงาน</code> หรือ <code>#achievement</code> บนเพจ Facebook จะปรากฏที่นี่เพิ่มเติม</p>
+  </div>
+</section>
+
+<!-- Course Activities -->
+<section class="activities-section" style="background:linear-gradient(135deg,#e0e7ff 0%,#dbeafe 100%);padding:4rem 0;border-radius:1rem;margin:1rem 0">
+  <div class="container">
+    <h2>📸 ภาพกิจกรรมของหลักสูตร</h2>
+    <p class="section-subtitle" style="text-align:center;color:var(--text-light);margin-bottom:2rem;font-size:.95rem">ภาพกิจกรรมและโครงงานของนักศึกษาในหลักสูตร</p>
+    <div class="activities-slider" style="position:relative;margin:1.5rem 0 2.5rem">
+      <button class="slider-btn prev" aria-label="ก่อนหน้า" type="button">‹</button>
+      <div class="slider-track" id="activities-track" style="display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:.5rem .25rem 1rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent"><!-- loaded dynamically by JS --></div>
+      <button class="slider-btn next" aria-label="ถัดไป" type="button">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact-section">
+  <div class="container">
+    <h2>📞 ติดต่อเรา</h2>
+    <div class="contact-content">
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <strong>สาขาวิศวกรรมเครื่องกล</strong>
+            คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย<br>
+            ถนนราชดำเนินนอก ตำบลบ่อยาง อำเภอเมือง จังหวัดสงขลา 90000<br>
+            📞 074-317102, 074-317103
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-globe"></i>
+          <div><a href="https://www.rmutsv.ac.th" target="_blank">www.rmutsv.ac.th</a></div>
+        </div>
+        <div class="contact-item">
+          <i class="fab fa-facebook"></i>
+          <div><a href="https://www.facebook.com/profile.php?id=61572463624226" target="_blank">เพจหลักสูตรเทคโนโลยีเครื่องกล</a></div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <div><a href="mailto:wasu.s@rmutsv.ac.th">wasu.s@rmutsv.ac.th</a></div>
+        </div>
+      </div>
+      <div class="contact-form-wrap">
+        <h3>📬 ส่งข้อความถึงเรา</h3>
+        <p class="form-intro">กรอกข้อมูลด้านล่าง ทางหลักสูตรจะตอบกลับทางอีเมลภายใน 2 วันทำการ</p>
+        <form id="contact-form" class="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cf-name">ชื่อ-นามสกุล <span class="required">*</span></label>
+              <input type="text" id="cf-name" name="name" required maxlength="100" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="cf-email">อีเมล <span class="required">*</span></label>
+              <input type="email" id="cf-email" name="email" required maxlength="100" autocomplete="email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cf-phone">เบอร์โทร <span class="optional">(ไม่บังคับ)</span></label>
+              <input type="tel" id="cf-phone" name="phone" maxlength="20" autocomplete="tel">
+            </div>
+            <div class="form-group">
+              <label for="cf-subject">หัวข้อ <span class="required">*</span></label>
+              <select id="cf-subject" name="subject" required>
+                <option value="">-- เลือกหัวข้อ --</option>
+                <option value="สอบถามทั่วไป">สอบถามทั่วไป</option>
+                <option value="สมัครเรียน / ข้อมูลหลักสูตร">สมัครเรียน / ข้อมูลหลักสูตร</option>
+                <option value="ความร่วมมือทางวิชาการ">ความร่วมมือทางวิชาการ</option>
+                <option value="สหกิจศึกษา / ฝึกงาน">สหกิจศึกษา / ฝึกงาน</option>
+                <option value="ทุนการศึกษา">ทุนการศึกษา</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cf-message">ข้อความ <span class="required">*</span></label>
+            <textarea id="cf-message" name="message" required rows="5" maxlength="2000" placeholder="พิมพ์ข้อความของท่าน..."></textarea>
+            <small class="form-hint"><span id="char-count">0</span>/2000 ตัวอักษร</small>
+          </div>
+          <!-- Honeypot - ซ่อนจากผู้ใช้จริง -->
+          <div class="form-hp" aria-hidden="true">
+            <label>อย่ากรอก: <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="cf-submit">
+              <i class="fas fa-paper-plane"></i> <span class="btn-text">ส่งข้อความ</span>
+            </button>
+          </div>
+          <div class="form-status" id="cf-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="visitor-counter" title="สถิติผู้เข้าชมเว็บไซต์">
+      <i class="fas fa-users"></i>
+      <span id="visitor-count">กำลังโหลด...</span>
+    </div>
+    © 2569 สาขาวิศวกรรมเครื่องกล · คณะวิศวกรรมศาสตร์ · มทร.ศรีวิชัย<br>
+    Powered by <a href="https://mt-ruts.com">mt-ruts.com</a><br>
+    <a href="https://mt-ruts.com/admin/slides.php" class="admin-news-link" target="_blank" rel="noopener" title="เข้าสู่ระบบจัดการข่าว">🔧</a>
+  </div>
+</footer>
+
+<script>
+// Visitor counter - นับ visit ใหม่ + ดึงสถิติจาก API
+(function(){
+  const el = document.getElementById('visitor-count');
+  if (!el) return;
+  fetch('/api/visitor-counter.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {'Content-Type': 'application/json'}
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d && d.ok) {
+      el.innerHTML = 'วันนี้ <strong>' + d.today + '</strong> · ทั้งหมด <strong>' + d.total.toLocaleString('th-TH') + '</strong>';
+      el.classList.add('loaded');
+    } else {
+      el.textContent = '—';
+    }
+  })
+  .catch(() => { el.textContent = '—'; });
+})();
+
+  // Contact form AJAX
+  (function(){
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    const submitBtn = document.getElementById('cf-submit');
+    const statusEl = document.getElementById('cf-status');
+    const messageInput = document.getElementById('cf-message');
+    const charCount = document.getElementById('char-count');
+
+    if (messageInput && charCount) {
+      const updateCount = () => { charCount.textContent = messageInput.value.length; };
+      messageInput.addEventListener('input', updateCount);
+      updateCount();
+    }
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const btnText = submitBtn.querySelector('.btn-text');
+      const btnIcon = submitBtn.querySelector('i');
+      submitBtn.disabled = true;
+      if (btnText) btnText.textContent = 'กำลังส่ง...';
+      if (btnIcon) btnIcon.className = 'fas fa-spinner fa-spin';
+
+      setStatus('loading', '<i class="fas fa-spinner fa-spin"></i> กำลังส่งข้อความ...');
+
+      const data = {
+        name: form.elements.name.value.trim(),
+        email: form.elements.email.value.trim(),
+        phone: form.elements.phone.value.trim(),
+        subject: form.elements.subject.value,
+        message: form.elements.message.value.trim(),
+        website: form.elements.website.value
+      };
+
+      try {
+        const res = await fetch('/api/contact.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        const result = await res.json().catch(() => ({}));
+
+        if (res.ok && result.ok) {
+          setStatus('success', '<i class="fas fa-check-circle"></i> ' + (result.message || 'ส่งข้อความเรียบร้อย'));
+          form.reset();
+          if (charCount) charCount.textContent = '0';
+        } else {
+          setStatus('error', '<i class="fas fa-exclamation-circle"></i> ' + (result.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่'));
+        }
+      } catch (err) {
+        setStatus('error', '<i class="fas fa-exclamation-circle"></i> ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่');
+      } finally {
+        submitBtn.disabled = false;
+        if (btnText) btnText.textContent = 'ส่งข้อความ';
+        if (btnIcon) btnIcon.className = 'fas fa-paper-plane';
+      }
+    });
+
+    function setStatus(type, html) {
+      if (!statusEl) return;
+      statusEl.className = 'form-status ' + type;
+      statusEl.innerHTML = html;
+    }
+  })();
+
+  // Load Labs + Achievements slides dynamically from API
+  (function(){
+    const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    async function loadTrack(trackSel, apiUrl) {
+      const track = document.querySelector(trackSel);
+      if (!track) return;
+      try {
+        const res = await fetch(apiUrl + '?_=' + Date.now());
+        const data = await res.json();
+        const items = data.labs || data.achievements || data.activities || [];
+        if (items.length === 0) {
+          track.innerHTML = '<div style="padding:2rem;color:#6b7280">ยังไม่มีรูป</div>';
+          return;
+        }
+        track.innerHTML = items.map(it =>
+          '<div class="slide"><img src="' + esc(it.image) + '" alt="' + esc(it.title||'') + '" loading="lazy"></div>'
+        ).join('');
+      } catch (err) {
+        console.error('Load failed:', apiUrl, err);
+        track.innerHTML = '<div style="padding:2rem;color:#dc2626">โหลดรูปไม่สำเร็จ</div>';
+      }
+    }
+
+    loadTrack('#labs-track', '/api/labs.php');
+    loadTrack('#achievements-track', '/api/achievements.php');
+    loadTrack('#activities-track', '/api/activities.php');
+  })();
+
+  // Achievements + Labs + Activities Slider — horizontal scroll navigation + auto-rotate
+  (function(){
+    const AUTOPLAY_MS = 6000;
+    document.querySelectorAll('.achievements-slider, .labs-slider, .activities-slider').forEach(function(slider){
+      const track = slider.querySelector('.slider-track');
+      const prevBtn = slider.querySelector('.slider-btn.prev');
+      const nextBtn = slider.querySelector('.slider-btn.next');
+      if (!track) return;
+
+      function slideStep() {
+        const slide = track.querySelector('.slide');
+        if (!slide) return 0;
+        const style = getComputedStyle(track);
+        const gap = parseFloat(style.columnGap || style.gap || '16');
+        return slide.offsetWidth + gap;
+      }
+
+      function updateButtons() {
+        if (!prevBtn || !nextBtn) return;
+        const max = track.scrollWidth - track.clientWidth - 2;
+        prevBtn.disabled = track.scrollLeft <= 2;
+        nextBtn.disabled = track.scrollLeft >= max;
+      }
+
+      function nextSlide() {
+        const max = track.scrollWidth - track.clientWidth;
+        if (track.scrollLeft >= max - 2) {
+          track.scrollTo({left: 0, behavior: 'smooth'});
+        } else {
+          track.scrollBy({left: slideStep(), behavior: 'smooth'});
+        }
+      }
+
+      let autoplayId = null;
+      function startAutoplay() {
+        if (track.children.length <= 1) {
+          // รอ slides โหลดเสร็จ (loadTrack เป็น async)
+          setTimeout(startAutoplay, 500);
+          return;
+        }
+        stopAutoplay();
+        autoplayId = setInterval(nextSlide, AUTOPLAY_MS);
+      }
+      function stopAutoplay() {
+        if (autoplayId) { clearInterval(autoplayId); autoplayId = null; }
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => {
+        track.scrollBy({left: -slideStep(), behavior: 'smooth'});
+        stopAutoplay(); startAutoplay();
+      });
+      if (nextBtn) nextBtn.addEventListener('click', () => {
+        track.scrollBy({left: slideStep(), behavior: 'smooth'});
+        stopAutoplay(); startAutoplay();
+      });
+
+      track.addEventListener('scroll', updateButtons, {passive: true});
+      window.addEventListener('resize', updateButtons);
+      setTimeout(updateButtons, 100);
+
+      // Auto-play with pause on hover
+      slider.addEventListener('mouseenter', stopAutoplay);
+      slider.addEventListener('mouseleave', startAutoplay);
+      startAutoplay();
+    });
+  })();
+
+  // FB Posts Feed — ดึงข่าวสาร + ผลงานจาก Facebook Page
+  (function(){
+    const pageUrl = 'https://www.facebook.com/profile.php?id=61572463624226';
+
+    function esc(s) {
+      if (!s) return '';
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    }
+    function excerpt(msg, n) {
+      if (!msg) return '';
+      const clean = msg.replace(/\s+/g, ' ').trim();
+      return clean.length > n ? clean.slice(0, n) + '…' : clean;
+    }
+    function title(msg) {
+      if (!msg) return '📷 ดูรูปภาพ';
+      const first = msg.split('\n')[0].trim();
+      return first.length > 80 ? first.slice(0, 80) + '…' : first;
+    }
+    function thaiDate(iso) {
+      if (!iso) return '';
+      const months = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      return d.getDate() + ' ' + months[d.getMonth() + 1] + ' ' + (d.getFullYear() + 543);
+    }
+
+    function renderNews(posts) {
+      const c = document.getElementById('news-feed');
+      if (!c) return;
+      if (!posts || posts.length === 0) {
+        c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>ยังไม่มีข่าวสารในขณะนี้</p><a href="' + pageUrl + '" target="_blank" rel="noopener" class="btn btn-primary"><i class="fab fa-facebook"></i> ดูข่าวสารทั้งหมดในเพจ</a></div>';
+        return;
+      }
+      c.innerHTML = posts.map(p => (
+        '<article class="news-card">' +
+        (p.image
+          ? '<img src="' + esc(p.image) + '" alt="' + esc(title(p.message)) + '" class="news-img" loading="lazy">'
+          : '<div class="img-placeholder"><i class="fas fa-image"></i></div>') +
+        '<div class="body">' +
+          '<span class="date">' + thaiDate(p.created_time) + '</span>' +
+          '<h3>' + esc(title(p.message)) + '</h3>' +
+          '<p class="excerpt">' + esc(excerpt(p.message, 150)) + '</p>' +
+          '<a href="' + esc(p.permalink) + '" target="_blank" rel="noopener">อ่านต่อ <i class="fas fa-external-link-alt"></i></a>' +
+        '</div></article>'
+      )).join('');
+    }
+
+    function renderAchievements(posts) {
+      const c = document.getElementById('achievements-feed');
+      if (!c) return;
+      if (!posts || posts.length === 0) {
+        c.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><p>ยังไม่มีผลงาน/รางวัลในข่าวสาร</p><p class="hint">โพสต์ที่มี <code>#ผลงาน</code> หรือ <code>#achievement</code> จะปรากฏที่นี่</p><a href="' + pageUrl + '" target="_blank" rel="noopener" class="btn btn-primary"><i class="fab fa-facebook"></i> ดูเพจหลักสูตร</a></div>';
+        return;
+      }
+      c.innerHTML = posts.map(p => {
+        const yr = (new Date(p.created_time).getFullYear() || 0) + 543;
+        return (
+          '<article class="achievement-card">' +
+          (p.image
+            ? '<img src="' + esc(p.image) + '" alt="' + esc(title(p.message)) + '" class="achievement-img" loading="lazy">'
+            : '<div class="icon-circle"><i class="fas fa-trophy"></i></div>') +
+          '<div>' +
+            '<span class="year">' + yr + '</span>' +
+            '<h3>' + esc(title(p.message)) + '</h3>' +
+            '<p>' + esc(excerpt(p.message, 200)) + '</p>' +
+            '<a href="' + esc(p.permalink) + '" target="_blank" rel="noopener">ดูรายละเอียด <i class="fas fa-external-link-alt"></i></a>' +
+          '</div></article>'
+        );
+      }).join('');
+    }
+
+    function showErr(c, msg) {
+      if (!c) return;
+      c.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-triangle"></i><p>' + msg + '</p></div>';
+    }
+
+    async function loadFeeds() {
+      const newsC = document.getElementById('news-feed');
+      const achC  = document.getElementById('achievements-feed');
+      try {
+        const res = await fetch('/api/fb-posts.php');
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.message || 'API error');
+        renderNews(data.news || []);
+        renderAchievements(data.achievements || []);
+      } catch (err) {
+        if (newsC) showErr(newsC, 'ไม่สามารถโหลดข่าวสารได้');
+        if (achC)  showErr(achC,  'ไม่สามารถโหลดผลงานได้');
+      }
+    }
+
+    loadFeeds();
+  })();
+
+  // Scroll-reveal animation removed for stability (v2.1)
+
+  // Back to top button
+  (function(){
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    let ticking = false;
+    window.addEventListener('scroll', function(){
+      if (!ticking) {
+        requestAnimationFrame(function(){
+          btn.classList.toggle('visible', window.scrollY > 300);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, {passive: true});
+    btn.addEventListener('click', function(){
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+  })();
+
+// PR Carousel slider v3 - dynamic loading from API + clickable images
+(async function(){
+  const frame = document.getElementById('prCarousel');
+  if(!frame) return;
+  const track = frame.querySelector('.pr-track');
+  const dots = frame.querySelector('.pr-dots');
+  const prevBtn = frame.querySelector('.pr-arrow.prev');
+  const nextBtn = frame.querySelector('.pr-arrow.next');
+
+  // HTML escape helper
+  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // Fetch slides from API
+  let slides = [];
+  try {
+    const res = await fetch('/api/slides.php?_=' + Date.now());
+    const data = await res.json();
+    slides = (data && data.slides) || [];
+  } catch (err) {
+    console.error('Failed to load slides:', err);
+    track.innerHTML = '<div style="padding:2rem;text-align:center;color:#999">ไม่สามารถโหลดสไลด์ได้</div>';
+    return;
+  }
+
+  if (slides.length === 0) {
+    track.innerHTML = '<div style="padding:3rem;text-align:center;color:#999;font-size:1.1rem">ยังไม่มีสไลด์</div>';
+    return;
+  }
+
+  // Render slides (with clickable link wrapper)
+  track.innerHTML = slides.map(s => {
+    const img = `<img src="${esc(s.image)}" alt="${esc(s.title||'')}" loading="lazy"/>`;
+    const overlay = `<div class="pr-slide-overlay"><i class="fas fa-hand-pointer"></i><span>รายละเอียดเพิ่มเติม...</span></div>`;
+    const content = `<div class="pr-slide-content">
+      <div class="pr-slide-date">${esc(s.date||'')}</div>
+      <div class="pr-slide-title">${esc(s.title||'')}</div>
+    </div>`;
+    const progress = `<div class="pr-progress"></div>`;
+    let href = '';
+    let target = '';
+    const linkType = s.linkType || 'external';
+    if (linkType === 'internal') {
+      href = `/news.php?id=${s.id}`;
+      target = '';
+    } else if (s.link && String(s.link).trim() !== '') {
+      href = s.link;
+      target = ' target="_blank" rel="noopener"';
+    }
+    if (href) {
+      const isNewTab = target && target.includes('_blank');
+      return `<div class="pr-slide" data-href="${esc(href)}" data-newtab="${isNewTab ? '1' : '0'}"><a href="${esc(href)}"${target} class="pr-slide-link">${img}${overlay}</a>${content}${progress}</div>`;
+    }
+    return `<div class="pr-slide">${img}${content}${progress}</div>`;
+  }).join('');
+
+  // Render dots
+  dots.innerHTML = slides.map((s, i) =>
+    `<button class="pr-dot ${i === 0 ? 'active' : ''}" aria-label="ไปสไลด์ ${i+1}"></button>`
+  ).join('');
+
+  // Init carousel
+  const slideEls = frame.querySelectorAll('.pr-slide');
+  const dotEls = dots.querySelectorAll('.pr-dot');
+  let idx = 0;
+  const total = slideEls.length;
+  const AUTOPLAY_MS = 10000;
+  let autoplayId = null;
+
+  // ★ FIX: Initialize first slide as active immediately (otherwise opacity:0 = blank white box on desktop)
+  update();
+
+  // Auto-fit frame height to current image (no crop — scale down width if too tall)
+  function fitFrameToImage(){
+    const activeSlide = slideEls[idx];
+    const img = activeSlide ? activeSlide.querySelector('img') : null;
+    if(!img || !img.naturalWidth) return;
+    const aspectRatio = img.naturalHeight / img.naturalWidth;
+    // Container capped at 1400px (or smaller on narrow screens)
+    const containerWidth = Math.min(1400, (frame.parentElement && frame.parentElement.clientWidth) || 900);
+    // Cap height at viewport-aware max (so carousel doesn't take over screen)
+    const isDesktop = window.innerWidth >= 1024;
+    const maxHeight = isDesktop
+      ? Math.min(1000, Math.round(window.innerHeight * 0.75))
+      : Math.min(500, Math.round(window.innerHeight * 0.7));
+    // Start with full container width
+    let frameWidth = containerWidth;
+    let targetHeight = Math.round(frameWidth * aspectRatio);
+    // If image would be taller than max → scale down width too (preserve aspect, no crop)
+    if(targetHeight > maxHeight){
+      targetHeight = maxHeight;
+      frameWidth = Math.round(targetHeight / aspectRatio);
+    }
+    if(targetHeight < 180) targetHeight = 180;
+    frame.style.transition = 'height .4s cubic-bezier(.22,.61,.36,1)';
+    frame.style.height = targetHeight + 'px';
+    // ★ FIX: apply frameWidth so image doesn't overflow (for tall images like 1:1)
+    frame.style.maxWidth = frameWidth + 'px';
+    frame.style.marginLeft = 'auto';
+    frame.style.marginRight = 'auto';
+  }
+
+  // Re-fit when each image loads (lazy load → need to react after load)
+  slideEls.forEach(s => {
+    const im = s.querySelector('img');
+    if(im) im.addEventListener('load', () => fitFrameToImage(), { once: true });
+  });
+
+  // ★ FIX: also run update() after each image loads (in case slide 0 was hidden initially)
+  slideEls.forEach(s => {
+    const im = s.querySelector('img');
+    if(im) im.addEventListener('load', () => update(), { once: true });
+  });
+
+  // Recalculate on window resize (so it adapts when user changes window size)
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    if(resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { fitFrameToImage(); }, 120);
+  });
+
+  function update(){
+    track.style.transform = `translateX(-${idx*100}%)`;
+    dotEls.forEach((d,i) => d.classList.toggle('active', i===idx));
+    slideEls.forEach((s,i) => s.classList.toggle('active', i===idx));
+    if(total<=1){ prevBtn.disabled = true; nextBtn.disabled = true; }
+    fitFrameToImage();
+  }
+
+  function startAutoplay(){
+    if(total<=1) return;
+    stopAutoplay();
+    autoplayId = setInterval(() => {
+      idx = (idx+1)%total;
+      update();
+    }, AUTOPLAY_MS);
+  }
+
+  function stopAutoplay(){
+    if(autoplayId){ clearInterval(autoplayId); autoplayId = null; }
+  }
+
+  function resetAutoplay(){ stopAutoplay(); startAutoplay(); }
+
+  prevBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); idx = (idx-1+total)%total; update(); resetAutoplay(); });
+  nextBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); idx = (idx+1)%total; update(); resetAutoplay(); });
+  dotEls.forEach((d,i) => d.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); idx=i; update(); resetAutoplay(); }));
+
+  // Pause autoplay when hovering the carousel
+  frame.addEventListener('mouseenter', stopAutoplay);
+  frame.addEventListener('mouseleave', startAutoplay);
+
+  // ★ Modal handlers (Click slide → fullscreen)
+  function openModal(imgSrc, title, href, newTab){
+    const modal = document.getElementById('prModal');
+    if(!modal) return;
+    modal.querySelector('.pr-modal-img').src = imgSrc;
+    modal.querySelector('.pr-modal-title').textContent = title || '';
+    const newsBtn = modal.querySelector('.pr-modal-news');
+    if(href){
+      newsBtn.href = href;
+      newsBtn.style.display = 'inline-block';
+      newsBtn.target = newTab ? '_blank' : '_self';
+      newsBtn.rel = newTab ? 'noopener' : '';
+    } else {
+      newsBtn.style.display = 'none';
+    }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    stopAutoplay();
+  }
+  window.closeModal = function(){
+    const modal = document.getElementById('prModal');
+    if(modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+    startAutoplay();
+  };
+
+  // Click on slide → navigate to news (link works normally).
+  // Click on overlay icon (� pr-slide-overlay) → open modal instead.
+  track.addEventListener('click', e => {
+    const slide = e.target.closest('.pr-slide');
+    if(!slide) return;
+    // Only intercept clicks on the overlay icon — let image clicks navigate normally
+    if(!e.target.closest('.pr-slide-overlay')) return;
+    e.preventDefault();
+    const img = slide.querySelector('img');
+    const title = slide.querySelector('.pr-slide-title')?.textContent || '';
+    const href = slide.dataset.href || '';
+    const newTab = slide.dataset.newtab === '1';
+    if(img) openModal(img.src, title, href, newTab);
+  });
+
+  // ESC key → close modal
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') window.closeModal();
+  });
+
+  // Touch swipe
+  let startX = 0;
+  frame.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+  frame.addEventListener('touchend', e => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+    if(Math.abs(diff) > 50 && total>1){
+      if(diff > 0) idx = (idx+1)%total;
+      else idx = (idx-1+total)%total;
+      update();
+      resetAutoplay();
+    }
+  });
+
+  // Pause on hover
+  frame.addEventListener('mouseenter', stopAutoplay);
+  frame.addEventListener('mouseleave', startAutoplay);
+
+  update();
+  // Wait for all images to load, then fit frame to first image
+  const imgs = frame.querySelectorAll('.pr-slide img');
+  let loaded = 0;
+  imgs.forEach(img => {
+    if(img.complete) {
+      loaded++;
+    } else {
+      img.addEventListener('load', () => {
+        loaded++;
+        if(loaded >= imgs.length) fitFrameToImage();
+      }, { once: true });
+    }
+  });
+  if(loaded >= imgs.length) fitFrameToImage();
+
+  // Also fit on window resize
+  window.addEventListener('resize', fitFrameToImage);
+
+  startAutoplay();
+})();
+</script>
+
+<button id="back-to-top" class="back-to-top" aria-label="กลับด้านบน" type="button"><i class="fas fa-chevron-up"></i></button>
+
+<script>
+(function(){
+  const calendarWeeks = [
+    { week: 1,  start: '2026-06-29', end: '2026-07-05', events: [] },
+    { week: 2,  start: '2026-07-06', end: '2026-07-12', events: [] },
+    { week: 3,  start: '2026-07-13', end: '2026-07-19', events: [] },
+    { week: 4,  start: '2026-07-20', end: '2026-07-26', events: [] },
+    { week: 5,  start: '2026-07-27', end: '2026-08-02', events: ['28 ก.ค. - หยุดวันเฉลิมพระชนมพรรษา ร.10','29 ก.ค. - หยุดวันอาสาฬหบูชา','30 ก.ค. - หยุดวันเข้าพรรษา'] },
+    { week: 6,  start: '2026-08-03', end: '2026-08-09', events: ['3-7 ส.ค. - หยุดการเรียนการสอน'] },
+    { week: 7,  start: '2026-08-10', end: '2026-08-16', events: ['12 ส.ค. - หยุดวันแม่แห่งชาติ'] },
+    { week: 8,  start: '2026-08-17', end: '2026-08-23', events: [] },
+    { week: 9,  start: '2026-08-24', end: '2026-08-30', events: [] },
+    { week: 10, start: '2026-08-31', end: '2026-09-06', events: [] },
+    { week: 11, start: '2026-09-07', end: '2026-09-13', events: [] },
+    { week: 12, start: '2026-09-14', end: '2026-09-20', events: [] },
+    { week: 13, start: '2026-09-21', end: '2026-09-27', events: [] },
+    { week: 14, start: '2026-09-28', end: '2026-10-04', events: [] },
+    { week: 15, start: '2026-10-05', end: '2026-10-11', events: ['13 ต.ค. - หยุดวันนวมินทรมหาราช'] },
+    { week: 16, start: '2026-10-12', end: '2026-10-18', events: [] },
+    { week: 17, start: '2026-10-19', end: '2026-10-25', events: ['📝 สัปดาห์สอบ'] },
+    { week: 18, start: '2026-10-26', end: '2026-11-01', events: ['📝 สัปดาห์สอบ'] }
+  ];
+  const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  // Parse YYYY-MM-DD as LOCAL time (not UTC) — fix timezone bug
+  function parseLocalDate(str) {
+    const [y, m, d] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  function getCurrentWeek() {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    for (const w of calendarWeeks) {
+      const start = parseLocalDate(w.start);
+      const end = parseLocalDate(w.end);
+      end.setHours(23,59,59,999);
+      if (today >= start && today <= end) return w;
+    }
+    return null;
+  }
+  function formatRange(s, e) {
+    const sd = new Date(s), ed = new Date(e);
+    const sM = thaiMonths[sd.getMonth()], eM = thaiMonths[ed.getMonth()];
+    const yr = ed.getFullYear() + 543;
+    if (sd.getMonth() === ed.getMonth()) return `${sd.getDate()}-${ed.getDate()} ${sM} ${yr}`;
+    return `${sd.getDate()} ${sM} - ${ed.getDate()} ${eM} ${yr}`;
+  }
+  const cw = getCurrentWeek();
+  if (cw) {
+    const numEl = document.getElementById('cw-num');
+    const datesEl = document.getElementById('cw-dates');
+    const eventsEl = document.getElementById('cw-events');
+    const totalInstructional = calendarWeeks.filter(w => w.type === 'instruction').length;
+    const totalExam = calendarWeeks.filter(w => w.type === 'exam').length;
+    if (numEl) numEl.textContent = cw.week;
+    if (datesEl) datesEl.textContent = '📅 ' + formatRange(cw.start, cw.end);
+    if (eventsEl) {
+      if (cw.events.length > 0) eventsEl.textContent = cw.events.map(e => '🔸 ' + e).join(' · ');
+      else eventsEl.style.display = 'none';
+    }
+  } else {
+    const section = document.querySelector('.current-week-section');
+    if (section) section.style.display = 'none';
+  }
+})();
+<!-- ★ PR Carousel Modal (click slide to enlarge) -->
+<div class="pr-modal" id="prModal" onclick="if(event.target===this) window.closeModal()">
+  <button class="pr-modal-close" onclick="window.closeModal()" aria-label="Close">×</button>
+  <div class="pr-modal-content">
+    <img class="pr-modal-img" src="" alt="" />
+    <div class="pr-modal-title"></div>
+    <a class="pr-modal-news" href="#" style="display:none">ดูข่า�ต้นฉบับ →</a>
+  </div>
+</div>
+
+</script>
+
+</body>
+</html>

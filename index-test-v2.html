@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ผศ.ดร.วสุ สุขสุวรรณ | คณะวิศวกรรมศาสตร์ มทร.ศรีวิชัย</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Sarabun', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        /* Status Banner */
+        .status-banner {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+            padding: 16px 24px;
+            text-align: center;
+            border-bottom: 2px solid;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        .status-banner.available {
+            border-color: #22c55e;
+            background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.05));
+        }
+        .status-banner.busy {
+            border-color: #ef4444;
+            background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05));
+        }
+        .status-icon {
+            font-size: 28px;
+        }
+        .status-text {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .status-banner.available .status-text { color: #22c55e; }
+        .status-banner.busy .status-text { color: #ef4444; }
+        .status-detail {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+            padding: 25px 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 60%);
+        }
+        .header h1 { 
+            font-size: 32px; 
+            margin-bottom: 10px; 
+            text-shadow: 0 2px 15px rgba(0,0,0,0.4);
+            position: relative;
+            z-index: 1;
+            color: #60a5fa;
+        }
+        .header p { font-size: 15px; opacity: 0.85; position: relative; z-index: 1; margin-top: 8px; }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: rgba(30,58,95,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59,130,246,0.3);
+        }
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+        }
+        .tab:hover { 
+            background: rgba(59,130,246,0.1); 
+            color: #fff;
+        }
+        .tab.active { 
+            color: #60a5fa; 
+            border-bottom-color: #3b82f6;
+            background: rgba(59,130,246,0.15);
+        }
+        
+        /* Content */
+        .content { padding: 30px; max-width: 1400px; margin: 0 auto; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Calendar Wrapper */
+        .cal-wrapper {
+            background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+        }
+        
+        /* Calendar Header */
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .cal-header h3 {
+            color: #ffd700;
+            font-size: 28px;
+            text-shadow: 0 2px 15px rgba(255,215,0,0.4);
+            font-weight: 700;
+        }
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+        .nav-btn:hover { 
+            transform: scale(1.08);
+            box-shadow: 0 10px 35px rgba(102, 126, 234, 0.7);
+        }
+        .nav-btn:active { transform: scale(0.98); }
+        
+        /* Weekdays */
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .wd {
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 12px 0;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+        .wd.sun { color: #ff6b6b; background: rgba(255,107,107,0.15); }
+        .wd.sat { color: #4ecdc4; background: rgba(78,205,196,0.15); }
+        
+        /* Days Grid - Fixed equal columns */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+        .cal-day {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 12px;
+            min-height: 110px;
+            max-height: 200px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .cal-day:hover { 
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+            z-index: 10;
+            position: relative;
+        }
+        .cal-day.empty { background: transparent; border: none; visibility: hidden; min-height: 0; padding: 0; }
+        .cal-day.today {
+            background: rgba(102, 126, 234, 0.25);
+            border: 2px solid #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Day Number */
+        .day-num {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        
+        /* Holiday Tag */
+        .holiday-tag {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+            display: inline-block;
+            box-shadow: 0 3px 10px rgba(255,107,107,0.4);
+            flex-shrink: 0;
+        }
+        
+        /* Event Items */
+        .evt-item {
+            border-radius: 8px;
+            padding: 6px 8px;
+            margin-top: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .evt-item:first-child { margin-top: 0; }
+        .evt-item.past { opacity: 0.4; filter: grayscale(30%); }
+        .evt-time { font-size: 11px; font-weight: 700; }
+        .evt-desc { font-size: 11px; line-height: 1.3; overflow: hidden; }
+        
+        /* Event Colors - Masculine Theme */
+        .bg-son { background: linear-gradient(135deg, rgba(251,191,36,0.35), rgba(251,191,36,0.2)); color: #fbbf24; border-left: 4px solid #f59e0b; }     /* สอน - ทองเหลือง */
+        .bg-sob { background: linear-gradient(135deg, rgba(239,68,68,0.35), rgba(239,68,68,0.2)); color: #fca5a5; border-left: 4px solid #dc2626; }     /* สอบ - แดงเข้ม */
+        .bg-meeting { background: linear-gradient(135deg, rgba(59,130,246,0.35), rgba(59,130,246,0.2)); color: #93c5fd; border-left: 4px solid #2563eb; } /* ประชุม - น้ำเงิน */
+        .bg-research { background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(99,102,241,0.2)); color: #a5b4fc; border-left: 4px solid #4f46e5; } /* วิจัย - อินดิโก */
+        .bg-activity { background: linear-gradient(135deg, rgba(20,184,166,0.35), rgba(20,184,166,0.2)); color: #5eead4; border-left: 4px solid #0d9488; } /* กิจกรรม - เทียวเขียว */
+        .bg-deadline { background: linear-gradient(135deg, rgba(249,115,22,0.35), rgba(249,115,22,0.2)); color: #fdba74; border-left: 4px solid #ea580c; } /* Deadline - ส้มเข้ม */
+        .bg-other { background: linear-gradient(135deg, rgba(100,116,139,0.35), rgba(100,116,139,0.2)); color: #cbd5e1; border-left: 4px solid #64748b; } /* อื่นๆ - เทาเทา */
+        
+        /* Legend */
+        .event-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 18px;
+            background: rgba(30,58,95,0.4);
+            border-radius: 16px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.85);
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+        .legend-dot.bg-son { background: #f59e0b; }
+        .legend-dot.bg-sob { background: #dc2626; }
+        .legend-dot.bg-meeting { background: #2563eb; }
+        .legend-dot.bg-research { background: #4f46e5; }
+        .legend-dot.bg-activity { background: #0d9488; }
+        .legend-dot.bg-deadline { background: #ea580c; }
+        .legend-dot.bg-other { background: #64748b; }
+        
+        /* Section Divider */
+        .section-divider {
+            background: linear-gradient(90deg, #1e3a5f, #2563eb, #1e3a5f);
+            padding: 20px 28px;
+            border-radius: 18px;
+            margin: 40px 0 28px;
+            font-size: 22px;
+            font-weight: 700;
+            box-shadow: 0 10px 40px rgba(37,99,235,0.3);
+            text-align: center;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+        
+        /* Academic Calendar */
+        .academic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+        .acad-card {
+            background: linear-gradient(145deg, rgba(30,58,95,0.6), rgba(15,52,96,0.4));
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(59,130,246,0.2);
+            transition: all 0.3s ease;
+        }
+        .acad-card:hover { 
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            border-color: rgba(59,130,246,0.4);
+        }
+        .acad-card h4 { color: #60a5fa; margin-bottom: 18px; font-size: 18px; font-weight: 700; }
+        .acad-card table { width: 100%; }
+        .acad-card td { padding: 10px 0; border-bottom: 1px solid rgba(59,130,246,0.1); font-size: 14px; }
+        .acad-card td:first-child { color: rgba(255,255,255,0.7); font-weight: 500; }
+        .acad-card td:last-child { font-weight: 600; text-align: right; color: #93c5fd; }
+        
+        /* Project Tracking */
+        .project-list { display: flex; flex-direction: column; gap: 24px; }
+        .proj-card {
+            background: linear-gradient(145deg, rgba(30,58,95,0.6), rgba(15,52,96,0.4));
+            border-radius: 22px;
+            padding: 28px;
+            border: 1px solid rgba(59,130,246,0.2);
+            transition: all 0.3s ease;
+        }
+        .proj-card:hover { 
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            border-color: rgba(59,130,246,0.4);
+        }
+        .proj-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 12px; }
+        .proj-header h4 { color: #fff; font-size: 20px; font-weight: 700; }
+        .deadline-badge {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(220,38,38,0.4);
+        }
+        .proj-details { color: rgba(255,255,255,0.9); margin-bottom: 12px; font-size: 15px; line-height: 1.6; }
+        .proj-note { color: #fca5a5; font-size: 14px; margin-bottom: 18px; font-weight: 500; }
+        .proj-files { color: #93c5fd; font-size: 13px; margin-bottom: 15px; padding: 10px; background: rgba(59,130,246,0.1); border-radius: 10px; border-left: 3px solid #2563eb; }
+        .proj-announce { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05)); border: 1px solid rgba(239,68,68,0.3); border-radius: 16px; padding: 20px; margin-bottom: 25px; text-align: center; }
+        .proj-announce h3 { color: #fca5a5; margin-bottom: 8px; font-size: 18px; }
+        .proj-announce p { color: rgba(255,255,255,0.8); font-size: 14px; }
+        .drive-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 6px 20px rgba(5,150,105,0.4);
+            transition: all 0.3s ease;
+        }
+        .drive-btn:hover { 
+            transform: scale(1.03);
+            box-shadow: 0 10px 30px rgba(5,150,105,0.5);
+        }
+        
+        /* Footer */
+        .footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.4); font-size: 13px; }
+        
+        /* Section Title */
+        .section-title {
+            color: #60a5fa;
+            margin-bottom: 28px;
+            font-size: 26px;
+            font-weight: 700;
+            text-shadow: 0 2px 15px rgba(96,165,250,0.3);
+        }
+        
+        /* ==================== MOBILE RESPONSIVE ==================== */
+        /* Mobile - Fixed grid columns */
+        @media (max-width: 768px) {
+            .header { padding: 20px 15px; }
+            .header h1 { font-size: 22px; }
+            .header p { font-size: 12px; }
+            
+            .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .tab { padding: 14px 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+            
+            .content { padding: 15px; }
+            
+            .cal-wrapper { padding: 15px; border-radius: 18px; overflow-x: hidden; }
+            .cal-header { margin-bottom: 18px; }
+            .cal-header h3 { font-size: 20px; }
+            .nav-btn { padding: 10px 18px; font-size: 16px; }
+            
+            .weekdays { gap: 4px; margin-bottom: 8px; }
+            .wd { font-size: 10px; padding: 6px 0; border-radius: 6px; }
+            
+            .days-grid { gap: 4px; width: 100%; }
+            .cal-day { 
+                padding: 6px; 
+                min-height: 70px; 
+                max-height: 150px;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .day-num { font-size: 13px; margin-bottom: 4px; flex-shrink: 0; }
+            .holiday-tag { font-size: 8px; padding: 2px 5px; margin-bottom: 3px; }
+            
+            .evt-item { padding: 4px 5px; margin-top: 3px; border-radius: 5px; border-left-width: 3px; flex-shrink: 0; }
+            .evt-item:first-child { margin-top: 0; }
+            .evt-time { font-size: 9px; }
+            .evt-desc { font-size: 9px; line-height: 1.2; }
+            
+            .event-legend { 
+                gap: 8px; 
+                padding: 10px; 
+                justify-content: flex-start;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+            .legend-item { font-size: 10px; flex-shrink: 0; }
+            .legend-dot { width: 10px; height: 10px; }
+            
+            .section-divider { font-size: 16px; padding: 14px 16px; margin: 25px 0 18px; }
+            
+            .academic-grid { gap: 15px; }
+            .acad-card { padding: 18px; border-radius: 16px; }
+            .acad-card h4 { font-size: 15px; }
+            .acad-card td { font-size: 12px; padding: 8px 0; }
+            
+            .proj-card { padding: 20px; border-radius: 18px; }
+            .proj-header h4 { font-size: 17px; }
+            .deadline-badge { padding: 8px 14px; font-size: 12px; }
+            .proj-details, .proj-note { font-size: 13px; }
+            .drive-btn { padding: 12px 20px; font-size: 13px; }
+            
+            .section-title { font-size: 20px; margin-bottom: 20px; }
+        }
+        
+        /* Landscape phones */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .header { padding: 12px 15px; }
+            .header h1 { font-size: 18px; }
+            .content { padding: 10px; }
+            .cal-wrapper { padding: 10px; }
+            .cal-day { min-height: 60px; padding: 5px; }
+            .day-num { font-size: 12px; margin-bottom: 3px; }
+            .evt-item { padding: 3px 5px; margin-top: 3px; }
+            .evt-time, .evt-desc { font-size: 8px; }
+        }
+        
+        /* Tablet */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .days-grid { gap: 7px; }
+            .cal-day { min-height: 95px; }
+        }
+        
+        /* ====== Admission Tab Styles ====== */
+        .admission-header {
+            background: linear-gradient(135deg, #1e3a5f, #0d2137);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .admission-header h1 { color: #60a5fa; font-size: 22px; margin-bottom: 6px; }
+        .admission-header p { color: rgba(255,255,255,0.7); font-size: 13px; }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .summary-stat {
+            background: linear-gradient(145deg, rgba(30,58,95,0.8), rgba(15,52,96,0.6));
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .summary-stat .icon { font-size: 24px; margin-bottom: 6px; }
+        .summary-stat .number { font-size: 32px; font-weight: 700; }
+        .summary-stat .number.white { color: #fff; }
+        .summary-stat .number.green { color: #22c55e; }
+        .summary-stat .number.blue { color: #60a5fa; }
+        .summary-stat .number.orange { color: #f97316; }
+        .summary-stat .label { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+        
+        .program-card {
+            background: rgba(30,58,95,0.5);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .program-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(59,130,246,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .program-title .badge {
+            background: #f97316;
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .data-table th {
+            background: rgba(0,0,0,0.3);
+            color: #93c5fd;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(59,130,246,0.2);
+        }
+        .data-table td {
+            padding: 12px 15px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .data-table tbody tr:hover td { background: rgba(59,130,246,0.1); }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        
+        .row-category td {
+            background: rgba(59,130,246,0.15);
+            color: #93c5fd;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .row-total td {
+            background: rgba(255,255,255,0.05);
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .status {
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status.success { background: rgba(34,197,94,0.2); color: #4ade80; }
+        .status.warning { background: rgba(249,115,22,0.2); color: #f97316; }
+        
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .progress-label {
+            min-width: 90px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+        }
+        .progress-bar {
+            flex: 1;
+            height: 28px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            border-radius: 8px;
+        }
+        .progress-fill.orange { background: linear-gradient(90deg, #f97316, #ea580c); }
+        .progress-fill.green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .progress-fill.blue { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        
+        /* ====== Internship Tab Styles ====== */
+        .internship-header {
+            background: linear-gradient(135deg, #1e3a5f, #0d2137);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .internship-header h1 { color: #60a5fa; font-size: 22px; margin-bottom: 6px; }
+        .internship-header p { color: rgba(255,255,255,0.7); font-size: 13px; }
+        
+        .province-title {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .province-title h2 { font-size: 18px; font-weight: 700; color: #fff; margin: 0; }
+        .province-title .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .company-card {
+            background: rgba(30,58,95,0.6);
+            border-radius: 14px;
+            border: 1px solid rgba(59,130,246,0.2);
+            overflow: hidden;
+        }
+        .company-header {
+            background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.15));
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(59,130,246,0.2);
+        }
+        .company-name {
+            color: #fbbf24;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .company-icon { font-size: 18px; }
+        .company-count {
+            background: rgba(59,130,246,0.4);
+            color: #93c5fd;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .student-list { padding: 10px; }
+        .student-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .student-item:last-child { margin-bottom: 0; }
+        .student-item:nth-child(even) { background: rgba(0,0,0,0.15); }
+        .student-left { display: flex; align-items: center; gap: 10px; }
+        .student-num { color: rgba(255,255,255,0.3); font-size: 13px; min-width: 20px; }
+        .student-name { color: #fff; font-size: 14px; font-weight: 500; }
+        .student-right { display: flex; align-items: center; gap: 8px; }
+        .type-tag {
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .type-normal { background: rgba(59,130,246,0.25); color: #60a5fa; }
+        .type-cont { background: rgba(34,197,94,0.25); color: #4ade80; }
+        .advisor-tag { color: #fbbf24; font-size: 11px; }
+        .student-detail {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            padding: 2px 12px 8px 42px;
+            margin-top: -4px;
+        }
+        
+        /* Schedule Card Timeline */
+        .schedule-card {
+            background: rgba(30,58,95,0.5);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .schedule-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(59,130,246,0.3);
+        }
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .timeline-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 18px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(59,130,246,0.15);
+        }
+        .timeline-date {
+            text-align: center;
+            min-width: 50px;
+        }
+        .timeline-date .day {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            color: #60a5fa;
+            line-height: 1;
+        }
+        .timeline-date .month {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        .timeline-content .timeline-label {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .timeline-content .timeline-desc {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        
+        /* เกณฑ์การฝึกงาน */
+        .criteria-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(59,130,246,0.2);
+        }
+        .criteria-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .criteria-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(59,130,246,0.1);
+        }
+        .criteria-icon { font-size: 22px; }
+        .criteria-text {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+        }
+        .criteria-text strong { color: #fbbf24; }
+        
+        /* โครงสร้างรายงาน */
+        .report-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(59,130,246,0.2);
+        }
+        .report-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chapter-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            border: 1px solid rgba(59,130,246,0.1);
+        }
+        .chapter-num {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .chapter-content strong {
+            color: #fff;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .chapter-content p {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            margin: 0;
+        }
+        
+        /* Summary boxes */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: linear-gradient(145deg, rgba(30,58,95,0.8), rgba(15,52,96,0.6));
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .summary-box .icon { font-size: 24px; margin-bottom: 6px; }
+        .summary-box .number { font-size: 30px; font-weight: 700; }
+        .summary-box .label { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+        
+        /* Donut chart */
+        .donut-wrapper {
+            text-align: center;
+        }
+        .donut-wrapper h4 {
+            color: #fff;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .donut-wrapper .donut-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .donut-wrapper .donut-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        /* Mobile */
+        @media (max-width: 600px) {
+            .summary-row, .summary-stats { grid-template-columns: repeat(2, 1fr); }
+            .company-grid { grid-template-columns: 1fr; }
+            .timeline { grid-template-columns: 1fr; }
+            .province-title { flex-direction: column; gap: 10px; align-items: flex-start; }
+            .criteria-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div style="background:#f59e0b;color:#000;padding:8px 16px;text-align:center;font-weight:bold;font-size:14px;">🔧 TEST VERSION - กำลังทดสอบระบบใหม่</div><div class="header">
+        <h1>📅 Dashboard</h1>
+        <p>ผศ.ดร.วสุ สุขสุวรรณ | คณะวิศวกรรมศาสตร์ มทร.ศรีวิชัย</p>
+
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('schedule')">📅 ตารางสอน-งาน</div>
+        <div class="tab" onclick="showTab('project')">📊 Project Tracking</div>
+        <div class="tab" onclick="showTab('admission')">📋 รับเข้า/นักศึกษาใหม่</div>
+        <div class="tab" onclick="showTab('internship')">📋 นิเทศนักศึกษาฝึกงาน</div>
+    </div>
+    
+    <div class="content">
+        <div id="schedule" class="section active">
+            <h2 class="section-title">📅 ตารางงาน</h2>
+            
+    <!-- Status Banner -->
+    <div id="statusBanner" class="status-banner available">
+        <span class="status-icon" id="statusIcon">✅</span>
+        <div>
+            <div class="status-text" id="statusText">ว่างให้คำปรึกษา</div>
+            <div class="status-detail" id="statusDetail">-</div>
+        </div>
+    </div>
+    
+    <div class="cal-wrapper">
+        <div class="cal-header">
+            <button class="nav-btn" onclick="prevMonth()">◀</button>
+            <h3 id="currentMonth">มิถุนายน 2026</h3>
+            <button class="nav-btn" onclick="nextMonth()">▶</button>
+        </div>
+        <div class="weekdays">
+            <div class="wd sun">อา</div>
+            <div class="wd">จ</div>
+            <div class="wd">อ</div>
+            <div class="wd">พ</div>
+            <div class="wd">พฤ</div>
+            <div class="wd">ศ</div>
+            <div class="wd sat">ส</div>
+        </div>
+        <div class="days-grid" id="calendarGrid"></div>
+        <div class="event-legend">
+            <div class="legend-item"><div class="legend-dot bg-son"></div>สอน</div>
+            <div class="legend-item"><div class="legend-dot bg-sob"></div>สอบ</div>
+            <div class="legend-item"><div class="legend-dot bg-meeting"></div>ประชุม</div>
+            <div class="legend-item"><div class="legend-dot bg-research"></div>วิจัย</div>
+            <div class="legend-item"><div class="legend-dot bg-activity"></div>กิจกรรม</div>
+            <div class="legend-item"><div class="legend-dot bg-deadline"></div>Deadline</div>
+            <div class="legend-item"><div class="legend-dot bg-other"></div>อื่นๆ</div>
+        </div>
+    </div>
+    
+    <script>
+    // Embedded calendar data (generated: 2026-06-02)
+    const calendarData = {"metadata": {"title": "ปฏิทินงานอาจารย์ - Wasu Suksuwan", "lastUpdated": "2026-06-02", "source": "calendar.md"}, "holidays": [{"date": "3 มิ.ย. 69", "name": "วันเฉลิมพระชนมพรรษาฯ ราชวงศ์ (หยุดชดเชย 9 มิ.ย.)"}, {"date": "28 ก.ค. 69", "name": "วันมหาวันอรุณรุจิโรจน์ฯ"}, {"date": "12 ส.ค. 69", "name": "วันเฉลิมพระชนมพรรษาฯ พระบรมราชินีนาถ (หยุดชดเชย 14 ส.ค.)"}, {"date": "14 ส.ค. 69", "name": "วันแม่แห่งชาติ"}, {"date": "21 ต.ค. 69", "name": "วันเฉลิมพระชนมพรรษา ฯ ทรงเจริญพระชนมพรรษา"}, {"date": "23 ต.ค. 69", "name": "วันปิยมหาราช"}, {"date": "5 ธ.ค. 69", "name": "วันพ่อแห่งชาติ / วันชาติ"}, {"date": "10 ธ.ค. 69", "name": "วันรัฐธรรมนูญ"}], "months": {"มิถุนายน": {"year": 2569, "events": [{"date": "3", "day": "พุธ", "items": [{"type": "holiday", "desc": "วันเฉลิมพระชนมพรรษาฯ ราชวงศ์ (หยุดชดเชย 9 มิ.ย.)"}]}, {"date": "11", "day": "พฤหัสบดี", "items": [{"time": "09:00", "type": "ประชุม", "desc": "สภาวิชาการฯ มทร.ศรีวิชัย"}, {"time": "09:00", "type": "นิเทศ", "desc": "นายอัมรอน กือจิ (ทรู ทิวบิ้ง ซิสเท็มส์)"}, {"time": "09:00", "type": "นิเทศ", "desc": "นายปัณณวิชญ์ จูดเกลี้ยง (รีด อินสเปคชั่น)"}, {"time": "11:00", "type": "นิเทศ", "desc": "นายทัตธน แซ่ลิ่ม (หน่ำฮั่วรับเบอร์)"}, {"time": "14:00", "type": "นิเทศ", "desc": "นายสิทธิพล เรืองมณี (หน่ำฮั่วรับเบอร์)"}]}, {"date": "14", "day": "เสาร์", "items": [{"type": "note", "desc": "วันสุดท้ายของภาคฤดูร้อน/2568"}]}, {"date": "15", "day": "อาทิตย์", "items": [{"type": "note", "desc": "เริ่มลงทะเบียนภาค 1/2569"}]}, {"date": "19", "day": "พฤหัสบดี", "items": [{"type": "deadline", "desc": "วันสุดท้ายส่งค่าระดับคะแนน ภาคฤดูร้อน/2568"}]}, {"date": "24", "day": "พุธ", "items": [{"type": "note", "desc": "วันอนุมัติผลการศึกษา ภาคฤดูร้อน/2568"}]}, {"date": "25", "day": "พุธ", "items": [{"time": "09:00", "type": "ประชุม", "desc": "ประชุมเปิดภาคการศึกษาที่ 1/2569 @ ห้องประชุมศรีวิศว ชั้น 3"}]}, {"date": "29", "day": "อาทิตย์", "items": [{"type": "note", "desc": "เปิดภาค 1/2569"}, {"type": "note", "desc": "ประกาศผลการศึกษา ภาคฤดูร้อน/2568"}]}]}, "กรกฏาคม": {"year": 2569, "events": [{"date": "8", "day": "พุธ", "items": [{"type": "ประชุม", "desc": "คณะกรรมการกลั่นกรองหลักสูตร (เทคโนโลยีเครื่องกล)"}]}, {"date": "28", "day": "จันทร์", "items": [{"type": "holiday", "desc": "วันมหาวันอรุณรุจิโรจน์ฯ"}]}, {"date": "31", "day": "พฤหัสบดี", "items": [{"type": "deadline", "desc": "การตรวจประเมินหลักสูตร เทคโนโลยีเครื่องกล"}]}]}, "สิงหาคม": {"year": 2569, "events": [{"date": "12", "day": "พุธ", "items": [{"type": "holiday", "desc": "วันเฉลิมพระชนมพรรษาฯ พระบรมราชินีนาถ (หยุดชดเชย 14 ส.ค.)"}]}, {"date": "14", "day": "พฤหัสบดี", "items": [{"type": "holiday", "desc": "วันแม่แห่งชาติ"}]}, {"date": "5", "day": "พุธ", "items": [{"type": "กิจกรรม", "desc": "ราชมงคลวิชาการวิศวกรรมระดับชาติ ครั้งที่ 17 @ มทร.อีสาน วิทยาเขตนครราชสีมา"}]}, {"date": "6", "day": "พฤหัสบดี", "items": [{"type": "กิจกรรม", "desc": "ราชมงคลวิชาการวิศวกรรมระดับชาติ ครั้งที่ 17"}]}, {"date": "7", "day": "ศุกร์", "items": [{"type": "กิจกรรม", "desc": "ราชมงคลวิชาการวิศวกรรมระดับชาติ ครั้งที่ 17"}]}]}, "ตุลาคม": {"year": 2569, "events": [{"date": "5", "day": "อาทิตย์", "items": [{"type": "ประชุม", "desc": "สภามหาวิทยาลัย (เทคโนโลยีเครื่องกล)"}]}, {"date": "19", "day": "อาทิตย์", "items": [{"type": "exam", "desc": "สอบปลายภาค ภาค 1/2569 รอบแรก"}]}, {"date": "21", "day": "อังคาร", "items": [{"type": "holiday", "desc": "วันเฉลิมพระชนมพรรษา ฯ ทรงเจริญพระชนมพรรษา"}]}, {"date": "23", "day": "พฤหัสบดี", "items": [{"type": "holiday", "desc": "วันปิยมหาราช"}]}]}, "พฤศจิกายน": {"year": 2569, "events": [{"date": "23", "day": "อาทิตย์", "items": [{"type": "note", "desc": "เปิดภาค 2/2569"}]}]}, "ธันวาคม": {"year": 2569, "events": [{"date": "5", "day": "ศุกร์", "items": [{"type": "holiday", "desc": "วันพ่อแห่งชาติ / วันชาติ"}]}, {"date": "10", "day": "พุธ", "items": [{"type": "holiday", "desc": "วันรัฐธรรมนูญ"}]}]}}, "internship": {"start": "20 เม.ย. 2569", "end": "13 มิ.ย. 2569"}, "academicCalendar": {"ภาค1/2569": {"ลงทะเบียน": "15 - 28 มิ.ย. 2569", "เปิดภาค": "29 มิ.ย. 2569", "สอบปลายภาค": "19 ต.ค. - 1 พ.ย. 2569"}, "ภาค2/2569": {"ลงทะเบียน": "9 - 22 พ.ย. 2569", "เปิดภาค": "23 พ.ย. 2569", "สอบปลายภาค": "15 - 28 มี.ค. 2570"}, "ภาคฤดูร้อน/2569": {"เปิดภาค": "19 เม.ย. 2570"}}, "routine": {"08:00 ทุกเช้า": "สรุปข่าวรายวัน + สภาพอากาศ", "ทุก 3 วัน": "รดน้ำต้นไม้"}, "events": [{"day": 11, "month": 6, "year": 2569, "title": "นิเทศนักศึกษาฝึกงาน ภาคฤดูร้อน/2569", "startTime": "09:00", "endTime": "15:00", "location": "หลายสถานที่", "type": "activity", "description": "นิเทศนักศึกษาฝึกงาน 4 คน"}]};
+    
+    let monthKeys = [];
+    let currentMonthIndex = 0;
+    
+    const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
+                        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+    const dayNames = ['อา', 'จ', 'อัง', 'พุธ', 'พฤ', 'ศ', 'ส'];
+    
+    function loadCalendar() {
+        document.getElementById('lastUpdate').textContent = calendarData.metadata.lastUpdated;
+        
+        monthKeys = Object.keys(calendarData.months);
+        
+        // Find current month (default to มิถุนายน or first)
+        currentMonthIndex = 0;
+        for (let i = 0; i < monthKeys.length; i++) {
+            if (monthKeys[i].includes('มิถุนายน')) {
+                currentMonthIndex = i;
+                break;
+            }
+        }
+        
+        renderCalendar();
+    }
+    
+    function renderCalendar() {
+        if (!calendarData || monthKeys.length === 0) return;
+        
+        const monthKey = monthKeys[currentMonthIndex];
+        const monthData = calendarData.months[monthKey];
+        const year = monthData.year;
+        
+        document.getElementById('monthTitle').textContent = `${monthKey} ${year}`;
+        
+        // Build events lookup
+        const eventsMap = {};
+        if (monthData.events) {
+            monthData.events.forEach(evt => {
+                eventsMap[evt.date] = evt;
+            });
+        }
+        
+        let html = '';
+        for (let i = 0; i < 7; i++) {
+            html += `<div class="day-header">${dayNames[i]}</div>`;
+        }
+        
+        // Find first day
+        const monthIndex = monthNames.indexOf(monthKey);
+        const firstDay = new Date(year - 543, monthIndex, 1);
+        let startDay = firstDay.getDay();
+        
+        // Empty cells before
+        for (let i = 0; i < startDay; i++) {
+            html += '<div class="cal-day empty"></div>';
+        }
+        
+        // Days
+        const daysInMonth = new Date(year - 543, monthIndex + 1, 0).getDate();
+        const today = new Date();
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const isToday = (day === today.getDate() && 
+                           monthIndex === today.getMonth() && 
+                           (year - 543) === today.getFullYear());
+            
+            let dayClass = 'cal-day' + (isToday ? ' today' : '');
+            let dayNumClass = isToday ? 'day-numTrue' : 'day-numFalse';
+            
+            html += `<div class="${dayClass}">
+                <div class="${dayNumClass}">${day}</div>`;
+            
+            const dayStr = day.toString();
+            const dayEvents = eventsMap[dayStr];
+            
+            if (dayEvents && dayEvents.items) {
+                dayEvents.items.forEach(item => {
+                    if (item.type === 'holiday') {
+                        html += `<span class="holiday-tag">${item.desc}</span>`;
+                    } else {
+                        const typeClass = item.type || 'other';
+                        html += `<div class="evt-item ${typeClass}">${item.desc}</div>`;
+                    }
+                });
+            }
+            
+            html += '</div>';
+        }
+        
+        document.getElementById('calendarGrid').innerHTML = html;
+        updateStatus();
+    }
+    
+    function updateStatus() {
+        const banner = document.getElementById('statusBanner');
+        banner.className = 'status-banner';
+        banner.querySelector('.status-icon').textContent = '✅';
+        banner.querySelector('h2').textContent = 'ว่าง / Available';
+        banner.querySelector('p').textContent = 'ไม่มีนัดหมายในขณะนี้';
+    }
+    
+    function prevMonth() {
+        if (currentMonthIndex > 0) {
+            currentMonthIndex--;
+            renderCalendar();
+        }
+    }
+    
+    function nextMonth() {
+        if (currentMonthIndex < monthKeys.length - 1) {
+            currentMonthIndex++;
+            renderCalendar();
+        }
+    }
+    
+    loadCalendar();
+    </script>
+    
+            
+    <div class="section-divider">📅 ปฏิทินการศึกษา</div>
+    <div class="academic-grid">
+        <div class="acad-card">
+            <h4>☀️ ภาคฤดูร้อน/2568</h4>
+            <table>
+                <tr><td>ลงทะเบียน</td><td>6-17 เม.ย. 2568</td></tr>
+                <tr><td>เปิดภาค + เพิ่ม/ถอน</td><td>27 เม.ย. 2568</td></tr>
+                <tr><td>วันสุดท้ายเพิ่ม/ถอน (ไม่มี W)</td><td>3 พ.ค. 2568</td></tr>
+                <tr><td>วันสุดท้ายส่งเกรด I</td><td>8 พ.ค. 2568</td></tr>
+                <tr><td>วันสุดท้ายยื่นขอสำเร็จการศึกษา</td><td>25 พ.ค. 2568</td></tr>
+                <tr><td>วันสุดท้ายถอนรายวิชา (มี W)</td><td>31 พ.ค. 2568</td></tr>
+                <tr><td>วันสุดท้ายภาคเรียน</td><td>14 มิ.ย. 2568</td></tr>
+                <tr><td>วันสุดท้ายส่งเกรด</td><td>19 มิ.ย. 2568</td></tr>
+                <tr><td>อนุมัติผลการเรียน</td><td>24 มิ.ย. 2568</td></tr>
+                <tr><td>ประกาศผลอย่างเป็นทางการ</td><td>29 มิ.ย. 2568</td></tr>
+            </table>
+        </div>
+        <div class="acad-card">
+            <h4>📚 ภาค 1/2569</h4>
+            <table>
+                <tr><td>ลงทะเบียน</td><td>15-28 มิ.ย. 2569</td></tr>
+                <tr><td>เปิดภาค</td><td>29 มิ.ย. 2569</td></tr>
+                <tr><td>สอบปลายภาค</td><td>19 ต.ค. - 1 พ.ย. 2569</td></tr>
+            </table>
+        </div>
+        <div class="acad-card">
+            <h4>📚 ภาค 2/2569</h4>
+            <table>
+                <tr><td>ลงทะเบียน</td><td>9-22 พ.ย. 2569</td></tr>
+                <tr><td>เปิดภาค</td><td>23 พ.ย. 2569</td></tr>
+                <tr><td>สอบปลายภาค</td><td>15-28 มี.ค. 2570</td></tr>
+            </table>
+        </div>
+    </div>
+    
+        </div>
+        
+        <div id="project" class="section">
+            <h2 class="section-title">📊 Project Tracking</h2>
+            <div class="project-list"><div class="proj-announce"><h3>📢 แจ้งกำหนดส่งงานภายในวันที่ 17 เมษายน 2569</h3><p>นักศึกษาหลักสูตรเทคโนโลยีเครื่องกล ปี 1 และปี 2</p></div>
+        <div class="proj-card">
+            <div class="proj-header">
+                <h4>📋 โครงร่างโครงการ (ปี 1)</h4>
+                <span class="deadline-badge">⏰ 17 เม.ย. 2569</span>
+            </div>
+            <div class="proj-details">• เย็บแค่มุม ไม่ต้องเข้าเล่ม ต้องมีหน้าปกให้เรียบร้อย<br>• ⚠️ ต้องมีลายเซ็นอาจารย์ที่ปรึกษาและคณะกรรมการกำกับ ที่หัวข้อวัตถุประสงค์หรือขอบเขต</div>
+            <div class="proj-files">📄 เล่มฉบับสมบูรณ์ | 📄 สไลด์นำเสนอ | 📄 ใบรายงานการเข้าพบอาจารย์ที่ปรึกษา | 📄 ใบ ป.พ. ต่างๆ</div>
+            <a href="https://drive.google.com/drive/folders/16YTvb2x6uT-KIu2EQ8xFN7g1f9xvfgau" target="_blank" class="drive-btn">📁 เปิด Google Drive</a>
+        </div>
+        
+        <div class="proj-card">
+            <div class="proj-header">
+                <h4>📚 ปริญญานิพนธ์ (ปี 2 - ปกติ)</h4>
+                <span class="deadline-badge">⏰ 17 เม.ย. 2569</span>
+            </div>
+            <div class="proj-details">• เข้าเล่มให้เรียบร้อย<br>• ⚠️ ต้องให้อาจารย์ที่ปรึกษาและคณะกรรมการลงนามครบทุกท่าน</div>
+            <div class="proj-files">📄 เล่มฉบับสมบูรณ์ | 📄 สไลด์นำเสนอ | 📄 ใบรายงานการเข้าพบอาจารย์ที่ปรึกษา | 📄 ใบ ป.พ. ต่างๆ</div>
+            <a href="https://drive.google.com/drive/folders/1LEDDM1AhF9MGOZWJucuedlYsk4U1j6fd" target="_blank" class="drive-btn">📁 เปิด Google Drive</a>
+        </div>
+        
+        <div class="proj-card">
+            <div class="proj-header">
+                <h4>📚 ปริญญานิพนธ์ (ปี 2 - สมทบ)</h4>
+                <span class="deadline-badge">⏰ 17 เม.ย. 2569</span>
+            </div>
+            <div class="proj-details">• เข้าเล่มให้เรียบร้อย<br>• ⚠️ ต้องให้อาจารย์ที่ปรึกษาและคณะกรรมการลงนามครบทุกท่าน</div>
+            <div class="proj-files">📄 เล่มฉบับสมบูรณ์ | 📄 สไลด์นำเสนอ | 📄 ใบรายงานการเข้าพบอาจารย์ที่ปรึกษา | 📄 ใบ ป.พ. ต่างๆ</div>
+            <a href="https://drive.google.com/drive/folders/1JhEXaeRfZpkcHkxBnyfsvxMK6hCNT4ht" target="_blank" class="drive-btn">📁 เปิด Google Drive</a>
+        </div>
+        </div>
+        </div>
+        
+        <div id="admission" class="section">
+            <h2 class="section-title">📋 รับเข้า/นักศึกษาใหม่</h2>
+            
+    
+    <!-- Header -->
+    <div style="background:#f59e0b;color:#000;padding:8px 16px;text-align:center;font-weight:bold;font-size:14px;">🔧 TEST VERSION - กำลังทดสอบระบบใหม่</div><div class="header">
+        <h1>🎓 สรุปข้อมูลรับเข้านักศึกษาใหม่</h1>
+        <p>หลักสูตรอนุปริญญาบัณฑิต เทคโนโลยีเครื่องกล | มทร.ศรีวิชัย</p>
+    </div>
+    
+    <!-- Summary Stats -->
+    <div class="summary-stats">
+        <div class="summary-stat">
+            <div class="icon">👥</div>
+            <div class="number white">252</div>
+            <div class="label">ผู้สมัครทั้งหมด</div>
+        </div>
+        <div class="summary-stat">
+            <div class="icon">📝</div>
+            <div class="number green">75</div>
+            <div class="label">ยืนยันตัว (Cf)</div>
+        </div>
+        <div class="summary-stat">
+            <div class="icon">✅</div>
+            <div class="number blue">62</div>
+            <div class="label">รายงานตัว (Stu.i)</div>
+        </div>
+        <div class="summary-stat">
+            <div class="icon">📊</div>
+            <div class="number orange">90%</div>
+            <div class="label">อัตราส่วน Cf/Stu</div>
+        </div>
+    </div>
+    
+    <!-- ภาคปกติ -->
+    <div class="program-card">
+        <h2 class="program-title">
+            🎓 ภาคปกติ (Regular)
+            <span class="badge">แผนรับ 35 คน</span>
+        </h2>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>รายการ</th>
+                    <th>Cf (ยืนยันตัว)</th>
+                    <th>Stu (รายงานตัว)</th>
+                    <th>สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-category">
+                    <td colspan="4">🏫 โควตามหาวิทยาลัย</td>
+                </tr>
+                <tr>
+                    <td>ผู้สมัคร</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td><span class="status success">เกินเป้า</span></td>
+                </tr>
+                <tr class="row-category">
+                    <td colspan="4">📚 โควตา ปวช./ปวส. (โครงการพิเศษ)</td>
+                </tr>
+                <tr>
+                    <td>ผู้สมัคร</td>
+                    <td>34</td>
+                    <td>32</td>
+                    <td><span class="status success">เกินเป้า</span></td>
+                </tr>
+                <tr class="row-total">
+                    <td>📊 รวมทั้งหมด</td>
+                    <td>40</td>
+                    <td>37</td>
+                    <td><span class="status success">106%</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-item">
+                <span class="progress-label">แผนรับ</span>
+                <div class="progress-bar">
+                    <div class="progress-fill orange" style="width: 100%;">35 คน</div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <span class="progress-label">ยืนยันตัว</span>
+                <div class="progress-bar">
+                    <div class="progress-fill green" style="width: 100%;">40 คน (+5)</div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <span class="progress-label">รายงานตัว</span>
+                <div class="progress-bar">
+                    <div class="progress-fill blue" style="width: 100%;">37 คน (+2)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ภาคสมทบ -->
+    <div class="program-card">
+        <h2 class="program-title">
+            🎓 ภาคสมทบ (Continuing)
+            <span class="badge">แผนรับ 30 คน</span>
+        </h2>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>รายการ</th>
+                    <th>Cf (ยืนยันตัว)</th>
+                    <th>Stu (รายงานตัว)</th>
+                    <th>สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-category">
+                    <td colspan="4">🏫 โควตามหาวิทยาลัย</td>
+                </tr>
+                <tr>
+                    <td>ผู้สมัคร</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td><span class="status info">ตามเป้า</span></td>
+                </tr>
+                <tr class="row-category">
+                    <td colspan="4">📚 โควตา ปวช./ปวส. (โครงการพิเศษ)</td>
+                </tr>
+                <tr>
+                    <td>ผู้สมัคร</td>
+                    <td>29</td>
+                    <td>20</td>
+                    <td><span class="status warning">ใกล้เป้า</span></td>
+                </tr>
+                <tr class="row-total">
+                    <td>📊 รวมทั้งหมด</td>
+                    <td>35</td>
+                    <td>25</td>
+                    <td><span class="status warning">83%</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-item">
+                <span class="progress-label">แผนรับ</span>
+                <div class="progress-bar">
+                    <div class="progress-fill orange" style="width: 100%;">30 คน</div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <span class="progress-label">ยืนยันตัว</span>
+                <div class="progress-bar">
+                    <div class="progress-fill green" style="width: 100%;">35 คน (+5)</div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <span class="progress-label">รายงานตัว</span>
+                <div class="progress-bar">
+                    <div class="progress-fill blue" style="width: 83%;">25 คน (-5)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        📌 ข้อมูลจาก admission.rmutsv.ac.th | อัพเดท: 5 เมษายน 2569 | Dashboard v2.5.0
+    </div>
+    
+
+        </div>
+        
+        <div id="internship" class="section">
+            <h2 class="section-title">📋 นิเทศนักศึกษาฝึกงาน</h2>
+            
+    
+    <div class="page-header">
+        <h1>📋 ตารางนิเทศนักศึกษาฝึกงาน</h1>
+        <p>ภาคฤดูร้อน 2568 | มทร.ศรีวิชัย</p>
+    </div>
+    
+    <!-- Summary -->
+    <div class="summary-row">
+        <div class="summary-box">
+            <div class="icon">👥</div>
+            <div class="number" style="color:#fff">47</div>
+            <div class="label">นักศึกษา</div>
+        </div>
+        <div class="summary-box">
+            <div class="icon">🏢</div>
+            <div class="number" style="color:#f97316">27</div>
+            <div class="label">สถานที่</div>
+        </div>
+        <div class="summary-box">
+            <div class="icon">🎓</div>
+            <div class="number" style="color:#60a5fa">33</div>
+            <div class="label">ปกติ</div>
+        </div>
+        <div class="summary-box">
+            <div class="icon">📚</div>
+            <div class="number" style="color:#22c55e">14</div>
+            <div class="label">สมทบ</div>
+        </div>
+    </div>
+    
+    <!-- ===== สงขลา ===== -->
+    <div class="province-title">
+        <h2>📍 จังหวัดสงขลา</h2>
+        <span class="badge">37 คน | 19 บริษัท</span>
+    </div>
+    
+    <div class="company-grid">
+        <!-- 1. บริษัท ซีฮอร์ส อินเตอร์เทรด -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท ซีฮอร์ส อินเตอร์เทรด จำกัด</span>
+                <span class="company-count">3 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายสหรัฐ ขุนเพชร</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายกิตติพศ จันทร์สง</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">3</span><span class="student-name">นายชัยวัฒน์ เมืองสังข์</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 2. บริษัท ทรอปิคอลแคนนิ่ง -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท ทรอปิคอลแคนนิ่ง ฯ</span>
+                <span class="company-count">3 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายจักรพงศ์ คงดำ</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายอัครพนธ์ ขุนเศษ</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">3</span><span class="student-name">นายตะวัน ยิ่งขำ</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3. บริษัท แปซิฟิคแปรรูปสัตว์น้ำ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท แปซิฟิคแปรรูปสัตว์น้ำ จำกัด</span>
+                <span class="company-count">3 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายนันทเขต แหละหมัน</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายวรัญญู มุสิกพงศ์</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">3</span><span class="student-name">นายปาณัท มณีฉาย</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. บริษัท แมน เอ โฟรสเซน -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท แมน เอ โฟรสเซน ฯ</span>
+                <span class="company-count">3 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นางสาวอังคนา ยั่งยืน</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายตันติกร เพชรภูเขียว</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">3</span><span class="student-name">นายสนธยา ทองชูช่วย</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 5. บริษัท เซ็นทรัลพัฒนา -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท เซ็นทรัลพัฒนา จำกัด</span>
+                <span class="company-count">3 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายชวัลวิชญ์ จุฑานฤนาท</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายธนาวุตร์ วัดจัง</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">3</span><span class="student-name">นายนนท์ธวัช เกื้อจันทร์</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 6. โรงพยาบาลสงขลา -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏥</span>โรงพยาบาลสงขลา</span>
+                <span class="company-count">3 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นางสาวพนิตสุภา ไชยกุล</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นางสาวธัญชนก มาฉิม</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">3</span><span class="student-name">นายเกาซีย์ เหมหีม</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 7. งานวิศวกรรมซ่อมบำรุงฯ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏥</span>งานวิศวกรรมซ่อมบำรุงฯ</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายณัฐวุฒิ วัฒนสันติ์</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายโชติภัทร์ จงธนพิมาน</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 8. บริษัท วีฟิค โอเชี่ยน -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท วีฟิค โอเชี่ยนฯ</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายพีระพัฒน์ กาลิกา</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span><span class="advisor-tag">อ.พรประสิทธิ์</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายขจรศักดิ์ นิลจู</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span><span class="advisor-tag">อ.พรประสิทธิ์</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 9. บริษัท หน่ำฮั่วรับเบอร์ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท หน่ำฮั่วรับเบอร์ จำกัด</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายทัตธน แซ่ลิ่ม</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายสิทธิพล เรืองมณี</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 10. บริษัท เอส ซี ออฟชอร์ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🚢</span>บริษัท เอส ซี ออฟชอร์ ฯ</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายระพี ศรีณาเคนทร์</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายอดิเทพ คุณชู</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 11. ศูนย์พัฒนายานยนต์ไฟฟ้า -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🔋</span>ศูนย์พัฒนายานยนต์ไฟฟ้า ฯ</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายพิชญุตม์ วนไชยยศ</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายอานนท์ สาเหร็ม</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 12. ท่าอากาศยานนานาชาติหาดใหญ่ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">✈️</span>ท่าอากาศยานนานาชาติหาดใหญ่</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายวัชรพงศ์ สีเงินยวง</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายสนธยา แก้วชู</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 13. บริษัท คิงฟิชเชอร์ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🐟</span>บริษัท คิงฟิชเชอร์ โฮลดิ้งส์ จำกัด</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายนรวิชญ์ จันทรวงศ์</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 14. บริษัท รีด อินสเปคชั่น -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท รีด อินสเปคชั่น จำกัด</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายปัณณวิชญ์ จูดเกลี้ยง</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 15. บริษัท ทรู ทิวบิ้ง -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท ทรู ทิวบิ้ง ฯ</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายอัมรอน กือจิ</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 16. บริษัท สรรพสินค้าเซ็นทรัล สาขาหาดใหญ่ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏬</span>บริษัท สรรพสินค้าเซ็นทรัล สาขาหาดใหญ่</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายบวรทัต ธนะรัตน์</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 17. บริษัท เเปซิฟิคเเปรรูปสัตว์น้ำ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท เเปซิฟิคเเปรรูปสัตว์น้ำ จำกัด</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายพุฒิพงศ์ ทองอร่าม</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 18. บริษัท แปซิฟิคแปรรูปสัตว์น้ำจำกัด -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🏭</span>บริษัท แปซิฟิคแปรรูปสัตว์น้ำจำกัด</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายณัฐวุฒิ รัตนพงศ์</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 19. ห้างหุ้นส่วนศรีทรัพย์การช่าง -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">🔧</span>ห้างหุ้นส่วนศรีทรัพย์การช่าง</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายกวิน สันยีบวช</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ===== จังหวัดอื่นๆ ===== -->
+    <div class="province-title">
+        <h2>📍 จังหวัดอื่นๆ</h2>
+        <span class="badge">10 คน | 8 สถานที่</span>
+    </div>
+    
+    <div class="company-grid">
+        <!-- ภูเก็ต -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">📍</span>ภูเก็ต (2 บริษัท)</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายณัฐกฤต แก้วชู</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span><span class="advisor-tag">อ.สิทธิพรฯ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายเอกรัตน์ คลองรั้ว</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span><span class="advisor-tag">อ.สิทธิพรฯ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- นครศรีธรรมราช -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">📍</span>นครศรีธรรมราช (2 บริษัท)</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายพุทธนันท์ แก้วจันทร์ทอง</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายธีรภัทร เชียงทอง</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- กระบี่ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">📍</span>กระบี่ (1 บริษัท)</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายกฤษดา มีแก้ว</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- สมุทรปราการ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">📍</span>สมุทรปราการ (1 บริษัท)</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายอดิศักดิ์ เจริญศรี</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายชนัญญู นิ่มเนียม</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- สุราษฎร์ธานี -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">📍</span>สุราษฎร์ธานี (1 บริษัท)</span>
+                <span class="company-count">1 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายสุวิชัย ประทานชวโน</span></div>
+                    <div class="student-right"><span class="type-tag type-cont">สมทบ</span><span class="advisor-tag">อ.สิทธิพรฯ</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- อื่นๆ -->
+        <div class="company-card">
+            <div class="company-header">
+                <span class="company-name"><span class="company-icon">📍</span>อื่นๆ (1 บริษัท)</span>
+                <span class="company-count">2 คน</span>
+            </div>
+            <div class="student-list">
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">1</span><span class="student-name">นายพงศ์ศิริ เพ็งเอียด</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+                <div class="student-item">
+                    <div class="student-left"><span class="student-num">2</span><span class="student-name">นายพิชัยยุทธ หิรัญพิจิตร</span></div>
+                    <div class="student-right"><span class="type-tag type-normal">ปกติ</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        📌 ตารางนิเทศนักศึกษาฝึกงาน ภาคฤดูร้อน 2568 | อัพเดท: 10 เมษายน 2569
+    </div>
+    
+
+        </div>
+    </div>
+    
+    <div class="footer">
+        index.html | v2.5.0 (10 เม.ย. 2569) | ผศ.ดร.วสุ สุขสุวรรณ | มทร.ศรีวิชัย
+        <br><span id="updateTime"></span>
+    </div>
+    
+    <script>
+    // Embedded calendar data (generated: 2026-06-02)
+    const calendarData = {"metadata": {"title": "ปฏิทินงานอาจารย์ - Wasu Suksuwan", "lastUpdated": "2026-06-02", "source": "calendar.md"}, "holidays": [{"date": "3 มิ.ย. 69", "name": "วันเฉลิมพระชนมพรรษาฯ ราชวงศ์ (หยุดชดเชย 9 มิ.ย.)"}, {"date": "28 ก.ค. 69", "name": "วันมหาวันอรุณรุจิโรจน์ฯ"}, {"date": "12 ส.ค. 69", "name": "วันเฉลิมพระชนมพรรษาฯ พระบรมราชินีนาถ (หยุดชดเชย 14 ส.ค.)"}, {"date": "14 ส.ค. 69", "name": "วันแม่แห่งชาติ"}, {"date": "21 ต.ค. 69", "name": "วันเฉลิมพระชนมพรรษา ฯ ทรงเจริญพระชนมพรรษา"}, {"date": "23 ต.ค. 69", "name": "วันปิยมหาราช"}, {"date": "5 ธ.ค. 69", "name": "วันพ่อแห่งชาติ / วันชาติ"}, {"date": "10 ธ.ค. 69", "name": "วันรัฐธรรมนูญ"}], "months": {"มิถุนายน": {"year": 2569, "events": [{"date": "3", "day": "พุธ", "items": [{"type": "holiday", "desc": "วันเฉลิมพระชนมพรรษาฯ ราชวงศ์ (หยุดชดเชย 9 มิ.ย.)"}]}, {"date": "11", "day": "พฤหัสบดี", "items": [{"time": "09:00", "type": "ประชุม", "desc": "สภาวิชาการฯ มทร.ศรีวิชัย"}, {"time": "09:00", "type": "นิเทศ", "desc": "นายอัมรอน กือจิ (ทรู ทิวบิ้ง ซิสเท็มส์)"}, {"time": "09:00", "type": "นิเทศ", "desc": "นายปัณณวิชญ์ จูดเกลี้ยง (รีด อินสเปคชั่น)"}, {"time": "11:00", "type": "นิเทศ", "desc": "นายทัตธน แซ่ลิ่ม (หน่ำฮั่วรับเบอร์)"}, {"time": "14:00", "type": "นิเทศ", "desc": "นายสิทธิพล เรืองมณี (หน่ำฮั่วรับเบอร์)"}]}, {"date": "14", "day": "เสาร์", "items": [{"type": "note", "desc": "วันสุดท้ายของภาคฤดูร้อน/2568"}]}, {"date": "15", "day": "อาทิตย์", "items": [{"type": "note", "desc": "เริ่มลงทะเบียนภาค 1/2569"}]}, {"date": "19", "day": "พฤหัสบดี", "items": [{"type": "deadline", "desc": "วันสุดท้ายส่งค่าระดับคะแนน ภาคฤดูร้อน/2568"}]}, {"date": "24", "day": "พุธ", "items": [{"type": "note", "desc": "วันอนุมัติผลการศึกษา ภาคฤดูร้อน/2568"}]}, {"date": "25", "day": "พุธ", "items": [{"time": "09:00", "type": "ประชุม", "desc": "ประชุมเปิดภาคการศึกษาที่ 1/2569 @ ห้องประชุมศรีวิศว ชั้น 3"}]}, {"date": "29", "day": "อาทิตย์", "items": [{"type": "note", "desc": "เปิดภาค 1/2569"}, {"type": "note", "desc": "ประกาศผลการศึกษา ภาคฤดูร้อน/2568"}]}]}, "กรกฏาคม": {"year": 2569, "events": [{"date": "8", "day": "พุธ", "items": [{"type": "ประชุม", "desc": "คณะกรรมการกลั่นกรองหลักสูตร (เทคโนโลยีเครื่องกล)"}]}, {"date": "28", "day": "จันทร์", "items": [{"type": "holiday", "desc": "วันมหาวันอรุณรุจิโรจน์ฯ"}]}, {"date": "31", "day": "พฤหัสบดี", "items": [{"type": "deadline", "desc": "การตรวจประเมินหลักสูตร เทคโนโลยีเครื่องกล"}]}]}, "สิงหาคม": {"year": 2569, "events": [{"date": "12", "day": "พุธ", "items": [{"type": "holiday", "desc": "วันเฉลิมพระชนมพรรษาฯ พระบรมราชินีนาถ (หยุดชดเชย 14 ส.ค.)"}]}, {"date": "14", "day": "พฤหัสบดี", "items": [{"type": "holiday", "desc": "วันแม่แห่งชาติ"}]}, {"date": "5", "day": "พุธ", "items": [{"type": "กิจกรรม", "desc": "ราชมงคลวิชาการวิศวกรรมระดับชาติ ครั้งที่ 17 @ มทร.อีสาน วิทยาเขตนครราชสีมา"}]}, {"date": "6", "day": "พฤหัสบดี", "items": [{"type": "กิจกรรม", "desc": "ราชมงคลวิชาการวิศวกรรมระดับชาติ ครั้งที่ 17"}]}, {"date": "7", "day": "ศุกร์", "items": [{"type": "กิจกรรม", "desc": "ราชมงคลวิชาการวิศวกรรมระดับชาติ ครั้งที่ 17"}]}]}, "ตุลาคม": {"year": 2569, "events": [{"date": "5", "day": "อาทิตย์", "items": [{"type": "ประชุม", "desc": "สภามหาวิทยาลัย (เทคโนโลยีเครื่องกล)"}]}, {"date": "19", "day": "อาทิตย์", "items": [{"type": "exam", "desc": "สอบปลายภาค ภาค 1/2569 รอบแรก"}]}, {"date": "21", "day": "อังคาร", "items": [{"type": "holiday", "desc": "วันเฉลิมพระชนมพรรษา ฯ ทรงเจริญพระชนมพรรษา"}]}, {"date": "23", "day": "พฤหัสบดี", "items": [{"type": "holiday", "desc": "วันปิยมหาราช"}]}]}, "พฤศจิกายน": {"year": 2569, "events": [{"date": "23", "day": "อาทิตย์", "items": [{"type": "note", "desc": "เปิดภาค 2/2569"}]}]}, "ธันวาคม": {"year": 2569, "events": [{"date": "5", "day": "ศุกร์", "items": [{"type": "holiday", "desc": "วันพ่อแห่งชาติ / วันชาติ"}]}, {"date": "10", "day": "พุธ", "items": [{"type": "holiday", "desc": "วันรัฐธรรมนูญ"}]}]}}, "internship": {"start": "20 เม.ย. 2569", "end": "13 มิ.ย. 2569"}, "academicCalendar": {"ภาค1/2569": {"ลงทะเบียน": "15 - 28 มิ.ย. 2569", "เปิดภาค": "29 มิ.ย. 2569", "สอบปลายภาค": "19 ต.ค. - 1 พ.ย. 2569"}, "ภาค2/2569": {"ลงทะเบียน": "9 - 22 พ.ย. 2569", "เปิดภาค": "23 พ.ย. 2569", "สอบปลายภาค": "15 - 28 มี.ค. 2570"}, "ภาคฤดูร้อน/2569": {"เปิดภาค": "19 เม.ย. 2570"}}, "routine": {"08:00 ทุกเช้า": "สรุปข่าวรายวัน + สภาพอากาศ", "ทุก 3 วัน": "รดน้ำต้นไม้"}, "events": [{"day": 11, "month": 6, "year": 2569, "title": "นิเทศนักศึกษาฝึกงาน ภาคฤดูร้อน/2569", "startTime": "09:00", "endTime": "15:00", "location": "หลายสถานที่", "type": "activity", "description": "นิเทศนักศึกษาฝึกงาน 4 คน"}]};
+    
+    let monthKeys = [];
+    let currentMonthIndex = 0;
+    
+    const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
+                        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+    const dayNames = ['อา', 'จ', 'อัง', 'พุธ', 'พฤ', 'ศ', 'ส'];
+    
+    function loadCalendar() {
+        document.getElementById('lastUpdate').textContent = calendarData.metadata.lastUpdated;
+        
+        monthKeys = Object.keys(calendarData.months);
+        
+        // Find current month (default to มิถุนายน or first)
+        currentMonthIndex = 0;
+        for (let i = 0; i < monthKeys.length; i++) {
+            if (monthKeys[i].includes('มิถุนายน')) {
+                currentMonthIndex = i;
+                break;
+            }
+        }
+        
+        renderCalendar();
+    }
+    
+    function renderCalendar() {
+        if (!calendarData || monthKeys.length === 0) return;
+        
+        const monthKey = monthKeys[currentMonthIndex];
+        const monthData = calendarData.months[monthKey];
+        const year = monthData.year;
+        
+        document.getElementById('monthTitle').textContent = `${monthKey} ${year}`;
+        
+        // Build events lookup
+        const eventsMap = {};
+        if (monthData.events) {
+            monthData.events.forEach(evt => {
+                eventsMap[evt.date] = evt;
+            });
+        }
+        
+        let html = '';
+        for (let i = 0; i < 7; i++) {
+            html += `<div class="day-header">${dayNames[i]}</div>`;
+        }
+        
+        // Find first day
+        const monthIndex = monthNames.indexOf(monthKey);
+        const firstDay = new Date(year - 543, monthIndex, 1);
+        let startDay = firstDay.getDay();
+        
+        // Empty cells before
+        for (let i = 0; i < startDay; i++) {
+            html += '<div class="cal-day empty"></div>';
+        }
+        
+        // Days
+        const daysInMonth = new Date(year - 543, monthIndex + 1, 0).getDate();
+        const today = new Date();
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const isToday = (day === today.getDate() && 
+                           monthIndex === today.getMonth() && 
+                           (year - 543) === today.getFullYear());
+            
+            let dayClass = 'cal-day' + (isToday ? ' today' : '');
+            let dayNumClass = isToday ? 'day-numTrue' : 'day-numFalse';
+            
+            html += `<div class="${dayClass}">
+                <div class="${dayNumClass}">${day}</div>`;
+            
+            const dayStr = day.toString();
+            const dayEvents = eventsMap[dayStr];
+            
+            if (dayEvents && dayEvents.items) {
+                dayEvents.items.forEach(item => {
+                    if (item.type === 'holiday') {
+                        html += `<span class="holiday-tag">${item.desc}</span>`;
+                    } else {
+                        const typeClass = item.type || 'other';
+                        html += `<div class="evt-item ${typeClass}">${item.desc}</div>`;
+                    }
+                });
+            }
+            
+            html += '</div>';
+        }
+        
+        document.getElementById('calendarGrid').innerHTML = html;
+        updateStatus();
+    }
+    
+    function updateStatus() {
+        const banner = document.getElementById('statusBanner');
+        banner.className = 'status-banner';
+        banner.querySelector('.status-icon').textContent = '✅';
+        banner.querySelector('h2').textContent = 'ว่าง / Available';
+        banner.querySelector('p').textContent = 'ไม่มีนัดหมายในขณะนี้';
+    }
+    
+    function prevMonth() {
+        if (currentMonthIndex > 0) {
+            currentMonthIndex--;
+            renderCalendar();
+        }
+    }
+    
+    function nextMonth() {
+        if (currentMonthIndex < monthKeys.length - 1) {
+            currentMonthIndex++;
+            renderCalendar();
+        }
+    }
+    
+    loadCalendar();
+    </script>
+</body>
+</html>

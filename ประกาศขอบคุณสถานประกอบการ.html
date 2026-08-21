@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ขอบคุณสถานประกอบการ | มทร.ศรีวิชัย</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Sarabun', 'TH Sarabun New', 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 50px 60px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 4px solid #1e3a5f;
+        }
+        
+        .logos-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .rmutsv-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+            text-align: center;
+            line-height: 1.2;
+            padding: 10px;
+        }
+        
+        .university-info {
+            text-align: left;
+        }
+        
+        .university-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3a5f;
+        }
+        
+        .faculty-name {
+            font-size: 16px;
+            color: #444;
+        }
+        
+        .department-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #c9a227;
+            margin-top: 5px;
+        }
+        
+        .divider {
+            width: 2px;
+            height: 80px;
+            background: #c9a227;
+        }
+        
+        .main-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .academic-term {
+            font-size: 16px;
+            color: #888;
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        /* Thank You Message */
+        .message {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border-left: 5px solid #c9a227;
+        }
+        
+        .message h2 {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+        
+        .message p {
+            font-size: 16px;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Company Grid */
+        .company-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3a5f;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c9a227;
+        }
+        
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .company-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .company-card:hover {
+            border-color: #c9a227;
+            box-shadow: 0 4px 15px rgba(201, 162, 39, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .company-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .company-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1e3a5f;
+            line-height: 1.3;
+        }
+        
+        .company-type {
+            font-size: 11px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 3px solid #1e3a5f;
+            margin-top: 40px;
+        }
+        
+        .footer-text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .update-date {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+        
+        .contact-info {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #555;
+        }
+        
+        /* Print styles */
+        @media print {
+            body { padding: 0; background: white; }
+            .page { box-shadow: none; padding: 40px; }
+            .company-card { border: 1px solid #ccc; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .company-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        
+        @media (max-width: 600px) {
+            .company-grid { grid-template-columns: repeat(2, 1fr); }
+            .page { padding: 30px 20px; }
+            .logos-header { flex-direction: column; gap: 15px; }
+            .divider { width: 80px; height: 2px; }
+            .university-info { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <div class="header">
+            <div class="logos-header">
+                <div class="rmutsv-logo">
+                    มทร.ศรีวิชัย<br>RMUTSV
+                </div>
+                <div class="divider"></div>
+                <div class="university-info">
+                    <div class="university-name">มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</div>
+                    <div class="faculty-name">คณะวิศวกรรมศาสตร์</div>
+                    <div class="department-name">สาขาวิชาเทคโนโลยีเครื่องกล</div>
+                </div>
+            </div>
+            
+            <h1 class="main-title">ประกาศขอบคุณสถานประกอบการ</h1>
+            <p class="subtitle">ที่ร่วมรับนักศึกษาฝึกงานและสหกิจศึกษา</p>
+            <div class="academic-term">ภาคฤดูร้อน 2/2568 และ ภาคเรียน 1/2569</div>
+        </div>
+        
+        <!-- Thank You Message -->
+        <div class="message">
+            <h2>🙏 ขอขอบคุณเป็นอย่างสูง</h2>
+            <p>
+                สาขาวิชาเทคโนโลยีเครื่องกล คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย
+                ขอขอบคุณสถานประกอบการทุกแห่งที่ให้ความอนุเคราะห์รับนักศึกษาฝึกงานและสหกิจศึกษา
+                ซึ่งถือเป็นการสนับสนุนที่มีคุณค่ายิ่งในการพัฒนาบุคลากรทางวิศวกรรมของประเทศ
+            </p>
+        </div>
+        
+        <!-- Company Grid -->
+        <div class="company-section">
+            <h3 class="section-title">🏢 สถานประกอบการที่ร่วมรับนักศึกษา</h3>
+            
+            <div class="company-grid">
+                <div class="company-card">
+                    <div class="company-icon">🐟</div>
+                    <div class="company-name">บริษัท คิงฟิชเชอร์ โฮลดิ้งส์ จำกัด</div>
+                    <div class="company-type">อุตสาหกรรมแปรรูปสัตว์น้ำ</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🚢</div>
+                    <div class="company-name">บริษัท ซีฮอร์ส อินเตอร์เทรด จำกัด</div>
+                    <div class="company-type">อุตสาหกรรมต่อเรือ</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🥫</div>
+                    <div class="company-name">บริษัท ทรอปิคอลแคนนิ่ง ฯ</div>
+                    <div class="company-type">อุตสาหกรรมอาหาร</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">❄️</div>
+                    <div class="company-name">บริษัท แมน เอ โฟรสเซน ฯ</div>
+                    <div class="company-type">อุตสาหกรรมแช่เย็น</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🏗️</div>
+                    <div class="company-name">บริษัท เซ็นทรัลพัฒนา จำกัด</div>
+                    <div class="company-type">งานก่อสร้าง</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🌊</div>
+                    <div class="company-name">บริษัท วีฟิค โอเชี่ยนฯ</div>
+                    <div class="company-type">อุตสาหกรรมทะเล</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🌴</div>
+                    <div class="company-name">บริษัท หน่ำฮั่วรับเบอร์ จำกัด</div>
+                    <div class="company-type">อุตสาหกรรมยาง</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">⚓</div>
+                    <div class="company-name">บริษัท เอส ซี ออฟชอร์ ฯ</div>
+                    <div class="company-type">อุตสาหกรรมนอกชายฝั่ง</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🔍</div>
+                    <div class="company-name">บริษัท รีด อินสเปคชั่น จำกัด</div>
+                    <div class="company-type">บริการตรวจสอบ</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🛢️</div>
+                    <div class="company-name">บริษัท ทรู ทิวบิ้ง ฯ</div>
+                    <div class="company-type">อุตสาหกรรมน้ำมันและก๊าซ</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🛒</div>
+                    <div class="company-name">บริษัท สรรพสินค้าเซ็นทรัล สาขาหาดใหญ่</div>
+                    <div class="company-type">ธุรกิจค้าปลีก</div>
+                </div>
+                
+                <div class="company-card">
+                    <div class="company-icon">🐟</div>
+                    <div class="company-name">บริษัท แปซิฟิคแปรรูปสัตว์น้ำ จำกัด</div>
+                    <div class="company-type">อุตสาหกรรมแปรรูปสัตว์น้ำ</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">
+                <strong>สาขาวิชาเทคโนโลยีเครื่องกล คณะวิศวกรรมศาสตร์</strong><br>
+                มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย
+            </p>
+            <p class="update-date">📅 ข้อมูล ณ วันที่ 12 เมษายน 2569</p>
+            <p class="contact-info">
+                📧 ติดต่อสอบถามได้ที่งานบริการการศึกษา คณะวิศวกรรมศาสตร์
+            </p>
+        </div>
+    </div>
+</body>
+</html>

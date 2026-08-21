@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สถิติภาระงานสอนอาจารย์หลักสูตรเทคโนโลยีเครื่องกล | 1/2566 - 2/2568</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Sarabun', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); min-height: 100vh; }
+  .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); }
+  .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); }
+  .chart-card { transition: all 0.3s; }
+  .chart-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -5px rgba(79, 70, 229, 0.15); }
+  .heatmap-cell { transition: all 0.2s; }
+  .heatmap-cell:hover { transform: scale(1.15); z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  .gradient-text { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-in { animation: fadeIn 0.6s ease-out backwards; }
+  .animate-delay-1 { animation-delay: 0.1s; }
+  .animate-delay-2 { animation-delay: 0.2s; }
+  .animate-delay-3 { animation-delay: 0.3s; }
+  .animate-delay-4 { animation-delay: 0.4s; }
+  .legend-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; }
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  th { position: sticky; top: 0; background: #f8fafc; z-index: 5; }
+
+  /* Scroll hint shadow for horizontal tables */
+  .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .scroll-x::-webkit-scrollbar { height: 6px; }
+  .scroll-x::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+  .scroll-x::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+  /* ============ MOBILE OPTIMIZATIONS ============ */
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    h1 { font-size: 1.15rem !important; line-height: 1.3; }
+    h2 { font-size: 1rem !important; }
+    .chart-card, .glass { padding: 1rem !important; }
+    .stat-card { padding: 0.85rem !important; }
+    .stat-card .text-3xl { font-size: 1.6rem !important; }
+    .stat-card .text-xs { font-size: 0.7rem !important; }
+    /* Bigger chart fonts on mobile */
+    .chart-container-mobile { height: 320px !important; }
+    /* Compact legend on mobile */
+    .chart-legend-mobile { font-size: 10px !important; padding: 6px !important; }
+    /* Reduce gaps */
+    .gap-4 { gap: 0.65rem !important; }
+    .space-y-8 > * + * { margin-top: 1.25rem !important; }
+    /* Header compact */
+    header .px-4 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    /* Insights cards bigger text */
+    .border-l-4 p { font-size: 0.85rem; line-height: 1.4; }
+    /* Tables */
+    table { font-size: 0.8rem; }
+    th, td { padding: 0.5rem 0.35rem !important; }
+    /* Section title */
+    .text-2xl { font-size: 1.25rem !important; }
+    /* Legend pills */
+    .legend-pill { font-size: 0.65rem; padding: 3px 7px; }
+  }
+
+  @media (max-width: 400px) {
+    .stat-card .text-3xl { font-size: 1.4rem !important; }
+    /* Make summary 2-col stay readable on tiny screens */
+    .grid-cols-2 > * { padding: 0.65rem !important; }
+  }
+
+  @media print {
+    body { background: white; }
+    .no-print { display: none; }
+    .chart-card { box-shadow: none; border: 1px solid #e2e8f0; }
+  }
+</style>
+</head>
+<body class="text-slate-800">
+
+<!-- HEADER -->
+<header class="glass shadow-lg sticky top-0 z-50 no-print">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-white text-2xl shadow-lg">📚</div>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold gradient-text">สถิติภาระงานสอนอาจารย์</h1>
+            <p class="text-sm text-slate-600">หลักสูตรเทคโนโลยีเครื่องกล · ภาคเรียนที่ 1/2566 - 2/2568 (3 ปีการศึกษา)</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2 text-sm text-slate-600">
+          <span class="pulse-dot w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>ข้อมูล ณ วันที่ 17 ก.ค. 2569</span>
+        </div>
+        <button onclick="window.print()" class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-pink-500 text-white text-sm font-medium rounded-lg shadow hover:shadow-lg transition-all">
+          🖨️ พิมพ์/PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+<!-- SECTION 1: SUMMARY STATS -->
+<section class="animate-in animate-delay-1">
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+    <div class="stat-card glass rounded-2xl p-5 shadow-md">
+      <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">อาจารย์ทั้งหมด</div>
+      <div class="text-3xl font-bold gradient-text mt-2">18</div>
+      <div class="text-xs text-slate-500 mt-1">คน (เคยสอน ทก.)</div>
+    </div>
+    <div class="stat-card glass rounded-2xl p-5 shadow-md">
+      <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">ภาระงานรวม</div>
+      <div class="text-3xl font-bold text-indigo-600 mt-2">519</div>
+      <div class="text-xs text-slate-500 mt-1">คาบ/สัปดาห์</div>
+    </div>
+    <div class="stat-card glass rounded-2xl p-5 shadow-md">
+      <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">เฉลี่ย/เทอม</div>
+      <div class="text-3xl font-bold text-emerald-600 mt-2">8.4</div>
+      <div class="text-xs text-slate-500 mt-1">คาบ/สัปดาห์</div>
+    </div>
+    <div class="stat-card glass rounded-2xl p-5 shadow-md">
+      <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">สูงสุด</div>
+      <div class="text-3xl font-bold text-rose-600 mt-2">122</div>
+      <div class="text-xs text-slate-500 mt-1">อ.สิทธิพร (3 ปี)</div>
+    </div>
+    <div class="stat-card glass rounded-2xl p-5 shadow-md">
+      <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">รหัสวิชา</div>
+      <div class="text-3xl font-bold text-amber-600 mt-2">37</div>
+      <div class="text-xs text-slate-500 mt-1">วิชาที่ไม่ซ้ำ</div>
+    </div>
+    <div class="stat-card glass rounded-2xl p-5 shadow-md">
+      <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">ช่วงเวลา</div>
+      <div class="text-3xl font-bold text-violet-600 mt-2">3 ปี</div>
+      <div class="text-xs text-slate-500 mt-1">6 ภาคเรียน</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: KEY INSIGHTS -->
+<section class="animate-in animate-delay-2">
+  <div class="glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <span class="text-2xl">💡</span> Insight สำคัญ
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gradient-to-br from-rose-50 to-pink-50 border-l-4 border-rose-500 rounded-lg p-4">
+        <div class="font-semibold text-rose-900 mb-1">🔴 เสี่ยง Burnout</div>
+        <p class="text-sm text-rose-800">อ.สิทธิพร สอน 24-28 คาบ/เทอม ต่อเนื่อง 5 เทอม (CV 62.6% = ไม่สม่ำเสมอสูง)</p>
+      </div>
+      <div class="bg-gradient-to-br from-amber-50 to-yellow-50 border-l-4 border-amber-500 rounded-lg p-4">
+        <div class="font-semibold text-amber-900 mb-1">🟠 ความเหลื่อมล้ำสูง</div>
+        <p class="text-sm text-amber-800">อ.สิทธิพร สอน 40 เท่าของ อ.อุดร (122 vs 3 คาบ) — ควรกระจายโหลด</p>
+      </div>
+      <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-l-4 border-emerald-500 rounded-lg p-4">
+        <div class="font-semibold text-emerald-900 mb-1">🟢 อาจารย์สำรอง</div>
+        <p class="text-sm text-emerald-800">มี 6 อาจารย์ (พรชัย, พรประสิทธิ์, อเนก, ประทีป, พินทิพย์, อธิราช) ที่ไม่เคยสอน ทก. ใน 3 ปี</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: LINE CHART - TREND PER LECTURER -->
+<section class="animate-in animate-delay-3">
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div>
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <span class="text-2xl">📈</span> แนวโน้มภาระงานแต่ละอาจารย์ (6 ภาคเรียน)
+        </h2>
+        <p class="text-sm text-slate-500 mt-1">คลิกที่ชื่ออาจารย์ด้านล่างเพื่อซ่อน/แสดงกราฟ</p>
+      </div>
+    </div>
+    <div class="relative chart-container-mobile" style="height: 400px;">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: BAR CHART - AVG + HEATMAP -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in animate-delay-4">
+  
+  <!-- 4A: Avg per lecturer (sorted) -->
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <span class="text-2xl">📊</span> ภาระงานเฉลี่ยต่อเทอม
+    </h2>
+    <div class="relative chart-container-mobile" style="height: 420px;">
+      <canvas id="avgChart"></canvas>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2 text-xs">
+      <span class="legend-pill bg-rose-100 text-rose-800">🔴 สูงมาก (>20)</span>
+      <span class="legend-pill bg-orange-100 text-orange-800">🟠 สูง (15-20)</span>
+      <span class="legend-pill bg-amber-100 text-amber-800">🟡 ปานกลาง (10-15)</span>
+      <span class="legend-pill bg-emerald-100 text-emerald-800">🟢 ต่ำ (5-10)</span>
+      <span class="legend-pill bg-slate-100 text-slate-800">⚪ น้อยมาก (&lt;5)</span>
+    </div>
+  </div>
+
+  <!-- 4B: Distribution donut -->
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <span class="text-2xl">🍩</span> สัดส่วนตามระดับภาระงาน
+    </h2>
+    <div class="relative chart-container-mobile" style="height: 380px;">
+      <canvas id="distChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: STACKED BAR - Theory vs Practice -->
+<section class="animate-in">
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <span class="text-2xl">📚</span> ทฤษฎี vs ปฏิบัติ (อาจารย์ top 12)
+    </h2>
+    <div class="relative chart-container-mobile" style="height: 420px;">
+      <canvas id="tpChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: HEATMAP -->
+<section class="animate-in">
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">
+      <span class="text-2xl">🟦</span> Heatmap: ภาระงานตามอาจารย์ × ภาคเรียน
+    </h2>
+    <p class="text-sm text-slate-500 mb-4">สีเข้ม = ภาระงานสูง · สีซีด = ไม่มีข้อมูล</p>
+    <div class="scroll-x" style="max-width:100%;">
+      <table id="heatmapTable" class="w-full text-sm" style="min-width: 600px;"></table>
+    </div>
+    <p class="text-xs text-slate-500 mt-2 sm:hidden">← เลื่อนซ้ายขวาเพื่อดูข้อมูลทั้งหมด →</p>
+  </div>
+</section>
+
+<!-- SECTION 7: WASU TREND -->
+<section class="animate-in">
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">
+      <span class="text-2xl">👨‍🏫</span> ภาระงาน อ.วสุ แยกตามปีการศึกษา
+    </h2>
+    <p class="text-sm text-slate-500 mb-4">YoY: 2566→2567 ลด 75% · 2567→2568 เพิ่ม 650%</p>
+    <div class="relative chart-container-mobile" style="height: 320px;">
+      <canvas id="wasuYearChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: TOP 10 TABLE -->
+<section class="animate-in">
+  <div class="chart-card glass rounded-2xl p-6 shadow-md">
+    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <span class="text-2xl">🏆</span> Top 10 อาจารย์ที่มีภาระงานสูงสุด
+    </h2>
+    <div class="scroll-x" style="max-width:100%;">
+      <table class="w-full text-sm" style="min-width: 600px;">
+        <thead>
+          <tr class="border-b-2 border-slate-200 text-left">
+            <th class="py-3 px-2 font-semibold text-slate-700">#</th>
+            <th class="py-3 px-2 font-semibold text-slate-700">อาจารย์</th>
+            <th class="py-3 px-2 font-semibold text-slate-700 text-right">เฉลี่ย/เทอม</th>
+            <th class="py-3 px-2 font-semibold text-slate-700 text-right">รวม 6 เทอม</th>
+            <th class="py-3 px-2 font-semibold text-slate-700 text-right">สูงสุด</th>
+            <th class="py-3 px-2 font-semibold text-slate-700 text-right">ต่ำสุด</th>
+            <th class="py-3 px-2 font-semibold text-slate-700 text-center">สอน</th>
+            <th class="py-3 px-2 font-semibold text-slate-700">ระดับ</th>
+          </tr>
+        </thead>
+        <tbody id="top10Table"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9: METHODOLOGY -->
+<section class="animate-in no-print">
+  <details class="glass rounded-2xl shadow-md">
+    <summary class="cursor-pointer p-6 font-bold text-slate-800 hover:text-indigo-600 transition-colors">
+      📋 วิธีการวิเคราะห์ & แหล่งข้อมูล
+    </summary>
+    <div class="px-6 pb-6 text-sm text-slate-700 space-y-3">
+      <div>
+        <div class="font-semibold text-slate-800 mb-1">แหล่งข้อมูล</div>
+        <p>ไฟล์ <code class="bg-slate-100 px-2 py-0.5 rounded">2-68-โหลดอ_ตรา-update25-9-68.xlsx</code> (อัปเดต 25 ก.ย. 68) — ภาระงานอาจารย์สาขาวิศวกรรมเครื่องกล คณะวิศวกรรมศาสตร์ มทร.ศรีวิชัย</p>
+      </div>
+      <div>
+        <div class="font-semibold text-slate-800 mb-1">การดึงข้อมูล</div>
+        <ul class="list-disc list-inside space-y-1 ml-2">
+          <li>วิเคราะห์ 6 sheets จาก 1/2566 - 2/2568 (1/2567 ว่าง — ไม่มีข้อมูล)</li>
+          <li>Filter เฉพาะ course rows ที่ column P (หมายเหตุ) ขึ้นต้นด้วย "ทก." (เทคโนโลยีเครื่องกล)</li>
+          <li>รวม teaching periods (ทฤษฎี+ปฏิบัติ) ของแต่ละอาจารย์ในแต่ละภาคเรียน</li>
+          <li>151 แถวข้อมูล, 37 รหัสวิชาที่ไม่ซ้ำ, 18 อาจารย์</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold text-slate-800 mb-1">หน่วย</div>
+        <p>"คาบ" = คาบเรียน/สัปดาห์ (period/week) · "ทฤษฎี" = ท. · "ปฏิบัติ" = ป.</p>
+      </div>
+      <div>
+        <div class="font-semibold text-slate-800 mb-1">ข้อจำกัด</div>
+        <ul class="list-disc list-inside space-y-1 ml-2">
+          <li>ไฟล์อัปเดต ณ 25 ก.ย. 68 — อาจมีการเปลี่ยนแปลงหลังจากนั้น</li>
+          <li>1/2567 ไม่มีข้อมูล — ไม่สามารถวิเคราะห์เทอมนี้ได้</li>
+          <li>ไม่รวมภาระงาน วก. (วิศวกรรมศาสตรบัณฑิต), วกร. (วิศวกรรมเรือ), นอกสาขา, งานวิจัย, งานบริหาร</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+</section>
+
+</main>
+
+<footer class="mt-12 py-8 border-t border-slate-200 no-print">
+  <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500">
+    <p>สร้างโดย กรูฟ 🌸 · ข้อมูลจากไฟล์ภาระงานอาจารย์ สาขาวิศวกรรมเครื่องกล มทร.ศรีวิชัย</p>
+    <p class="mt-1 text-xs">อัปเดตล่าสุด: 17 กรกฎาคม 2569 · เวอร์ชัน 1.0</p>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const SEMESTERS = ['1/2566', '2/2566', '1/2567', '2/2567', '1/2568', '2/2568'];
+
+// แต่ละอาจารย์: [1/66, 2/66, 1/67, 2/67, 1/68, 2/68]
+const LECTURER_DATA = {
+  'อ.สิทธิพร':   [17, 28, 0, 28, 25, 24],
+  'อ.วสุ':       [14, 10, 0, 6,  28, 17],
+  'อ.ธีระวัฒน์': [8,  14, 0, 16, 0,  14],
+  'อ.จีระศักดิ์':[10, 5,  0, 5,  17, 8],
+  'อ.บรรเจิด':   [12, 7,  0, 8,  10, 8],
+  'อ.บัญญัติ':   [0,  8,  0, 16, 0,  9],
+  'อ.ฐานวิทย์':  [0,  6,  0, 12, 0,  13],
+  'อ.สุเทพ':     [0,  3,  0, 6,  11, 4],
+  'อ.กิตติชัย':  [8,  0,  0, 0,  8,  4],
+  'อ.เป็นหนึ่ง': [0,  0,  0, 0,  8,  8],
+  'อ.วสันต์':    [3,  2,  0, 10, 0,  0],
+  'อ.สมเกียรติ': [0,  0,  0, 4,  4,  0],
+  'อ.อภิชิต':    [0,  0,  0, 0,  8,  0],
+  'อ.อันวาร์':   [4,  0,  0, 0,  0,  4],
+  'อ.จารุวัฒน์': [0,  0,  0, 0,  0,  6],
+  'อ.ปฐมพร':    [0,  4,  0, 0,  0,  0],
+  'อ.เสรี':      [0,  0,  0, 0,  4,  0],
+  'อ.อุดร':      [0,  0,  0, 0,  3,  0],
+};
+
+// Theory vs Practice per lecturer (sum 6 semesters)
+const TP_DATA = {
+  'อ.สิทธิพร':    {theory: 58, practice: 64},
+  'อ.วสุ':        {theory: 35, practice: 40},
+  'อ.ธีระวัฒน์':  {theory: 24, practice: 28},
+  'อ.บัญญัติ':    {theory: 8,  practice: 25},
+  'อ.จีระศักดิ์': {theory: 19, practice: 26},
+  'อ.บรรเจิด':    {theory: 19, practice: 26},
+  'อ.ฐานวิทย์':   {theory: 1,  practice: 30},
+  'อ.สุเทพ':      {theory: 4,  practice: 20},
+  'อ.กิตติชัย':   {theory: 8,  practice: 12},
+  'อ.เป็นหนึ่ง':  {theory: 2,  practice: 14},
+  'อ.วสันต์':     {theory: 5,  practice: 10},
+  'อ.จารุวัฒน์':  {theory: 2,  practice: 4},
+};
+
+// Wasu yearly
+const WASU_YEAR = {
+  labels: ['ปี 2566', 'ปี 2567', 'ปี 2568'],
+  theory: [12, 6, 17],
+  practice: [12, 0, 28],
+  semesters: [2, 1, 2],
+};
+
+// ============================================================
+// COLORS
+// ============================================================
+const PALETTE = [
+  '#4f46e5', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6',
+  '#06b6d4', '#f43f5e', '#6b7280', '#84cc16', '#a855f7',
+  '#0ea5e9', '#f97316', '#14b8a6', '#eab308', '#ef4444',
+  '#22c55e', '#3b82f6', '#d946ef'
+];
+
+function getLevelColor(avg) {
+  if (avg > 20) return '#ef4444'; // rose
+  if (avg >= 15) return '#f97316'; // orange
+  if (avg >= 10) return '#f59e0b'; // amber
+  if (avg >= 5) return '#10b981'; // emerald
+  return '#94a3b8'; // slate
+}
+
+function getLevelBadge(avg) {
+  if (avg > 20) return '<span class="px-2 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-700">🔴 สูงมาก</span>';
+  if (avg >= 15) return '<span class="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">🟠 สูง</span>';
+  if (avg >= 10) return '<span class="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">🟡 ปานกลาง</span>';
+  if (avg >= 5) return '<span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">🟢 ต่ำ</span>';
+  return '<span class="px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">⚪ น้อยมาก</span>';
+}
+
+// ============================================================
+// CHART 1: TREND LINE
+// ============================================================
+const trendCtx = document.getElementById('trendChart').getContext('2d');
+const lecturerNames = Object.keys(LECTURER_DATA);
+const trendDatasets = lecturerNames.map((name, i) => {
+  const data = LECTURER_DATA[name];
+  // Replace 0 with null for chart (treat as no data)
+  const dataClean = data.map(v => v === 0 ? null : v);
+  return {
+    label: name,
+    data: dataClean,
+    borderColor: PALETTE[i % PALETTE.length],
+    backgroundColor: PALETTE[i % PALETTE.length] + '20',
+    borderWidth: 2,
+    tension: 0.3,
+    pointRadius: 4,
+    pointHoverRadius: 7,
+    pointBackgroundColor: PALETTE[i % PALETTE.length],
+  };
+});
+
+new Chart(trendCtx, {
+  type: 'line',
+  data: { labels: SEMESTERS, datasets: trendDatasets },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { 
+        position: 'bottom', 
+        labels: { 
+          usePointStyle: true, 
+          padding: 12,
+          font: { family: 'Sarabun', size: 11 },
+          boxWidth: 8,
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleFont: { family: 'Sarabun', size: 13, weight: 'bold' },
+        bodyFont: { family: 'Sarabun', size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y} คาบ/สัปดาห์`
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'คาบ/สัปดาห์', font: { family: 'Sarabun', size: 12, weight: 'bold' } },
+        grid: { color: '#e2e8f0' },
+        ticks: { font: { family: 'Sarabun' } }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { font: { family: 'Sarabun', weight: 'bold' } }
+      }
+    }
+  }
+});
+
+// ============================================================
+// CHART 2: AVG PER LECTURER (BAR)
+// ============================================================
+const avgCtx = document.getElementById('avgChart').getContext('2d');
+const lecturerStats = lecturerNames.map(name => {
+  const data = LECTURER_DATA[name].filter(v => v > 0);
+  const total = data.reduce((a, b) => a + b, 0);
+  return {
+    name,
+    avg: data.length ? total / data.length : 0,
+    total,
+    count: data.length,
+    max: data.length ? Math.max(...data) : 0,
+    min: data.length ? Math.min(...data) : 0,
+  };
+}).sort((a, b) => b.avg - a.avg);
+
+new Chart(avgCtx, {
+  type: 'bar',
+  data: {
+    labels: lecturerStats.map(s => s.name),
+    datasets: [{
+      label: 'เฉลี่ยคาบ/สัปดาห์',
+      data: lecturerStats.map(s => s.avg),
+      backgroundColor: lecturerStats.map(s => getLevelColor(s.avg)),
+      borderColor: lecturerStats.map(s => getLevelColor(s.avg)),
+      borderWidth: 2,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleFont: { family: 'Sarabun', size: 13, weight: 'bold' },
+        bodyFont: { family: 'Sarabun', size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          label: (ctx) => {
+            const s = lecturerStats[ctx.dataIndex];
+            return [
+              `เฉลี่ย: ${s.avg.toFixed(1)} คาบ/เทอม`,
+              `รวม: ${s.total} คาบ (${s.count} เทอม)`,
+              `สูงสุด: ${s.max} · ต่ำสุด: ${s.min}`
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: { display: true, text: 'เฉลี่ยคาบ/เทอม', font: { family: 'Sarabun', size: 12, weight: 'bold' } },
+        grid: { color: '#e2e8f0' },
+        ticks: { font: { family: 'Sarabun' } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { family: 'Sarabun', size: 11 } }
+      }
+    }
+  }
+});
+
+// ============================================================
+// CHART 3: DISTRIBUTION DONUT
+// ============================================================
+const distCtx = document.getElementById('distChart').getContext('2d');
+const distData = {
+  '🔴 สูงมาก (>20)': lecturerStats.filter(s => s.avg > 20).length,
+  '🟠 สูง (15-20)': lecturerStats.filter(s => s.avg >= 15 && s.avg <= 20).length,
+  '🟡 ปานกลาง (10-15)': lecturerStats.filter(s => s.avg >= 10 && s.avg < 15).length,
+  '🟢 ต่ำ (5-10)': lecturerStats.filter(s => s.avg >= 5 && s.avg < 10).length,
+  '⚪ น้อยมาก (<5)': lecturerStats.filter(s => s.avg > 0 && s.avg < 5).length,
+};
+
+new Chart(distCtx, {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(distData),
+    datasets: [{
+      data: Object.values(distData),
+      backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#94a3b8'],
+      borderWidth: 3,
+      borderColor: '#ffffff',
+      hoverOffset: 12,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { 
+          font: { family: 'Sarabun', size: 11 },
+          padding: 12,
+          usePointStyle: true,
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleFont: { family: 'Sarabun', size: 13, weight: 'bold' },
+        bodyFont: { family: 'Sarabun', size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          label: (ctx) => {
+            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = (ctx.parsed / total * 100).toFixed(0);
+            return `${ctx.label}: ${ctx.parsed} คน (${pct}%)`;
+          }
+        }
+      }
+    }
+  }
+});
+
+// ============================================================
+// CHART 4: THEORY vs PRACTICE (STACKED BAR)
+// ============================================================
+const tpCtx = document.getElementById('tpChart').getContext('2d');
+const tpNames = Object.keys(TP_DATA);
+
+new Chart(tpCtx, {
+  type: 'bar',
+  data: {
+    labels: tpNames,
+    datasets: [
+      {
+        label: 'ทฤษฎี',
+        data: tpNames.map(n => TP_DATA[n].theory),
+        backgroundColor: '#4f46e5',
+        borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 },
+      },
+      {
+        label: 'ปฏิบัติ',
+        data: tpNames.map(n => TP_DATA[n].practice),
+        backgroundColor: '#ec4899',
+        borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        position: 'top',
+        labels: { font: { family: 'Sarabun', size: 12 }, usePointStyle: true }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleFont: { family: 'Sarabun', size: 13, weight: 'bold' },
+        bodyFont: { family: 'Sarabun', size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          footer: (items) => {
+            const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
+            return `รวม: ${total} คาบ`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { 
+        stacked: true,
+        grid: { display: false },
+        ticks: { font: { family: 'Sarabun', size: 11 } }
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        title: { display: true, text: 'คาบ (สะสม 6 เทอม)', font: { family: 'Sarabun', size: 12, weight: 'bold' } },
+        grid: { color: '#e2e8f0' },
+        ticks: { font: { family: 'Sarabun' } }
+      }
+    }
+  }
+});
+
+// ============================================================
+// CHART 5: HEATMAP TABLE
+// ============================================================
+function buildHeatmap() {
+  const table = document.getElementById('heatmapTable');
+  const maxVal = 28; // for color scaling
+  
+  let html = '<thead><tr class="border-b-2 border-slate-200">';
+  html += '<th class="py-3 px-3 text-left font-semibold text-slate-700">อาจารย์</th>';
+  SEMESTERS.forEach(s => {
+    html += `<th class="py-3 px-3 text-center font-semibold text-slate-700">${s}</th>`;
+  });
+  html += '<th class="py-3 px-3 text-center font-semibold text-slate-700">รวม</th>';
+  html += '<th class="py-3 px-3 text-center font-semibold text-slate-700">เฉลี่ย</th>';
+  html += '</tr></thead><tbody>';
+  
+  // Sort by total descending
+  const sorted = lecturerNames.slice().sort((a, b) => {
+    const totA = LECTURER_DATA[a].reduce((s, v) => s + v, 0);
+    const totB = LECTURER_DATA[b].reduce((s, v) => s + v, 0);
+    return totB - totA;
+  });
+  
+  sorted.forEach(name => {
+    const data = LECTURER_DATA[name];
+    const total = data.reduce((s, v) => s + v, 0);
+    const nonZero = data.filter(v => v > 0);
+    const avg = nonZero.length ? total / nonZero.length : 0;
+    
+    html += `<tr class="border-b border-slate-100 hover:bg-indigo-50/50 transition-colors">`;
+    html += `<td class="py-2 px-3 font-medium text-slate-800 whitespace-nowrap">${name}</td>`;
+    data.forEach(v => {
+      const intensity = v === 0 ? 0 : Math.min(v / maxVal, 1);
+      const bg = v === 0 ? '#f1f5f9' : `rgba(79, 70, 229, ${0.15 + intensity * 0.75})`;
+      const color = v === 0 ? '#cbd5e1' : (intensity > 0.6 ? '#ffffff' : '#1e293b');
+      const text = v === 0 ? '—' : v;
+      html += `<td class="p-1"><div class="heatmap-cell text-center py-2 px-2 rounded-md font-semibold" style="background:${bg};color:${color};">${text}</div></td>`;
+    });
+    
+    // Total
+    html += `<td class="py-2 px-3 text-center font-bold text-indigo-700">${total}</td>`;
+    // Avg
+    html += `<td class="py-2 px-3 text-center text-slate-600">${avg ? avg.toFixed(1) : '—'}</td>`;
+    html += '</tr>';
+  });
+  
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+buildHeatmap();
+
+// ============================================================
+// CHART 6: WASU YEARLY
+// ============================================================
+const wasuCtx = document.getElementById('wasuYearChart').getContext('2d');
+new Chart(wasuCtx, {
+  type: 'bar',
+  data: {
+    labels: WASU_YEAR.labels,
+    datasets: [
+      {
+        label: 'ทฤษฎี',
+        data: WASU_YEAR.theory,
+        backgroundColor: '#4f46e5',
+        borderRadius: 6,
+      },
+      {
+        label: 'ปฏิบัติ',
+        data: WASU_YEAR.practice,
+        backgroundColor: '#ec4899',
+        borderRadius: 6,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        position: 'top',
+        labels: { font: { family: 'Sarabun', size: 12 }, usePointStyle: true }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleFont: { family: 'Sarabun', size: 13, weight: 'bold' },
+        bodyFont: { family: 'Sarabun', size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          afterLabel: (ctx) => {
+            const idx = ctx.dataIndex;
+            return `จำนวนเทอม: ${WASU_YEAR.semesters[idx]}`;
+          },
+          footer: (items) => {
+            const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
+            return `รวม: ${total} คาบ`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { family: 'Sarabun', size: 12, weight: 'bold' } }
+      },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'คาบ (สะสมต่อปี)', font: { family: 'Sarabun', size: 12, weight: 'bold' } },
+        grid: { color: '#e2e8f0' },
+        ticks: { font: { family: 'Sarabun' } }
+      }
+    }
+  }
+});
+
+// ============================================================
+// TABLE: TOP 10
+// ============================================================
+const top10 = lecturerStats.slice(0, 10);
+const top10Html = top10.map((s, idx) => {
+  const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `<span class="text-slate-400">${idx + 1}</span>`;
+  return `<tr class="border-b border-slate-100 hover:bg-indigo-50/50 transition-colors">
+    <td class="py-3 px-2 text-center font-bold text-lg">${medal}</td>
+    <td class="py-3 px-2 font-medium text-slate-800">${s.name}</td>
+    <td class="py-3 px-2 text-right font-bold" style="color:${getLevelColor(s.avg)}">${s.avg.toFixed(1)}</td>
+    <td class="py-3 px-2 text-right font-semibold text-slate-700">${s.total}</td>
+    <td class="py-3 px-2 text-right text-rose-600 font-medium">${s.max}</td>
+    <td class="py-3 px-2 text-right text-slate-600">${s.min || '—'}</td>
+    <td class="py-3 px-2 text-center text-slate-600">${s.count}/6</td>
+    <td class="py-3 px-2">${getLevelBadge(s.avg)}</td>
+  </tr>`;
+}).join('');
+document.getElementById('top10Table').innerHTML = top10Html;
+</script>
+</body>
+</html>

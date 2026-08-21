@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายงานการฝึกงาน | มทร.ศรีวิชัย</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Sarabun', 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.8;
+            padding: 40px;
+        }
+        
+        .page {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 50px 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #1e3a5f;
+        }
+        .university {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .faculty {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #888;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .info-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #eee;
+        }
+        .info-row:last-child { 
+            margin-bottom: 0; 
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+        .info-value {
+            color: #333;
+        }
+        .info-value input {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        /* Chapter */
+        .chapter {
+            margin-bottom: 40px;
+        }
+        .chapter-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e3a5f;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1e3a5f;
+            margin-bottom: 20px;
+        }
+        .chapter-title span {
+            background: #1e3a5f;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        
+        .content-box {
+            background: #fafafa;
+            border-left: 4px solid #1e3a5f;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .content-box p {
+            margin-bottom: 10px;
+        }
+        .content-box p:last-child { margin-bottom: 0; }
+        
+        /* List */
+        ul.list {
+            list-style: none;
+            padding-left: 0;
+        }
+        ul.list li {
+            padding: 8px 0 8px 30px;
+            position: relative;
+        }
+        ul.list li::before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: #1e3a5f;
+            font-weight: bold;
+        }
+        
+        /* Fill in area */
+        .fill-area {
+            border: 2px dashed #ccc;
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 100px;
+            margin-bottom: 15px;
+        }
+        .fill-area.hint {
+            color: #999;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .data-table th {
+            background: #1e3a5f;
+            color: #fff;
+            font-weight: 600;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #1e3a5f;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        /* Print */
+        @media print {
+            body { padding: 0; background: #fff; }
+            .page { box-shadow: none; padding: 40px; }
+            .fill-area { border-color: #999; }
+        }
+        
+        /* Page break */
+        .page-break {
+            page-break-after: always;
+        }
+        
+        /* Skills grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .skill-item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .skill-item h4 {
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .skill-item p {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="university">มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</div>
+            <div class="faculty">คณะวิศวกรรมศาสตร์ | หลักสูตรเทคโนโลยีเครื่องกล</div>
+            <div class="title">รายงานการฝึกงาน</div>
+            <div class="subtitle"> INDUSTRIAL TRAINING REPORT</div>
+        </div>
+        
+        <!-- Student Info -->
+        <div class="info-box">
+            <div class="info-row">
+                <div class="info-label">ชื่อ-นามสกุล</div>
+                <div class="info-value"><input type="text" placeholder="........................................................"></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">รหัสนักศึกษา</div>
+                <div class="info-value"><input type="text" placeholder="........................................................"></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">สาขาวิชา</div>
+                <div class="info-value"><input type="text" placeholder="เทคโนโลยีเครื่องกล"></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">ชื่อบริษัท/องค์กร</div>
+                <div class="info-value"><input type="text" placeholder="........................................................"></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">ตำแหน่งที่ฝึกงาน</div>
+                <div class="info-value"><input type="text" placeholder="........................................................"></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">ระยะเวลาฝึกงาน</div>
+                <div class="info-value"><input type="text" placeholder="ตั้งแต่ ............ ถึง ............ (รวม ........... ชั่วโมง)"></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">อาจารย์ที่ปรึกษา</div>
+                <div class="info-value"><input type="text" placeholder="........................................................"></div>
+            </div>
+        </div>
+        
+        <!-- บทที่ 1: บทนำ -->
+        <div class="chapter">
+            <div class="chapter-title"><span>1</span> บทนำ</div>
+            
+            <div class="section-title">1.1 ความเป็นมาขององค์กร</div>
+            <div class="fill-area hint">
+                อธิบายความเป็นมา ประวัติความเป็นมาของบริษัท/องค์กรที่ไปฝึกงาน
+            </div>
+            
+            <div class="section-title">1.2 ลักษณะของงานและตำแหน่งที่ฝึกงาน</div>
+            <div class="fill-area hint">
+                อธิบายลักษณะงานที่ได้รับมอบหมาย ตำแหน่งที่ปฏิบัติงานจริง
+            </div>
+            
+            <div class="section-title">1.3 วัตถุประสงค์ของการฝึกงาน</div>
+            <ul class="list">
+                <li>เพื่อประยุกต์ใช้ความรู้ทางทฤษฎีในสถานการณ์จริง</li>
+                <li>เพื่อพัฒนาทักษะและความชำนาญในการปฏิบัติงาน</li>
+                <li>เพื่อสร้างความเข้าใจในสภาพแวดล้อมการทำงานจริง</li>
+                <li>เพื่อเตรียมความพร้อมสำหรับการประกอบอาชีพในอนาคต</li>
+            </ul>
+            <div class="fill-area hint" style="min-height: 60px;">
+                เพิ่มเติมวัตถุประสงค์เฉพาะของตนเอง
+            </div>
+        </div>
+        
+        <!-- บทที่ 2: ข้อมูลองค์กร -->
+        <div class="chapter">
+            <div class="chapter-title"><span>2</span> ข้อมูลองค์กร</div>
+            
+            <div class="section-title">2.1 ข้อมูลทั่วไปของบริษัท</div>
+            <table class="data-table">
+                <tr>
+                    <th style="width: 200px;">ชื่อบริษัท</th>
+                    <td><input type="text" style="width:100%;border:none;background:transparent;" placeholder="........................................................"></td>
+                </tr>
+                <tr>
+                    <th>ประเภทธุรกิจ</th>
+                    <td><input type="text" style="width:100%;border:none;background:transparent;" placeholder="........................................................"></td>
+                </tr>
+                <tr>
+                    <th>ที่อยู่</th>
+                    <td><input type="text" style="width:100%;border:none;background:transparent;" placeholder="........................................................"></td>
+                </tr>
+                <tr>
+                    <th>เบอร์โทรศัพท์</th>
+                    <td><input type="text" style="width:100%;border:none;background:transparent;" placeholder="........................................................"></td>
+                </tr>
+                <tr>
+                    <th>จำนวนพนักงาน</th>
+                    <td><input type="text" style="width:100%;border:none;background:transparent;" placeholder="........................................................"></td>
+                </tr>
+            </table>
+            
+            <div class="section-title">2.2 โครงสร้างองค์กร</div>
+            <div class="fill-area hint">
+                วาดแผนผังองค์กร (Organization Chart) แสดงโครงสร้างการบริหาร
+            </div>
+            
+            <div class="section-title">2.3 บทบาทและหน้าที่ในตำแหน่งที่ฝึกงาน</div>
+            <div class="fill-area hint">
+                อธิบายบทบาทและหน้าที่ความรับผิดชอบในตำแหน่งที่ฝึกงาน
+            </div>
+        </div>
+        
+        <div class="page-break"></div>
+        
+        <!-- บทที่ 3: กิจกรรมที่ปฏิบัติงาน -->
+        <div class="chapter">
+            <div class="chapter-title"><span>3</span> กิจกรรมที่ปฏิบัติงาน</div>
+            
+            <div class="section-title">3.1 รายละเอียดงานที่ได้รับมอบหมาย</div>
+            <div class="fill-area hint">
+                อธิบายรายละเอียดงานที่ได้รับมอบหมายในแต่ละช่วงเวลา
+            </div>
+            
+            <div class="section-title">3.2 เครื่องมือ/อุปกรณ์/เทคโนโลยีที่ใช้</div>
+            <table class="data-table">
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>รายการเครื่องมือ/อุปกรณ์</th>
+                    <th>การใช้งาน</th>
+                </tr>
+                <tr><td>1</td><td></td><td></td></tr>
+                <tr><td>2</td><td></td><td></td></tr>
+                <tr><td>3</td><td></td><td></td></tr>
+                <tr><td>4</td><td></td><td></td></tr>
+                <tr><td>5</td><td></td><td></td></tr>
+            </table>
+            
+            <div class="section-title">3.3 ขั้นตอนการทำงาน</div>
+            <div class="content-box">
+                <p><strong>ขั้นตอนที่ 1:</strong> ........................................................</p>
+                <p><strong>ขั้นตอนที่ 2:</strong> ........................................................</p>
+                <p><strong>ขั้นตอนที่ 3:</strong> ........................................................</p>
+                <p><strong>ขั้นตอนที่ 4:</strong> ........................................................</p>
+                <p><strong>ขั้นตอนที่ 5:</strong> ........................................................</p>
+            </div>
+            
+            <div class="section-title">3.4 ปัญหาและอุปสรรคในการทำงาน</div>
+            <div class="fill-area hint">
+                อธิบายปัญหาและอุปสรรคที่พบเจอระหว่างการฝึกงาน
+            </div>
+        </div>
+        
+        <!-- บทที่ 4: ความรู้และทักษะที่ได้รับ -->
+        <div class="chapter">
+            <div class="chapter-title"><span>4</span> ความรู้และทักษะที่ได้รับ</div>
+            
+            <div class="section-title">4.1 ความรู้ทางเทคนิคที่เรียนรู้</div>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <h4>🔧 ความรู้ด้านเทคนิค</h4>
+                    <div class="fill-area hint" style="min-height:80px;"></div>
+                </div>
+                <div class="skill-item">
+                    <h4>📐 การใช้ซอฟต์แวร์/เครื่องมือ</h4>
+                    <div class="fill-area hint" style="min-height:80px;"></div>
+                </div>
+                <div class="skill-item">
+                    <h4>📋 มาตรฐาน/ข้อกำหนดที่เกี่ยวข้อง</h4>
+                    <div class="fill-area hint" style="min-height:80px;"></div>
+                </div>
+                <div class="skill-item">
+                    <h4>🔒 ความปลอดภัยและการป้องกัน</h4>
+                    <div class="fill-area hint" style="min-height:80px;"></div>
+                </div>
+            </div>
+            
+            <div class="section-title">4.2 การประยุกต์ใช้ความรู้จากชั้นเรียน</div>
+            <table class="data-table">
+                <tr>
+                    <th>วิชาที่เรียน</th>
+                    <th>เนื้อหาที่นำมาประยุกต์ใช้</th>
+                    <th>การนำไปใช้จริง</th>
+                </tr>
+                <tr><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td></tr>
+            </table>
+            
+            <div class="section-title">4.3 ทักษะที่พัฒนาได้</div>
+            <ul class="list">
+                <li><strong>ทักษะด้านวิชาการ:</strong> ........................................................</li>
+                <li><strong>ทักษะด้านการสื่อสาร:</strong> ........................................................</li>
+                <li><strong>ทักษะด้านการทำงานเป็นทีม:</strong> ........................................................</li>
+                <li><strong>ทักษะด้านการจัดการเวลา:</strong> ........................................................</li>
+                <li><strong>ทักษะด้านการแก้ปัญหา:</strong> ........................................................</li>
+            </ul>
+        </div>
+        
+        <div class="page-break"></div>
+        
+        <!-- บทที่ 5: บทสรุปและข้อเสนอแนะ -->
+        <div class="chapter">
+            <div class="chapter-title"><span>5</span> บทสรุปและข้อเสนอแนะ</div>
+            
+            <div class="section-title">5.1 สรุปประสบการณ์ที่ได้รับ</div>
+            <div class="fill-area hint">
+                สรุปประสบการณ์ที่ได้รับจากการฝึกงาน ความรู้สึก ความประทับใจ
+            </div>
+            
+            <div class="section-title">5.2 คุณธรรม จริยธรรม และความรับผิดชอบ</div>
+            <ul class="list">
+                <li><strong>ความรับผิดชอบต่องาน:</strong> ........................................................</li>
+                <li><strong>การรักษาความลับข้อมูลองค์กร:</strong> ........................................................</li>
+                <li><strong>การปฏิบัติตามกฎระเบียบ:</strong> ........................................................</li>
+                <li><strong>ความตรงต่อเวลา:</strong> ........................................................</li>
+            </ul>
+            
+            <div class="section-title">5.3 ข้อเสนอแนะต่อบริษัท/องค์กร</div>
+            <div class="fill-area hint">
+                ข้อเสนอแนะต่อบริษัท/องค์กรในการพัฒนาการฝึกงานให้ดีขึ้น
+            </div>
+            
+            <div class="section-title">5.4 ข้อเสนอแนะต่อมหาวิทยาลัย</div>
+            <div class="fill-area hint">
+                ข้อเสนอแนะต่อมหาวิทยาลัยในการปรับปรุงหลักสูตรหรือการจัดฝึกงาน
+            </div>
+            
+            <div class="section-title">5.5 สิ่งที่จะนำไปใช้ในอนาคต</div>
+            <div class="fill-area hint">
+                อธิบายสิ่งที่จะนำประสบการณ์ไปใช้ในการเรียนต่อและการทำงานในอนาคต
+            </div>
+        </div>
+        
+        <!-- Signature -->
+        <div class="footer">
+            <p style="margin-bottom: 30px;">
+                ลงชื่อ ........................................................<br>
+                ( ........................................................ )<br>
+                วันที่ ............ / ............ / ............
+            </p>
+            
+            <p style="margin-top: 40px;">
+                <strong>ใบรับรองจากบริษัท</strong><br><br>
+                ข้าพเจ้าขอรับรองว่ารายงานฉบับนี้เป็นงานที่ถูกต้องตามความเป็นจริง<br>
+                และนักศึกษาได้ปฏิบัติงานจริงตามระยะเวลาที่กำหนด
+            </p>
+            <p style="margin-top: 30px;">
+                ลงชื่อ ........................................................<br>
+                ( ........................................................ )<br>
+                ตำแหน่ง: ........................................................<br>
+                วันที่ ............ / ............ / ............
+            </p>
+        </div>
+        
+    </div>
+</body>
+</html>

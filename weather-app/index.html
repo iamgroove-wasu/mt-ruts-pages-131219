@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Weather SLB">
+<title>วช. ลุ่มน้ำทะเลสาบสงขลา — Agricultural Monitoring System</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/logos/logo-ruts.jpg">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================ */
+  /* PHASE 1: EMERGENCY BAR + HERO + ACTION LANGUAGE */
+  /* ============================================ */
+  .emergency-bar {
+    position: sticky;
+    top: 64px;
+    z-index: 20;
+    transition: all 0.3s ease;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+  }
+  .emergency-bar.warning-green { background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%); border-bottom-color: #10b981; }
+  .emergency-bar.warning-yellow { background: linear-gradient(90deg, #fffbeb 0%, #fefce8 100%); border-bottom-color: #f59e0b; animation: pulse-yellow 2.5s infinite; }
+  .emergency-bar.warning-orange { background: linear-gradient(90deg, #fff7ed 0%, #ffedd5 100%); border-bottom-color: #fb923c; animation: pulse-orange 1.8s infinite; }
+  .emergency-bar.warning-red { background: linear-gradient(90deg, #fef2f2 0%, #fee2e2 100%); border-bottom-color: #dc2626; animation: pulse-red 1.2s infinite; }
+  @keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.9; } }
+  @keyframes pulse-orange { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(251,146,60,0.3); } 50% { opacity: 0.95; box-shadow: 0 0 0 6px rgba(251,146,60,0); } }
+  @keyframes pulse-red { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(220,38,38,0.5); } 50% { opacity: 0.92; box-shadow: 0 0 0 8px rgba(220,38,38,0); } }
+
+  /* Hero section */
+  .phase1-hero {
+    background: linear-gradient(135deg, var(--c-navy-700) 0%, var(--c-navy-900) 100%) !important;
+    color: white !important;
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-lg);
+  }
+  .phase1-hero .label-eyebrow { color: rgba(255,255,255,0.75); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .phase1-hero .big-text { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+  .phase1-hero .opacity-95 { color: rgba(255,255,255,0.95); }
+
+  /* 5-zone mini status */
+  .zone-mini-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    min-height: 28px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .zone-mini-chip:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .zone-mini-chip.green { background: #d1fae5; color: #065f46; border-color: #10b981; }
+  .zone-mini-chip.yellow { background: #fef3c7; color: #78350f; border-color: #f59e0b; }
+  .zone-mini-chip.orange { background: #fed7aa; color: #7c2d12; border-color: #fb923c; }
+  .zone-mini-chip.red { background: #fecaca; color: #7f1d1d; border-color: #dc2626; }
+
+  /* Per-zone action language (ใน per-zone forecast grid) */
+  .zone-action {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    font-size: 10.5px;
+    line-height: 1.3;
+    padding: 4px 0 0;
+    border-top: 1px dashed #e2e8f0;
+    margin-top: 6px;
+  }
+  .zone-action.ok { color: #047857; font-weight: 600; }
+  .zone-action.warn { color: #b91c1c; font-weight: 600; }
+  .zone-action-sub { font-size: 10px; color: #64748b; padding: 1px 0; line-height: 1.3; }
+
+  /* Hourly rain timeline bars */
+  .rain-bar { width: 10px; border-radius: 2px; transition: opacity 0.2s; }
+  .rain-bar.zero { opacity: 0.25; background: #64748b !important; }
+  .rain-bar.light { background: #93c5fd; }
+  .rain-bar.medium { background: #60a5fa; }
+  .rain-bar.heavy { background: #fbbf24; }
+  .rain-bar.veryheavy { background: #fb923c; }
+
+  /* Touch target fix for mobile */
+  .emergency-bar button, .zone-mini-chip, .phase1-hero a { min-height: 44px; min-width: 44px; }
+
+  /* ============================================ */
+  /* PHASE 6: A11Y + PERFORMANCE */
+  /* ============================================ */
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 8px;
+    background: #1e3a8a;
+    color: white;
+    padding: 12px 18px;
+    z-index: 999999;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: top 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .skip-link:focus { top: 0; }
+  /* Touch targets ≥44px for all interactive elements */
+  .nav-link, nav button { min-height: 44px; display: inline-flex; align-items: center; }
+  button:not(.leaflet-control-zoom-in):not(.leaflet-control-zoom-out):not(.leaflet-control-attrib) {
+    min-height: 44px;
+  }
+  /* Focus visible for keyboard users */
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Screen reader only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+  /* Reduced motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ============================================ */
+  /* PHASE 2: MARINE WEATHER VISUALIZATIONS */
+  /* ============================================ */
+  .phase2-viz {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 8px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, #fafbfc 0%, white 100%);
+    border: 1px solid var(--c-slate-200);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .phase2-viz:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .phase2-viz svg { display: block; margin: 0 auto; }
+  .phase2-viz-title { font-size: 11px; font-weight: 700; color: var(--c-slate-700); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+  .phase2-viz-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--c-navy-700);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+  .phase2-viz-sub { font-size: 10px; color: #64748b; text-align: center; margin-top: 2px; }
+  .phase2-viz-action { font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 999px; margin-top: 6px; text-align: center; min-height: 22px; display: inline-flex; align-items: center; }
+  .phase2-viz-action.ok { background: #d1fae5; color: #065f46; }
+  .phase2-viz-action.warn { background: #fef3c7; color: #78350f; }
+  .phase2-viz-action.danger { background: #fee2e2; color: #7f1d1d; }
+
+  /* Smooth needle animation */
+  #wave-needle, #thermo-mercury-tube, #droplet-fill, #wind-arrow-line {
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #wind-arrow-head {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: 60px 60px;
+  }
+  /* Thermometer color zones */
+  .thermo-zone-cool { fill: #93c5fd; }
+  .thermo-zone-normal { fill: #10b981; }
+  .thermo-zone-warm { fill: #f59e0b; }
+  .thermo-zone-hot { fill: #dc2626; }
+
+  /* ============================================ */
+  /* PHASE 3: CROP TIPS PER ZONE */
+  /* ============================================ */
+  .phase3-card {
+    background: linear-gradient(135deg, #fefce8 0%, #f0fdf4 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-md);
+    padding: 16px;
+    border-left: 5px solid var(--zone-color, #84cc16);
+    animation: phase3-fade 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes phase3-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* Slide-in animation for auto-rotate */
+  .phase3-card.slide-in {
+    animation: phase3-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes phase3-slide-in {
+    from { opacity: 0; transform: translateX(30px) scale(0.98); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  .phase3-progress {
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .phase3-progress-bar {
+    height: 100%;
+    background: var(--zone-color, #1e3a8a);
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+  /* Bigger health score */
+  .phase3-health-num {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .phase3-zone-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+  }
+  .phase3-zone-emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  /* ============================================ */
+  /* PHASE 4: TMD 7-DAY FORECAST + WARNING */
+  /* ============================================ */
+  .phase4-forecast-card {
+    text-align: center;
+    padding: 12px 8px;
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-slate-200);
+    transition: all 0.2s;
+  }
+  .phase4-forecast-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--c-navy-700);
+  }
+  .phase4-day-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-slate-700);
+  }
+  .phase4-day-date {
+    font-size: 10px;
+    color: var(--c-slate-500);
+    margin-bottom: 2px;
+  }
+  .phase4-day-emoji {
+    font-size: 1.5rem;
+    margin: 4px 0;
+  }
+  .phase4-day-temp {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--c-navy-700);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .phase4-day-mini {
+    font-size: 10px;
+    color: #64748b;
+  }
+  .phase4-tmd-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #1e3a8a;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .phase4-warning-banner {
+    background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%);
+    border-left: 4px solid #10b981;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+  .phase4-warning-banner.active {
+    background: linear-gradient(90deg, #fff7ed 0%, #fed7aa 100%);
+    border-left-color: #f59e0b;
+    animation: pulse-warning 2s infinite;
+  }
+  @keyframes pulse-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.95; }
+  }
+  .phase3-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (min-width: 768px) {
+    .phase3-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .phase3-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 16px;
+    min-height: 44px;
+    min-width: 44px;
+    position: relative;
+  }
+  .phase3-dot.active {
+    border-color: currentColor;
+    background: currentColor;
+    transform: scale(1.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .phase3-dot.active::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid currentColor;
+  }
+  .phase3-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 8px;
+    font-size: 12px;
+    border-left: 3px solid;
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .phase3-tip.ok { border-color: #10b981; color: #065f46; }
+  .phase3-tip.warn { border-color: #f59e0b; color: #78350f; }
+  .phase3-tip.danger { border-color: #dc2626; color: #7f1d1d; }
+  .phase3-tip.info { border-color: #3b82f6; color: #1e3a8a; }
+  .phase3-tip:last-child { margin-bottom: 0; }
+  .phase3-bullet-label {
+    font-size: 9px;
+    fill: #94a3b8;
+  }
+
+  /* ============================================ */
+  /* PROFESSIONAL DESIGN SYSTEM */
+  /* ============================================ */
+  :root {
+    --c-navy-50: #f0f4ff;
+    --c-navy-100: #dbe5fe;
+    --c-navy-200: #b6cdfe;
+    --c-navy-500: #3b5fb8;
+    --c-navy-600: #2a4894;
+    --c-navy-700: #1e3a8a;
+    --c-navy-800: #15296b;
+    --c-navy-900: #0a1e3f;
+    --c-slate-50: #f8fafc;
+    --c-slate-100: #f1f5f9;
+    --c-slate-200: #e2e8f0;
+    --c-slate-300: #cbd5e1;
+    --c-slate-400: #94a3b8;
+    --c-slate-500: #64748b;
+    --c-slate-600: #475569;
+    --c-slate-700: #334155;
+    --c-slate-800: #1e293b;
+    --c-slate-900: #0f172a;
+    --c-emerald-50: #ecfdf5;
+    --c-emerald-500: #10b981;
+    --c-emerald-600: #059669;
+    --c-emerald-700: #047857;
+    --c-amber-50: #fffbeb;
+    --c-amber-500: #f59e0b;
+    --c-amber-600: #d97706;
+    --c-rose-50: #fff1f2;
+    --c-rose-500: #f43f5e;
+    --c-rose-600: #e11d48;
+    --c-rose-700: #be123c;
+    --c-cyan-500: #06b6d4;
+    --c-sky-500: #0ea5e9;
+    --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 6px rgba(15,23,42,0.04), 0 2px 4px rgba(15,23,42,0.04);
+    --shadow-lg: 0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04);
+    --shadow-xl: 0 20px 25px rgba(15,23,42,0.08), 0 10px 10px rgba(15,23,42,0.04);
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body { font-family: 'Inter', 'Sarabun', sans-serif; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); color: var(--c-slate-900); letter-spacing: -0.011em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .navy { color: var(--c-navy-700); }
+  .bg-navy { background: var(--c-navy-700); }
+  /* Card refined */
+  .card { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition), transform var(--transition); }
+  .card:hover { box-shadow: var(--shadow-md); }
+  .card-elev { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+  /* Section title refined */
+  h2.page-title { font-family: 'Sarabun', sans-serif; font-size: 28px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.02em; }
+  h2.section-title { font-family: 'Sarabun', sans-serif; font-size: 18px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.01em; }
+  /* Zone tab refined */
+  .zone-tab { padding: 12px 16px; min-height: 44px; border-radius: var(--radius); font-weight: 600; font-size: 13px; background: white; border: 1.5px solid var(--c-slate-200); color: var(--c-slate-600); cursor: pointer; transition: all var(--transition); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; -webkit-tap-highlight-color: transparent; }
+  .zone-tab:hover { border-color: var(--c-navy-300); color: var(--c-navy-700); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .zone-tab.active { background: var(--c-navy-700); color: white; border-color: var(--c-navy-700); box-shadow: 0 4px 12px rgba(30,58,138,0.25); }
+  /* Status pill refined */
+  .status-pill { padding: 5px 12px; border-radius: 999px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; letter-spacing: 0.01em; }
+  .status-danger { background: var(--c-rose-50); color: var(--c-rose-700); border: 1px solid rgba(225,29,72,0.25); }
+  .status-warn { background: var(--c-amber-50); color: var(--c-amber-600); border: 1px solid rgba(217,119,6,0.25); }
+  .status-ok { background: var(--c-emerald-50); color: var(--c-emerald-700); border: 1px solid rgba(4,120,87,0.25); }
+  /* Status dot refined */
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+  .status-active { background: var(--c-emerald-500); }
+  .status-warn { background: var(--c-amber-500); }
+  .status-danger { background: var(--c-rose-500); }
+  /* Hero refined */
+  .hero-card { background: linear-gradient(135deg, #f8fafc 0%, white 100%); border: 1px solid var(--c-slate-200); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-sm); }
+  .hero-title { font-family: 'Sarabun', sans-serif; font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: var(--c-navy-900); letter-spacing: -0.03em; line-height: 1.1; }
+  /* Project header refined */
+  .project-header { background: linear-gradient(135deg, #0a1e3f 0%, #15296b 50%, #1e3a8a 100%); color: white; padding: 16px 24px; box-shadow: 0 4px 20px rgba(10,30,63,0.25); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(251,191,36,0.3); }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 20px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 56px; width: auto; max-width: 92px; object-fit: contain; display: block; border-radius: 6px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); transition: transform var(--transition); }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 64px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.5), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', sans-serif; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; line-height: 1.45; margin-top: 6px; letter-spacing: -0.005em; word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.02em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 12px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+  /* Buttons refined */
+  button, .btn { font-family: 'Inter', sans-serif; font-weight: 600; transition: all var(--transition); cursor: pointer; }
+  button:active { transform: scale(0.98); }
+  /* Crop icon refined */
+  .crop-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; box-shadow: inset 0 0 0 3px white, 0 0 0 1px rgba(0,0,0,0.04); }
+  /* Day card refined */
+  .day-card { border-radius: var(--radius-md); padding: 14px 10px; text-align: center; transition: all var(--transition); cursor: pointer; border: 1.5px solid var(--c-slate-100); background: white; }
+  .day-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--c-navy-200); }
+  .day-card.today { background: linear-gradient(135deg, var(--c-navy-700) 0%, var(--c-navy-800) 100%); color: white; border-color: var(--c-navy-700); box-shadow: 0 6px 20px rgba(30,58,138,0.2); }
+  .day-card.today .day-temp { color: white; }
+  .weather-icon { font-size: 44px; line-height: 1; margin: 8px 0; }
+  /* Map marker refined */
+  .map-marker { background: white; border: 3px solid var(--c-navy-700); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform var(--transition); }
+  .map-marker.active { background: var(--c-navy-700); color: white; transform: scale(1.15); box-shadow: 0 6px 16px rgba(30,58,138,0.4); }
+  /* Hour cell refined */
+  .hour-cell { flex: 0 0 70px; text-align: center; padding: 10px 6px; border-radius: var(--radius-sm); background: white; border: 1px solid var(--c-slate-100); transition: background var(--transition); }
+  .hour-cell:hover { background: var(--c-navy-50); }
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--c-slate-100); }
+  ::-webkit-scrollbar-thumb { background: var(--c-slate-300); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-slate-400); }
+
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); }
+  .card-elev { background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 12px rgba(15,23,42,0.06); }
+  .navy { color: #1e3a8a; }
+  .bg-navy { background: #1e3a8a; }
+  .border-navy { border-color: #1e3a8a; }
+  #map { height: 480px; border-radius: 12px; z-index: 1; }
+  .leaflet-container { font-family: 'Inter', sans-serif; }
+  .zone-marker {
+    background: white; border: 3px solid #1e3a8a; border-radius: 50%;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #1e3a8a; box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    font-size: 13px;
+  }
+  .zone-marker.active { background: #1e3a8a; color: white; transform: scale(1.2); }
+  /* Radar canvas */
+  .radar-container { position: relative; height: 280px; border-radius: 12px; overflow: hidden;
+    background: radial-gradient(circle at center, #0c1e3e 0%, #050d1f 100%); }
+  .radar-grid { position: absolute; inset: 0; opacity: 0.18;
+    background-image:
+      repeating-conic-gradient(from 0deg, transparent 0deg 8deg, rgba(255,255,255,0.4) 8deg 9deg),
+      repeating-radial-gradient(circle at center, transparent 0px, transparent 39px, rgba(255,255,255,0.15) 40px, rgba(255,255,255,0.15) 41px); }
+  .radar-sweep { position: absolute; top: 50%; left: 50%; width: 50%; height: 4px;
+    background: linear-gradient(90deg, transparent, #10b981);
+    transform-origin: 0 50%;
+    animation: sweep 4s linear infinite;
+    box-shadow: 0 0 20px #10b981; }
+  @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .radar-blip { position: absolute; background: #fbbf24; border-radius: 50%;
+    box-shadow: 0 0 12px #fbbf24; animation: blip 2s ease-in-out infinite; }
+  @keyframes blip { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+  .rain-cell { position: absolute; border-radius: 50%; pointer-events: none; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .status-active { background: #16a34a; box-shadow: 0 0 6px #16a34a; }
+  .status-warn { background: #d97706; box-shadow: 0 0 6px #d97706; }
+  .status-danger { background: #dc2626; box-shadow: 0 0 6px #dc2626; }
+  /* Zone selector */
+  .nav-link { padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; transition: all 200ms; }
+  .nav-link.active { background: #1e3a8a; color: white; }
+  .nav-link:not(.active) { color: #475569; }
+  .nav-link:not(.active):hover { background: #f1f5f9; }
+  .zone-btn { padding: 10px 16px; border-radius: 8px; font-weight: 500; font-size: 14px;
+    background: white; border: 1px solid #e2e8f0; color: #475569; cursor: pointer;
+    transition: all 0.15s; }
+  .zone-btn:hover { border-color: #94a3b8; }
+  .zone-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+  .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  /* PROJECT HEADER (elegant + responsive) */
+  .project-header { background: linear-gradient(180deg, #0c1e3e 0%, #1e3a8a 50%, #1e40af 100%); color: white; padding: 14px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 50; border-bottom: 2px solid #fbbf24; }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 18px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 58px; width: auto; max-width: 95px; object-fit: contain; display: block; border-radius: 4px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); transition: transform 0.2s; }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 60px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.4), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', 'Inter', serif; font-size: clamp(11px, 1.4vw, 15px); font-weight: 700; line-height: 1.4; margin-top: 6px; letter-spacing: -0.01em; text-shadow: 0 1px 3px rgba(0,0,0,0.3); word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.03em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 10px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+
+.header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-name { font-size: 12px; } }
+
+.logo-img { height: 40px; max-width: 72px; } }
+
+}
+  .logo-cluster { display: flex; align-items: center; gap: 8px; }
+  .logo-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); flex-shrink: 0; font-weight: 800; font-size: 12px; }
+  .logo-circle-1 { background: #1e3a8a; color: white; }
+  .logo-circle-2 { background: #f59e0b; color: white; }
+  .logo-circle-3 { background: #059669; color: white; font-size: 18px; }
+  .logo-label { font-size: 9px; color: #64748b; text-align: center; max-width: 56px; line-height: 1.1; }
+
+
+@media (min-width: 768px) {
+}
+.pi-card { text-align: right; font-size: 11px; }
+  .pi-card-label { color: #64748b; font-weight: 600; }
+  .pi-card-name { color: #0f172a; font-weight: 700; }
+  .pi-card-org { color: #64748b; font-size: 10px; }
+
+/* Mobile: rain radar controls */
+  @media (max-width: 768px) {
+    .leaflet-bottom.leaflet-left { left: 5px !important; bottom: 5px !important; }
+    .leaflet-bottom.leaflet-left .leaflet-control { margin-bottom: 4px !important; }
+    .radar-control-wrap { padding: 6px !important; gap: 6px !important; flex-wrap: wrap; }
+    .radar-control-wrap button { padding: 8px 12px !important; font-size: 14px !important; min-height: 40px; }
+    .radar-control-wrap input[type=range] { width: 100% !important; flex: 1 1 100% !important; min-width: 0 !important; order: 99; margin-top: 4px; }
+    .radar-control-wrap > span:last-child { font-size: 12px !important; min-width: 70px !important; }
+    .leaflet-control-attribution { font-size: 9px !important; max-width: 60%; }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+<!-- PROJECT HEADER (elegant) -->
+<header class="project-header">
+  <div class="project-header-inner">
+    <div class="project-header-row">
+      <!-- 3 Logos -->
+      <div class="logo-cluster">
+        <div class="logo-item">
+          <img src="assets/logos/logo-ruts.jpg" alt="มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย" loading="lazy" class="logo-img" title="มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-wj.jpg" alt="สำนักงานการวิจัยแห่งชาติ (วช.)" loading="lazy" class="logo-img" title="สำนักงานการวิจัยแห่งชาติ (วช.)">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-doae.jpg" alt="กรมส่งเสริมการเกษตร" loading="lazy" class="logo-img" title="กรมส่งเสริมการเกษตร">
+        </div>
+      </div>
+      <!-- Divider -->
+      <div class="header-divider"></div>
+      <!-- Project Name (elegant) -->
+      <div class="project-info">
+        <div class="project-eyebrow">โครงการวิจัย · สำนักงานการวิจัยแห่งชาติ (วช.)</div>
+        <div class="project-name">การเพิ่มประสิทธิภาพการใช้น้ำและเสริมความสามารถทางการประมงและการเกษตร</div>
+        <div class="project-tagline">ลุ่มน้ำทะเลสาบสงขลา · Songkhla Lake Basin</div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- END PROJECT HEADER --><!-- Top Header Bar -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-navy flex items-center justify-center text-white text-lg">🌾</div>
+        <div>
+          <h1 class="text-base font-bold navy leading-tight">ลุ่มน้ำทะเลสาบสงขลา</h1>
+          <p class="text-[11px] text-slate-500 leading-tight">พยากรณ์อากาศเพื่อเกษตรกร</p>
+        </div>
+      </div>
+      <nav x-data="{ open: false }" class="relative" @click.outside="open = false">
+        <button @click="open = !open" class="md:hidden flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm" aria-label="เปิดเมนู">
+          <span x-text="open ? '✕' : '☰'" class="text-lg leading-none"></span>
+          <span>เมนู</span>
+        </button>
+        <div :class="open ? 'flex' : 'hidden md:flex'" class="absolute md:relative right-0 md:right-auto top-full md:top-auto mt-2 md:mt-0 bg-white md:bg-transparent shadow-xl md:shadow-none rounded-xl md:rounded-none p-3 md:p-0 flex-col md:flex-row gap-1 z-50 min-w-[180px] md:min-w-0 border md:border-0 border-slate-200">
+          <a href="index.html" class="nav-link active" aria-label="หน้าหลัก - แดชบอร์ดสภาพอากาศ" @click="open = false">🏠 หน้าหลัก</a>
+          <a href="advisory.html" class="nav-link" aria-label="คำแนะนำการเกษตร" @click="open = false">🌿 คำแนะนำ</a>
+          <a href="forecast.html" class="nav-link" aria-label="พยากรณ์อากาศรายวัน" @click="open = false">🌦️ พยากรณ์</a>
+          <a href="calendar.html" class="nav-link" aria-label="ปฏิทินกิจกรรมเกษตร" @click="open = false">📅 ปฏิทิน</a>
+          <a href="flood-warning.html" class="nav-link" aria-label="แจ้งเตือนน้ำท่วมและภัยพิบัติ" @click="open = false">🌊 ระวัง</a>
+        </div>
+      </nav>
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center text-xs text-slate-500">
+          <span class="status-dot status-active pulse"></span>
+          <span class="font-medium">Live</span>
+        </div>
+        <div class="text-right">
+          <div class="text-xs font-mono font-semibold text-slate-900">8 ส.ค. 2569</div>
+          <div class="text-[10px] text-slate-500 font-mono">16:30 GMT+7</div>
+          <div id="refresh-indicator" class="text-[10px] text-emerald-600 font-mono mt-0.5 font-semibold">🔄 รีเฟรชใน 10:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- KPI Strip (ลบแล้ว 19:51 — ลดความซ้ำซ้อน) -->
+
+<!-- Zone Selector (ลบแล้ว 19:51 — ข้อมูลอยู่ใน per-zone cards แล้ว) -->
+
+<!-- 🚨 Phase 1.1: Emergency Bar — Sticky, 4 warning levels + pulse -->
+<div id="emergency-bar" class="emergency-bar warning-green">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2 w-full">
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span id="emergency-emoji" class="text-xl">✅</span>
+        <span id="emergency-label" class="font-bold text-sm text-emerald-700">สถานะปกติ</span>
+        <span id="emergency-sub" class="text-xs text-slate-600 hidden sm:inline">· 5 โซน ปลอดภัย 24 ชม.</span>
+      </div>
+      <div id="emergency-chips" class="flex items-center gap-1.5 text-xs flex-wrap">
+        <span class="px-2 py-1 rounded-full bg-white/70 border border-current font-semibold text-emerald-700">🌧️ ฝน 0.0 มม.</span>
+        <span class="px-2 py-1 rounded-full bg-white/70 border border-current font-semibold text-emerald-700">💨 ลม 0 กม./ชม.</span>
+        <span class="px-2 py-1 rounded-full bg-white/70 border border-current font-semibold text-emerald-700">🌊 น้ำปกติ</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🎯 Phase 1.2: Hero Section — ฝนจะตกกี่โมง + วันนี้ทำอะไรได้ -->
+<section class="phase1-hero">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- ฝนจะตกกี่โมง -->
+    <div>
+      <div class="label-eyebrow">🌧️ ฝนจะตกกี่โมง</div>
+      <div id="hero-rain-next" class="big-text mb-2">⏳ กำลังโหลด...</div>
+      <div class="text-xs opacity-80">
+        <div class="flex gap-1 overflow-x-auto pb-1" id="hero-rain-timeline">
+          <div class="text-xs opacity-60">⏳ โหลด 12 ชม. ข้างหน้า...</div>
+        </div>
+      </div>
+    </div>
+    <!-- วันนี้ทำอะไรได้ -->
+    <div>
+      <div class="label-eyebrow">✓ วันนี้ทำอะไรได้</div>
+      <ul id="hero-actions" class="space-y-1.5 text-sm mt-1">
+        <li class="opacity-60">⏳ กำลังโหลด...</li>
+      </ul>
+    </div>
+  </div>
+  <div class="text-[10px] opacity-60 mt-3 pt-2 border-t border-white/20 flex items-center justify-between flex-wrap gap-1">
+    <span>📡 Open-Meteo · TMD · SKA · อัปเดตทุก 10 นาที</span>
+    <span id="hero-time" class="font-mono">—</span>
+  </div>
+</section>
+
+<!-- 🗺️ Phase 1.3: 5-Zone Mini Status — 1 บรรทัด overview -->
+<section class="card p-3 mb-3 bg-gradient-to-r from-slate-50 to-blue-50 border-l-4 border-l-blue-500">
+  <div class="flex items-center justify-between gap-2 flex-wrap text-xs">
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="font-bold navy">🗺️ 5 โซน:</span>
+      <div id="zone-mini-status" class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-slate-400">⏳ โหลด...</span>
+      </div>
+    </div>
+    <a href="#zone-forecast-grid" class="text-xs text-blue-600 hover:underline font-semibold">ดูรายละเอียด →</a>
+  </div>
+</section>
+<!-- 🚨 Flood/Drought Warning (preview) — moved to top (priority) -->
+<section id="flood-warning" class="card p-5 scroll-mt-20 border-l-4 border-l-rose-500">
+  <div class="flex items-center justify-between mb-3">
+    <div>
+      <h2 class="text-lg font-bold navy">🌊 แนวโน้มน้ำท่วม-น้ำแล้ง (7 วันข้างหน้า)</h2>
+      <p class="text-xs text-slate-500 mt-0.5"><b>โอกาส (%)</b> ที่จะเกิดน้ำท่วมหรือน้ำแล้งใน 7 วันข้างหน้า · ใช้ข้อมูลฝนพยากรณ์ + สถิติ 11 ปี + ระดับน้ำปัจจุบัน</p>
+    </div>
+    <a href="flood-warning.html" class="text-xs text-blue-600 font-semibold whitespace-nowrap">ดูทั้งหมด →</a>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="bg-slate-50 rounded-lg p-3 text-center">
+      <div class="text-[10px] text-slate-500 uppercase tracking-wider">สถานะรวม</div>
+      <div id="flood-overall" class="text-3xl mt-1">🟡</div>
+      <div id="flood-label" class="text-xs font-bold mt-0.5">เฝ้าระวัง</div>
+    </div>
+    <div class="bg-purple-50 rounded-lg p-3 text-center">
+      <div class="text-[10px] text-slate-500 uppercase tracking-wider">ระดับความเสี่ยง</div>
+      <svg id="flood-gauge" width="140" height="78" viewBox="0 0 140 78" class="mx-auto mt-1">
+        <path d="M 20 68 A 50 50 0 0 1 120 68" stroke="#e2e8f0" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M 20 68 A 50 50 0 0 1 41.7 26.5" stroke="#10b981" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M 41.7 26.5 A 50 50 0 0 1 98.3 26.5" stroke="#f59e0b" stroke-width="14" fill="none"/>
+        <path d="M 98.3 26.5 A 50 50 0 0 1 120 68" stroke="#e11d48" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <line id="gauge-needle" x1="70" y1="68" x2="70" y2="28" stroke="#1e293b" stroke-width="3" stroke-linecap="round" transform="rotate(-22 70 68)"/>
+        <circle cx="70" cy="68" r="5" fill="#1e293b"/>
+        <text x="20" y="77" text-anchor="middle" font-size="9" fill="#64748b">ปลอดภัย</text>
+        <text x="70" y="14" text-anchor="middle" font-size="9" fill="#64748b">เฝ้าระวัง</text>
+        <text x="120" y="77" text-anchor="middle" font-size="9" fill="#64748b">ระวัง</text>
+      </svg>
+      <div id="flood-pavg" class="font-bold text-sm text-purple-700 mt-0.5">เฝ้าระวัง</div>
+    </div>
+    <div class="bg-blue-50 rounded-lg p-3 text-center">
+      <div class="text-3xl mt-1">📊</div>
+      <div class="text-xs font-semibold">11 ปี</div>
+    </div>
+    <div class="bg-amber-50 rounded-lg p-3 text-center">
+      <div class="text-[10px] text-slate-500 uppercase tracking-wider">ฤดูเสี่ยง</div>
+      <div class="text-3xl mt-1">📅</div>
+      <div class="text-xs font-bold text-amber-700">พ.ย.-ธ.ค.</div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    const ZONES_META = { khuan_maphrao: '🌾', tha_khae: '🌳', khao_chai_son: '⛰️', ban_mai: '🏘️', ban_khao: '🏘️' };
+    async function loadFloodCard() {
+      try {
+        const res = await fetch('/flood-warning.php?format=summary');
+        const data = await res.json();
+        const labelEl = document.getElementById('flood-label');
+        if (labelEl) {
+          labelEl.textContent = data.overall_label || 'ปกติ';
+          const s = data.overall_status;
+          labelEl.className = 'text-xs font-bold mt-0.5 ' + (s === 'danger' ? 'text-rose-600' : s === 'warning' ? 'text-amber-600' : s === 'watch' ? 'text-amber-600' : 'text-emerald-600');
+        }
+        const iconEl = document.getElementById('flood-overall');
+        if (iconEl) iconEl.textContent = data.overall_icon || '🟢';
+        const zones = data.zones || [];
+        const pAvg = zones.length ? (zones.reduce((s, z) => s + (z.p_flood || 0), 0) / zones.length) : 0;
+        const riskLabel = pAvg >= 0.5 ? 'ระวัง' : pAvg >= 0.3 ? 'เฝ้าระวัง' : 'ปลอดภัย';
+        const riskColor = pAvg >= 0.5 ? 'text-rose-700' : pAvg >= 0.3 ? 'text-amber-700' : 'text-emerald-700';
+        const pEl = document.getElementById('flood-pavg');
+        if (pEl) { pEl.textContent = riskLabel; pEl.className = 'font-bold text-sm mt-0.5 ' + riskColor; }
+        const needle = document.getElementById('gauge-needle');
+        if (needle) needle.setAttribute('transform', `rotate(${(pAvg * 180) - 90} 70 68)`);
+        const grid = document.getElementById('flood-zones');
+        if (grid) {
+          grid.innerHTML = zones.map(z => {
+            const emoji = ZONES_META[z.id] || '📍';
+            const p = z.p_flood || 0;
+            const status = p >= 0.5 ? 'ระวัง' : p >= 0.3 ? 'เฝ้าระวัง' : 'ปลอดภัย';
+            const sColor = p >= 0.5 ? 'text-rose-700' : p >= 0.3 ? 'text-amber-700' : 'text-emerald-700';
+            const pct = Math.max(0, Math.min(100, p * 100));
+            return `<div class="bg-slate-50 rounded p-2 text-center border border-slate-100 hover:border-blue-300 transition-colors">
+              <div class="text-xl">${emoji}</div>
+              <div class="text-[10px] text-slate-600 truncate font-medium">${z.name}</div>
+              <div class="relative h-1.5 rounded-full mt-1" style="background: linear-gradient(to right, #10b981 0% 30%, #f59e0b 30% 50%, #e11d48 50% 100%);">
+                <div class="absolute top-[-2px] w-0.5 h-3 bg-slate-900 rounded" style="left: ${pct}%;"></div>
+              </div>
+              <div class="text-[10px] font-bold ${sColor} mt-0.5">${status}</div>
+            </div>`;
+          }).join('');
+        }
+      } catch (e) { console.error('Flood card load error:', e); }
+    }
+    loadFloodCard();
+    setInterval(loadFloodCard, 5 * 60 * 1000);
+  })();
+  </script>
+</section>
+
+<!-- Main Grid -->
+<main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+  <!-- Map (full width) -->
+  <div class="grid grid-cols-1 gap-6">
+    <!-- Map -->
+    <div id="map-section" class="card p-5 scroll-mt-20">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-lg font-bold navy">📍 แผนที่ตำแหน่ง 5 โซน</h2>
+          <p class="text-xs text-slate-500 mt-0.5">ลุ่มน้ำทะเลสาบสงขลา · พัทลุง + สงขลา</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span class="status-dot status-active"></span>
+          <span class="font-mono">5 stations live</span>
+        </div>
+      </div>
+      <div id="map"></div>
+      <div class="mt-4 space-y-2">
+        <div class="grid grid-cols-5 gap-2 text-center text-[11px]">
+          <div class="bg-blue-50 rounded px-2 py-2"><div class="font-bold text-blue-800">🌾 ควนมะพร้าว</div><div class="text-slate-500">ข้าว+ผัก</div></div>
+          <div class="bg-emerald-50 rounded px-2 py-2"><div class="font-bold text-emerald-800">🌿 ท่าแค</div><div class="text-slate-500">พลู</div></div>
+          <div class="bg-amber-50 rounded px-2 py-2"><div class="font-bold text-amber-800">🍌 เขาชัยสน</div><div class="text-slate-500">กล้วย</div></div>
+          <div class="bg-rose-50 rounded px-2 py-2"><div class="font-bold text-rose-800">🥥 บ้านใหม่</div><div class="text-slate-500">มะพร้าว</div></div>
+          <div class="bg-purple-50 rounded px-2 py-2"><div class="font-bold text-purple-800">🦐 บ้านขาว</div><div class="text-slate-500">กุ้ง+พริก</div></div>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded p-2 text-center text-[10px] text-blue-800 mb-2">
+          💡 <strong>หมายเหตุ:</strong> วงกลมใหญ่ = 5 พื้นที่ศึกษาหลัก · วงกลมเล็ก = จุดตรวจวัดน้ำ (skawater.com)
+        </div>
+        <div class="flex items-center justify-center gap-4 text-[10px] text-slate-600 pt-2 border-t border-slate-100 flex-wrap">
+          <span class="font-semibold">สัญลักษณ์:</span>
+          <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-white border-2 border-blue-600"></span><strong>5 พื้นที่ศึกษา</strong> (คลิกดูข้อมูล)</span>
+          <span class="inline-flex items-center gap-1 ml-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-slate-400" style="opacity:0.65"></span>จุดตรวจวัดน้ำ (13 จุด)</span>
+          <span class="inline-flex items-center gap-1 ml-3" style="color:#dc2626;"><span class="inline-block w-3 h-3 rounded-full" style="background:#dc2626;opacity:0.6"></span>ฝนหนัก (>5มม.)</span>
+          <span class="inline-flex items-center gap-1" style="color:#f59e0b;"><span class="inline-block w-3 h-3 rounded-full" style="background:#f59e0b;opacity:0.6"></span>ฝนปานกลาง</span>
+        </div>
+      </div>
+    </div>
+    <!-- Radar (1/3) - REAL RainViewer overlay on map -->
+
+  </div>
+
+  <!-- Per-Zone Forecast Panel (5 zones: current + today/tomorrow summary) -->
+  <div class="card p-5 mb-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <h2 class="text-lg font-bold navy">🌾 พยากรณ์ 5 พื้นที่ศึกษา</h2>
+      <span class="text-[10px] font-mono text-slate-500">Open-Meteo · cache 10นาที · <span id="zone-forecast-time">—</span></span>
+    </div>
+    <div id="zone-forecast-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div class="col-span-full text-center text-slate-400 text-sm py-6">⏳ กำลังโหลด...</div>
+    </div>
+    <div class="text-[10px] text-slate-500 mt-3 pt-3 border-t border-slate-100">
+      💡 คลิกโซนบนแผนที่เพื่อดูข้อมูลเจาะลึก · <strong>สีพื้น</strong> บอกระดับความเสี่ยงฝน (ฟ้า=ปลอดภัย · เหลือง=ปานกลาง · แดง=หนัก)
+    </div>
+  </div>
+
+  <!-- 🌊 Phase 2: Marine Weather — คลื่น + อุณหภูมิ + ความชื้น + ลม (SVG) -->
+  <div class="card p-5 mb-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold navy">🌊 สภาพอากาศ (5 โซน)</h2>
+        <p class="text-[10px] text-slate-500">📍 ค่าจากจุดศูนย์กลาง 7.62°N · 100.15°E · อัปเดตทุก 10 นาที</p>
+      </div>
+      <span class="text-[10px] font-mono text-slate-500">📡 Open-Meteo · <span id="phase2-time">—</span></span>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <!-- 🌊 Wave Gauge -->
+      <div class="phase2-viz">
+        <div class="phase2-viz-title">🌊 คลื่นลม</div>
+        <svg viewBox="0 0 200 110" style="width:100%;max-width:180px;height:90px;">
+          <path d="M 20 100 A 80 80 0 0 1 180 100" stroke="#e2e8f0" stroke-width="20" fill="none" stroke-linecap="round" />
+          <path d="M 20 100 A 80 80 0 0 1 60 30.7" stroke="#10b981" stroke-width="20" fill="none" />
+          <path d="M 60 30.7 A 80 80 0 0 1 140 30.7" stroke="#f59e0b" stroke-width="20" fill="none" />
+          <path d="M 140 30.7 A 80 80 0 0 1 169.3 60" stroke="#fb923c" stroke-width="20" fill="none" />
+          <path d="M 169.3 60 A 80 80 0 0 1 180 100" stroke="#dc2626" stroke-width="20" fill="none" stroke-linecap="round" />
+          <line x1="140" y1="35" x2="140" y2="22" stroke="#dc2626" stroke-width="2" stroke-dasharray="2,2" />
+          <text x="140" y="18" text-anchor="middle" font-size="8" fill="#dc2626" font-weight="700">2.0</text>
+          <line id="wave-needle" x1="100" y1="100" x2="100" y2="32" stroke="#0f172a" stroke-width="3" stroke-linecap="round" transform="rotate(-90 100 100)" />
+          <circle cx="100" cy="100" r="6" fill="#0f172a" />
+          <text x="20" y="108" text-anchor="middle" font-size="9" fill="#64748b">0</text>
+          <text x="100" y="20" text-anchor="middle" font-size="9" fill="#64748b">1.5</text>
+          <text x="180" y="108" text-anchor="middle" font-size="9" fill="#64748b">3.0</text>
+        </svg>
+        <div class="phase2-viz-value" id="wave-value">—</div>
+        <div class="phase2-viz-sub">เมตร · threshold 2.0 ม.</div>
+        <div class="phase2-viz-action ok" id="wave-action">⏳ โหลด...</div>
+      </div>
+      <!-- 🌡️ Thermometer -->
+      <div class="phase2-viz">
+        <div class="phase2-viz-title">🌡️ อุณหภูมิ</div>
+        <svg viewBox="0 0 60 150" style="width:50px;height:140px;">
+          <defs>
+            <linearGradient id="thermo-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#bfdbfe" />
+              <stop offset="50%" stop-color="#bbf7d0" />
+              <stop offset="75%" stop-color="#fde68a" />
+              <stop offset="100%" stop-color="#fecaca" />
+            </linearGradient>
+          </defs>
+          <rect x="22" y="10" width="16" height="110" rx="8" fill="url(#thermo-gradient)" stroke="#cbd5e1" stroke-width="2" />
+          <circle cx="30" cy="135" r="18" fill="url(#thermo-gradient)" stroke="#cbd5e1" stroke-width="2" />
+          <rect id="thermo-mercury-tube" x="26" y="120" width="8" height="0" fill="#10b981" />
+          <circle id="thermo-mercury-bulb" cx="30" cy="135" r="14" fill="#10b981" />
+          <line x1="38" y1="20" x2="44" y2="20" stroke="#cbd5e1" stroke-width="1" />
+          <line x1="38" y1="50" x2="44" y2="50" stroke="#cbd5e1" stroke-width="1" />
+          <line x1="38" y1="80" x2="44" y2="80" stroke="#cbd5e1" stroke-width="1" />
+          <line x1="38" y1="110" x2="44" y2="110" stroke="#cbd5e1" stroke-width="1" />
+          <text x="48" y="23" font-size="8" fill="#64748b">40°</text>
+          <text x="48" y="53" font-size="8" fill="#64748b">30°</text>
+          <text x="48" y="83" font-size="8" fill="#64748b">20°</text>
+          <text x="48" y="113" font-size="8" fill="#64748b">10°</text>
+        </svg>
+        <div class="phase2-viz-value" id="temp-value">—</div>
+        <div class="phase2-viz-sub">°C · เย็น &lt;20° / ร้อน &gt;35°</div>
+        <div class="phase2-viz-action ok" id="temp-action">⏳ โหลด...</div>
+      </div>
+      <!-- 💧 Droplet Meter -->
+      <div class="phase2-viz">
+        <div class="phase2-viz-title">💧 ความชื้น</div>
+        <svg viewBox="0 0 80 120" style="width:80px;height:120px;">
+          <defs>
+            <linearGradient id="droplet-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#67e8f9" />
+              <stop offset="100%" stop-color="#0891b2" />
+            </linearGradient>
+            <clipPath id="droplet-clip">
+              <path d="M 40 5 C 40 5, 8 60, 8 82 A 32 32 0 0 0 72 82 C 72 60, 40 5, 40 5 Z" />
+            </clipPath>
+          </defs>
+          <path d="M 40 5 C 40 5, 8 60, 8 82 A 32 32 0 0 0 72 82 C 72 60, 40 5, 40 5 Z" fill="white" stroke="#06b6d4" stroke-width="2" />
+          <rect id="droplet-fill" x="0" y="120" width="80" height="0" fill="url(#droplet-gradient)" clip-path="url(#droplet-clip)" />
+          <line id="droplet-line" x1="0" y1="120" x2="80" y2="120" stroke="#0e7490" stroke-width="2.5" opacity="0" />
+          <line x1="14" y1="32.25" x2="22" y2="32.25" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="1,1" />
+          <line x1="11" y1="59.5" x2="25" y2="59.5" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="1,1" />
+          <line x1="8" y1="86.75" x2="28" y2="86.75" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="1,1" />
+        </svg>
+        <div class="phase2-viz-value" id="humidity-value">—</div>
+        <div class="phase2-viz-sub">% RH · แห้ง &lt;40 / ชื้น &gt;70</div>
+        <div class="phase2-viz-action ok" id="humidity-action">⏳ โหลด...</div>
+      </div>
+      <!-- 💨 Wind Arrow -->
+      <div class="phase2-viz">
+        <div class="phase2-viz-title">💨 ทิศลม</div>
+        <svg viewBox="0 0 120 120" style="width:100px;height:100px;">
+          <circle cx="60" cy="60" r="45" fill="white" stroke="#cbd5e1" stroke-width="1" />
+          <circle cx="60" cy="60" r="38" fill="none" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,2" />
+          <text x="60" y="20" text-anchor="middle" font-size="10" fill="#475569" font-weight="700">N</text>
+          <text x="100" y="64" text-anchor="middle" font-size="10" fill="#475569" font-weight="700">E</text>
+          <text x="60" y="108" text-anchor="middle" font-size="10" fill="#475569" font-weight="700">S</text>
+          <text x="20" y="64" text-anchor="middle" font-size="10" fill="#475569" font-weight="700">W</text>
+          <text x="91.8" y="30" text-anchor="middle" font-size="7" fill="#94a3b8">NE</text>
+          <text x="91.8" y="93" text-anchor="middle" font-size="7" fill="#94a3b8">SE</text>
+          <text x="28.2" y="93" text-anchor="middle" font-size="7" fill="#94a3b8">SW</text>
+          <text x="28.2" y="30" text-anchor="middle" font-size="7" fill="#94a3b8">NW</text>
+          <g id="wind-arrow-group">
+            <line x1="60" y1="60" x2="60" y2="25" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round" />
+            <polygon points="60,18 53,28 67,28" fill="#1e3a8a" />
+          </g>
+          <circle id="wind-arrow-dot" cx="60" cy="60" r="4" fill="#1e3a8a" />
+        </svg>
+        <div class="phase2-viz-value" id="wind-speed">—</div>
+        <div class="phase2-viz-sub" id="wind-dir-label">ทิศ —</div>
+        <div class="phase2-viz-action ok" id="wind-action">⏳ โหลด...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌾 Phase 3: Crop Tips per Zone + Bullet Chart + Auto-rotate -->
+  <div class="card p-5 mb-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold navy">🌾 คำแนะนำเฉพาะพืช (5 โซน)</h2>
+        <p class="text-[10px] text-slate-500">💡 หมุนอัตโนมัติทุก 6 วินาที · คลิกจุดเพื่อเปลี่ยนโซน</p>
+      </div>
+      <div class="flex items-center gap-2" id="phase3-dots"></div>
+      <div class="phase3-progress" style="margin-top: 6px;">
+        <div id="phase3-progress-bar" class="phase3-progress-bar"></div>
+      </div>
+    </div>
+    <div id="phase3-card" class="phase3-card">
+      <div class="text-center text-slate-400 py-8">⏳ กำลังโหลด...</div>
+    </div>
+  </div>
+
+  <!-- 📡 Phase 4: TMD 7-Day Forecast + Warning + Widget -->
+  <div class="card p-5 mb-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold navy">📡 พยากรณ์ 7 วันข้างหน้า</h2>
+        <p class="text-xs text-slate-500">📍 ข้อมูลจาก Open-Meteo (TMD-style) · อัปเดตทุก 30 นาที</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="phase4-tmd-badge">TMD</span>
+        <a href="https://www.tmd.go.th/weather_forecast" target="_blank" rel="noopener" class="text-xs text-blue-600 hover:underline font-semibold">ดูที่ TMD →</a>
+      </div>
+    </div>
+    <div id="phase4-forecast" class="grid grid-cols-2 md:grid-cols-7 gap-3">
+      <div class="col-span-full text-center text-slate-400 py-6">⏳ กำลังโหลด...</div>
+    </div>
+  </div>
+
+  <!-- ⚠️ Phase 4: TMD Warning Banner -->
+  <div id="phase4-warning" class="phase4-warning-banner mb-3">
+    <div class="flex items-center gap-3 flex-wrap">
+      <span class="text-2xl">⚠️</span>
+      <div class="flex-1">
+        <div class="font-bold text-amber-700">ประกาศเตือนภัยจาก TMD</div>
+        <div id="phase4-warning-text" class="text-sm text-amber-700">ไม่มีประกาศเตือนภัยพิเศษในขณะนี้ · ตรวจสอบล่าสุด <span id="phase4-warning-time">—</span></div>
+      </div>
+      <a href="https://www.tmd.go.th/warnings" target="_blank" rel="noopener" class="text-xs text-blue-600 hover:underline font-semibold">ดูข้อมูลเตือนภัย →</a>
+    </div>
+  </div>
+
+  <!-- 🌐 Phase 4: TMD Official Widget Embed -->
+  <div class="card p-5 mb-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <h2 class="text-lg font-bold navy">🌐 Widget TMD (Official)</h2>
+      <a href="https://www.tmd.go.th/" target="_blank" rel="noopener" class="text-xs text-blue-600 hover:underline font-semibold">เปิดเว็บ TMD →</a>
+    </div>
+    <div class="rounded-lg overflow-hidden border border-slate-200 bg-slate-50" style="aspect-ratio: 16/9;">
+      <iframe src="https://www.tmd.go.th/weather_forecast" width="100%" height="100%" frameborder="0" loading="lazy" title="TMD Weather Forecast" style="border:0; display:block;" referrerpolicy="no-referrer"></iframe>
+    </div>
+    <div class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100">
+      💡 Widget จาก <a href="https://www.tmd.go.th/" target="_blank" rel="noopener" class="underline">กรมอุตุนิยมวิทยา</a> (TMD) · หาก iframe ไม่โหลด <a href="https://www.tmd.go.th/weather_forecast" target="_blank" rel="noopener" class="underline">คลิกที่นี่</a>
+    </div>
+  </div>
+
+  <!-- 🌐 Windy embed Himawari-9 — ภาพดาวเทียมเมฆสด 10นาที -->
+  <div class="card p-5 mb-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <h2 class="text-lg font-bold navy">🌐 Himawari-9 ภาพดาวเทียมสด</h2>
+      <span class="text-[10px] font-mono text-slate-500">🛰️ JMA · real-time · <a href="https://www.windy.com/-Satellite-satellite?satellite,7.6,100.15,8" target="_blank" rel="noopener" class="text-blue-600 hover:underline">เปิด Windy เต็มจอ ↗</a></span>
+    </div>
+    <div class="rounded-lg overflow-hidden border border-slate-200 bg-slate-50" style="aspect-ratio: 16/9;">
+      <iframe
+        src="https://embed.windy.com/embed2.html?lat=7.6&lon=100.15&zoom=8&product=sat&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=7.6&detailLon=100.15&metricWind=default&metricTemp=default&radarRange=-1"
+        width="100%"
+        height="100%"
+        frameborder="0"
+        loading="lazy"
+        title="Himawari-9 Satellite (Windy)"
+        style="border:0; display:block;">
+      </iframe>
+    </div>
+    <div class="text-[10px] text-slate-500 mt-3 pt-3 border-t border-slate-100">
+      💡 ภาพดาวเทียม Himawari-9 จาก JMA (องค์กรอุตุนิยมวิทยาญี่ปุ่น) · อัปเดตทุก 10 นาที · คลิกที่แผนที่เพื่อดูรายละเอียด
+    </div>
+  </div>
+
+<!-- Current Weather + Advisory Row (ลบแล้ว 19:51 — ย้ายไป per-zone cards) -->
+  <!-- SKA Water Quality Section -->
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <h2 class="text-lg font-bold navy">💧 ข้อมูลน้ำ (skawater.com)</h2>
+          <span class="px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 text-[10px] font-bold uppercase tracking-wider">Live from skawater.com</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider border border-emerald-300">✓ Verified</span>
+        </div>
+        <p class="text-xs text-slate-500">ระบบภูมิสารสนเทศการจัดการน้ำ · Skawater App · สถานีตรวจวัดระดับน้ำและอัตราการไหล</p>
+        <p class="text-[10px] text-emerald-700 mt-1 font-medium">✅ <b>skawater.com online</b> · อัพเดท <b>9 ส.ค. 2569 12:47</b> · <a href="https://www.skawater.com/v2/lake/" target="_blank" class="underline">www.skawater.com/v2/lake/</a> · 16 สถานี (10 active)</p>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-500">
+        <span class="status-dot status-active pulse"></span>
+        <span class="font-mono">5 stations · updated 5 min ago</span>
+      </div>
+    </div>
+
+    <!-- Top Metrics Row - Real skawater parameters -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+      <div class="card p-3 border-l-4 border-l-emerald-400">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-7 h-7 rounded bg-amber-50 flex items-center justify-center text-sm">📏</div>
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">ระดับน้ำ</div>
+          <span class="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">✓ live</span>
+        </div>
+        <div class="text-xl font-bold text-slate-900 font-mono">-4.51 - 4.29<span class="text-xs text-slate-500">ม.รทก.</span></div>
+        <div class="text-[10px] text-slate-500 mt-0.5">16 สถานี · MSL relative</div>
+      </div>
+      <div class="card p-3 border-l-4 border-l-emerald-400">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-7 h-7 rounded bg-blue-50 flex items-center justify-center text-sm">📐</div>
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">ความลึก</div>
+          <span class="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">✓ live</span>
+        </div>
+        <div class="text-xl font-bold text-slate-900 font-mono">2.73<span class="text-xs text-slate-500">ม. เฉลี่ย</span></div>
+        <div class="text-[10px] text-slate-500 mt-0.5">avg · 16 สถานี</div>
+      </div>
+      <div class="card p-3 border-l-4 border-l-emerald-400">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-7 h-7 rounded bg-amber-50 flex items-center justify-center text-sm">🌊</div>
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">ความเค็ม</div>
+          <span class="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">✓ live</span>
+        </div>
+        <div class="text-xl font-bold text-amber-700 font-mono">N/A<span class="text-xs text-amber-600">ลบ.ม./วินาที</span></div>
+        <div class="text-[10px] text-amber-700 mt-0.5 font-medium">⚠️ skawater.com API offline</div>
+      </div>
+      <div class="card p-3 border-l-4 border-l-emerald-400">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-7 h-7 rounded bg-emerald-50 flex items-center justify-center text-sm">💧</div>
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">อุณหภูมิน้ำ</div>
+          <span class="ml-auto text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">✓ live</span>
+        </div>
+        <div class="text-xl font-bold text-slate-900 font-mono">28.96<span class="text-xs text-slate-500">°C เฉลี่ย</span></div>
+        <div class="text-[10px] text-slate-500 mt-0.5">avg · 16 สถานี · pH 6.65</div>
+      </div>
+    </div>
+
+    <!-- skawater.com — Overview only (link to view all 16 stations) -->
+    <div class="card p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-cyan-50 to-emerald-50 border border-cyan-200">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-2xl shadow-sm">🌊</div>
+        <div>
+          <div class="font-bold text-slate-900">ดูข้อมูลสถานีทั้งหมด (16 สถานี)</div>
+          <div class="text-xs text-slate-600 mt-0.5">📊 ระดับน้ำ · ความลึก · ความเค็ม · อุณหภูมิ · pH · ปริมาณน้ำฝน · live ทุก 30 นาที</div>
+        </div>
+      </div>
+      <a href="https://www.skawater.com/v2/lake/" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-sm transition flex items-center gap-2 whitespace-nowrap">
+        <span>เปิด skawater.com</span>
+        <span>→</span>
+      </a>
+    </div>
+      <div class="px-4 py-2 bg-emerald-50 border-t border-emerald-200 text-[10px] text-emerald-800 flex items-center justify-between">
+        <span>✓ ข้อมูลจริงจาก <a href="https://skawater.com/v2/waterflow/" target="_blank" class="underline font-semibold">skawater.com/v2/waterflow/</a> · 13 สถานี · น้ำล้น/ฝนตกหนักอาจทำให้ข้อมูล N/A ชั่วคราว</span>
+        <span class="font-mono">N/A = รอข้อมูลจากเซ็นเซอร์</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zones Grid -->
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="text-lg font-bold navy">📍 รายละเอียดแต่ละโซน</h2>
+        <p class="text-xs text-slate-500 mt-0.5">พัทลุง 3 ตำบล · สงขลา 2 ตำบล</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
+      <div class="card p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="text-[10px] font-bold text-blue-700 uppercase tracking-wider">พัทลุง</div>
+            <h3 class="font-bold text-base mt-0.5">ควนมะพร้าว</h3>
+            <p class="text-[11px] text-slate-500">อ.เมืองพัทลุง · น้ำท่วม 13 ครั้ง/7 ปี</p>
+          </div>
+          <div class="text-2xl">🌾</div>
+        </div>
+        <div class="space-y-1 text-xs border-t border-slate-100 pt-2 mt-2">
+          <div class="flex justify-between"><span class="text-slate-500">ข้าวสังข์หยด</span><span class="font-mono font-semibold">600 ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">ผัก</span><span class="font-mono font-semibold">100 ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">เกษตรกร</span><span class="font-mono font-bold text-emerald-700">170 HH</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Yield</span><span class="font-mono">350-380 กก./ไร่</span></div>
+        </div>
+      </div>
+      <div class="card p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-emerald-500">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">พัทลุง</div>
+            <h3 class="font-bold text-base mt-0.5">ท่าแค</h3>
+            <p class="text-[11px] text-slate-500">อ.เมืองพัทลุง · นอกเขตชลประทาน</p>
+          </div>
+          <div class="text-2xl">🌿</div>
+        </div>
+        <div class="space-y-1 text-xs border-t border-slate-100 pt-2 mt-2">
+          <div class="flex justify-between"><span class="text-slate-500">พลู</span><span class="font-mono font-semibold">800 ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">ราคา</span><span class="font-mono font-semibold text-emerald-700">50,000 บ./ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">เกษตรกร</span><span class="font-mono font-bold text-emerald-700">400 HH</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">มูลค่ารวม</span><span class="font-mono font-bold text-blue-700">30 ลบ.</span></div>
+        </div>
+      </div>
+      <div class="card p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">พัทลุง</div>
+            <h3 class="font-bold text-base mt-0.5">เขาชัยสน</h3>
+            <p class="text-[11px] text-slate-500">อ.เขาชัยสน · ทางผ่านน้ำป่า</p>
+          </div>
+          <div class="text-2xl">🍌</div>
+        </div>
+        <div class="space-y-1 text-xs border-t border-slate-100 pt-2 mt-2">
+          <div class="flex justify-between"><span class="text-slate-500">กล้วยหอมทอง</span><span class="font-mono font-semibold">200 ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">ราคา</span><span class="font-mono font-semibold text-emerald-700">60,000 บ./ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">เกษตรกร</span><span class="font-mono font-bold text-emerald-700">40 HH</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">ผลผลิต</span><span class="font-mono">800 ตัน/ปี</span></div>
+        </div>
+      </div>
+      <div class="card p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-rose-500">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="text-[10px] font-bold text-rose-700 uppercase tracking-wider">สงขลา</div>
+            <h3 class="font-bold text-base mt-0.5">บ้านใหม่</h3>
+            <p class="text-[11px] text-slate-500">อ.ระโนด · น้ำเค็มหนุน ก.พ.-พ.ค.</p>
+          </div>
+          <div class="text-2xl">🥥</div>
+        </div>
+        <div class="space-y-1 text-xs border-t border-slate-100 pt-2 mt-2">
+          <div class="flex justify-between"><span class="text-slate-500">มะพร้าวน้ำหอม</span><span class="font-mono font-semibold">2,400 ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">ราคา</span><span class="font-mono font-semibold text-emerald-700">40,000 บ./ไร่</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">เกษตรกร</span><span class="font-mono font-bold text-emerald-700">500 HH</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">ผลผลิต</span><span class="font-mono">9,000 ตัน/ปี</span></div>
+        </div>
+      </div>
+      <div class="card p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 md:col-span-2 lg:col-span-2">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="text-[10px] font-bold text-purple-700 uppercase tracking-wider">สงขลา</div>
+            <h3 class="font-bold text-base mt-0.5">บ้านขาว</h3>
+            <p class="text-[11px] text-slate-500">อ.ระโนด · ดินเหนียว + ทะเลหนุน + ฝนตกหนัก</p>
+          </div>
+          <div class="text-2xl">🦐</div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+          <div class="bg-slate-50 rounded p-2 text-center">
+            <div class="text-lg font-bold navy font-mono">2,000</div>
+            <div class="text-[10px] text-slate-500">มะพร้าว (ไร่)</div>
+          </div>
+          <div class="bg-slate-50 rounded p-2 text-center">
+            <div class="text-lg font-bold navy font-mono">1,200</div>
+            <div class="text-[10px] text-slate-500">พริก (ไร่)</div>
+          </div>
+          <div class="bg-slate-50 rounded p-2 text-center">
+            <div class="text-lg font-bold navy font-mono">40</div>
+            <div class="text-[10px] text-slate-500">กุ้งก้ามกราม (ตัน/ปี)</div>
+          </div>
+          <div class="bg-emerald-50 rounded p-2 text-center">
+            <div class="text-lg font-bold text-emerald-700 font-mono">1,100</div>
+            <div class="text-[10px] text-slate-500">เกษตรกร (HH)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (🚨 Flood warning moved to top — see line ~330) -->
+
+  <!-- (Trust by Design / 40 Papers / 71-page Baseline — ลบ academic sections ออก 19:28) -->
+
+<!-- 📢 คำแนะนำสำหรับเกษตรกร — ลบแล้ว 19:51 (ย้ายไปรวมใน per-zone cards) -->
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 mt-12 py-8 px-4">
+  <div class="max-w-7xl mx-auto text-center">
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center text-base">🌾</div>
+      <span class="font-bold text-white">วช. ลุ่มน้ำทะเลสาบสงขลา</span>
+    </div>
+    <p class="text-xs mb-3">พยากรณ์อากาศเพื่อเกษตรกร · ลุ่มน้ำทะเลสาบสงขลา</p>
+    <div class="flex justify-center gap-6 text-[11px] text-slate-500">
+      <span>ข้อมูลจาก TMD · SKA · Open-Meteo</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 🛰️ A1: Satellite + OSM toggle
+const map = L.map('map', { zoomControl: true, attributionControl: true }).setView([7.6, 100.15], 9);
+const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '🛰️ Esri Satellite',
+  maxZoom: 18
+});
+const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap',
+  maxZoom: 18
+});
+satelliteLayer.addTo(map);
+L.control.layers(
+  { '🛰️ ดาวเทียม': satelliteLayer, '🗺️ แผนที่': osmLayer },
+  null,
+  { position: 'topright', collapsed: false }
+).addTo(map);
+
+// 🌧️ B1+B2: Open-Meteo precipitation radar (ดึงแยกตามโซน)
+let radarFrames = [];      // [{ zone, times[], precip[] }, ...] — 1 entry/zone
+let radarCurrentFrame = 0;
+let radarPlaying = false;
+let radarAnimInterval = null;
+let rainLayerGroup = null;
+let rainEnabled = true;
+
+// ดึงข้อมูลฝนรายโซน (5 จุดวิจัยหลัก)
+async function loadRadarData() {
+  try {
+    radarFrames = [];
+    // ดึงพร้อมกันทุกโซน เร็วขึ้น
+    const fetches = zones.map(async (zone) => {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${zone.lat}&longitude=${zone.lng}&hourly=precipitation&forecast_days=2&timezone=Asia/Bangkok`;
+        const r = await fetch(url);
+        const data = await r.json();
+        return {
+          zone,
+          times: data.hourly?.time || [],
+          precip: data.hourly?.precipitation || []
+        };
+      } catch (e) {
+        return { zone, times: [], precip: [] };
+      }
+    });
+    radarFrames = await Promise.all(fetches);
+
+    // ตั้งเวลาเริ่มต้น = "ตอนนี้" (index สุดท้าย)
+    if (radarFrames[0]?.times?.length > 0) {
+      radarCurrentFrame = radarFrames[0].times.length - 1;
+      updateRadarFrame();
+    }
+  } catch (e) {
+    console.log('Open-Meteo radar failed:', e.message);
+  }
+}
+
+// แสดงฝนเป็นวงกลมที่ตำแหน่งแต่ละโซน
+function updateRadarFrame() {
+  if (rainLayerGroup) {
+    map.removeLayer(rainLayerGroup);
+    rainLayerGroup = null;
+  }
+  if (!radarEnabled || radarFrames.length === 0) return;
+
+  rainLayerGroup = L.layerGroup();
+  let hasAnyRain = false;
+
+  radarFrames.forEach(f => {
+    if (!f.times.length) return;
+    const precip = f.precip[radarCurrentFrame] || 0;
+    const zoneName = f.zone.name;
+
+    if (precip > 0.1) {
+      hasAnyRain = true;
+      const intensity = Math.min(precip / 10, 1);
+      const radius = 12000 + intensity * 28000; // 12-40 km
+      const color = precip > 5 ? '#dc2626'   // ฝนหนัก
+                  : precip > 2 ? '#f59e0b'   // ฝนปานกลาง
+                                : '#10b981'; // ฝนเบา
+      L.circle([f.zone.lat, f.zone.lng], {
+        radius, color, fillColor: color,
+        fillOpacity: 0.35 + intensity * 0.4, weight: 2
+      }).addTo(rainLayerGroup);
+
+      // Label ปริมาณฝน
+      L.marker([f.zone.lat, f.zone.lng], {
+        icon: L.divIcon({
+          className: 'rain-label',
+          html: '<div style="background:' + color + ';color:white;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3);">' + precip.toFixed(1) + 'mm</div>',
+          iconSize: [40, 16],
+          iconAnchor: [20, 8]
+        })
+      }).addTo(rainLayerGroup);
+    } else {
+      // marker บาง ๆ ให้รู้ว่าตรวจฝนอยู่ (เห็นแม้ไม่มีฝน)
+      L.marker([f.zone.lat, f.zone.lng], {
+        icon: L.divIcon({
+          className: 'rain-label',
+          html: '<div style="background:white;color:#64748b;padding:2px 6px;border-radius:10px;font-size:9px;font-weight:600;white-space:nowrap;border:1px dashed #94a3b8;">' + zoneName + ' • 0mm</div>',
+          iconSize: [80, 16],
+          iconAnchor: [40, 8]
+        })
+      }).addTo(rainLayerGroup);
+    }
+  });
+  rainLayerGroup.addTo(map);
+
+  // อัปเดต label เวลา
+  const label = document.getElementById('radar-time-label');
+  if (label && radarFrames[0]?.times[radarCurrentFrame]) {
+    const dt = new Date(radarFrames[0].times[radarCurrentFrame]);
+    label.textContent = dt.toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' });
+  }
+
+  // แสดง "ฝนไม่ตก" ถ้าทุกโซน 0mm
+  const statusEl = document.getElementById('rain-status');
+  if (statusEl) {
+    if (hasAnyRain) {
+      statusEl.style.display = 'none';
+    } else {
+      statusEl.style.display = 'inline-block';
+      statusEl.textContent = '☀️ ไม่มีฝนในขณะนี้';
+    }
+  }
+}
+
+// ปุ่ม toggle เปิด/ปิด radar
+function toggleRainRadar() {
+  rainEnabled = !rainEnabled;
+  const btn = document.getElementById('radar-toggle-btn');
+  if (rainEnabled) {
+    btn.innerHTML = '🌧️ ฝน (เปิด)';
+    btn.style.background = '#dbeafe';
+    btn.style.borderColor = '#3b82f6';
+    btn.style.color = '#1e40af';
+    updateRadarFrame();
+  } else {
+    btn.innerHTML = '🌧️ ฝน (ปิด)';
+    btn.style.background = '#f1f5f9';
+    btn.style.borderColor = '#cbd5e1';
+    btn.style.color = '#64748b';
+    if (rainLayerGroup) { map.removeLayer(rainLayerGroup); rainLayerGroup = null; }
+  }
+}
+
+// Load radar data on map ready
+loadRadarData();
+
+
+// B2: ปุ่ม toggle + time slider สำหรับ radar
+const radarSliderControl = L.control({ position: 'bottomleft' });
+radarSliderControl.onAdd = function() {
+  const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+  div.style.background = 'white';
+  div.style.padding = '6px 10px';
+  div.style.borderRadius = '6px';
+  div.style.boxShadow = '0 1px 4px rgba(0,0,0,0.2)';
+  div.style.fontFamily = 'Inter, sans-serif';
+  div.style.fontSize = '11px';
+  div.style.display = 'flex';
+  div.style.alignItems = 'center';
+  div.style.gap = '8px';
+  div.innerHTML = `
+    <button id="radar-toggle-btn" onclick="toggleRainRadar()" style="background:#dbeafe;border:1px solid #3b82f6;color:#1e40af;padding:4px 8px;border-radius:4px;cursor:pointer;font-weight:600;font-family:inherit;white-space:nowrap;">
+      🌧️ ฝน (เปิด)
+    </button>
+    <span id="rain-status" style="display:none;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap;">☀️ ไม่มีฝน</span>
+    <span style="color:#94a3b8;">|</span>
+    <button id="radar-rewind" style="background:white;border:1px solid #cbd5e1;color:#475569;padding:4px 6px;border-radius:4px;cursor:pointer;font-family:inherit;">⏪</button>
+    <input type="range" id="radar-time-slider" min="0" max="100" value="100" style="width:100px;flex:1;min-width:60px;">
+    <button id="radar-forward" style="background:white;border:1px solid #cbd5e1;color:#475569;padding:4px 6px;border-radius:4px;cursor:pointer;font-family:inherit;">⏩</button>
+    <span id="radar-time-display" style="font-weight:600;min-width:55px;color:#1e40af;font-size:10px;white-space:nowrap;">ตอนนี้</span>
+  `;
+  L.DomEvent.disableClickPropagation(div);
+  L.DomEvent.disableScrollPropagation(div);
+  return div;
+};
+radarSliderControl.addTo(map);
+setTimeout(() => {
+  const slider = document.getElementById('radar-time-slider');
+  const display = document.getElementById('radar-time-display');
+  const rewind = document.getElementById('radar-rewind');
+  const forward = document.getElementById('radar-forward');
+  if (slider) {
+    const updateSlider = () => {
+      const max = radarFrames[0]?.times?.length - 1 || 0;
+      slider.max = Math.max(max, 0);
+      slider.value = radarCurrentFrame;
+      if (radarFrames[0]?.times[radarCurrentFrame]) {
+        const dt = new Date(radarFrames[0].times[radarCurrentFrame]);
+        display.textContent = dt.toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' });
+      }
+    };
+    updateSlider();
+    slider.addEventListener('input', (e) => {
+      radarCurrentFrame = parseInt(e.target.value);
+      updateRadarFrame();
+      updateSlider();
+    });
+    if (rewind) rewind.addEventListener('click', () => {
+      if (radarCurrentFrame > 0) { radarCurrentFrame--; updateSlider(); slider.value = radarCurrentFrame; updateRadarFrame(); }
+    });
+    if (forward) forward.addEventListener('click', () => {
+      const max = radarFrames[0]?.times?.length - 1 || 0;
+      if (radarCurrentFrame < max) { radarCurrentFrame++; updateSlider(); slider.value = radarCurrentFrame; updateRadarFrame(); }
+    });
+  }
+}, 1000);
+
+
+
+// C1: OpenWeather API (placeholder — key activates when ready)
+const OPENWEATHER_KEY = ''; // Will be loaded from /flood-warning.php or env
+async function loadOpenWeather(zone) {
+  // TODO: When key is activated, fetch from OpenWeather One Call API
+  // https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}&units=metric
+  return null;
+}
+
+const zones = [
+  { id: 'khuan_maphrao', name: 'ควนมะพร้าว', lat: 7.620, lng: 100.075, emoji: '🌳', province: 'พัทลุง' },
+  { id: 'tha_khae', name: 'ท่าแค', lat: 7.615, lng: 100.105, emoji: '⛰️', province: 'พัทลุง' },
+  { id: 'khao_chai_son', name: 'เขาชัยสน', lat: 7.450, lng: 100.110, emoji: '🏘️', province: 'พัทลุง' },
+  { id: 'ban_mai', name: 'บ้านใหม่', lat: 7.860, lng: 100.305, emoji: '🏘️', province: 'สงขลา' },
+  { id: 'ban_khao', name: 'บ้านขาว', lat: 7.835, lng: 100.320, emoji: '🏘️', province: 'สงขลา' }
+];
+
+const colorMap = {
+  khuan_maphrao: '#2563eb',
+  tha_khae: '#16a34a',
+  khao_chai_son: '#d97706',
+  ban_mai: '#dc2626',
+  ban_khao: '#9333ea'
+};
+
+zones.forEach(z => {
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="background:white;border:3px solid ${colorMap[z.id]};border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:${colorMap[z.id]};box-shadow:0 4px 8px rgba(0,0,0,0.2);">${z.emoji}</div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16]
+  });
+  L.marker([z.lat, z.lng], { icon: icon })
+    .addTo(map)
+    .bindPopup(`<div style="font-family:Inter,sans-serif;min-width:180px;">
+      <div style="font-weight:700;color:${colorMap[z.id]};font-size:14px;">${z.emoji} ${z.name}</div>
+      <div style="color:#64748b;font-size:11px;">${z.province}</div>
+      <div style="margin-top:6px;font-size:11px;">
+        <div style="display:flex;justify-content:space-between;"><span>Lat:</span><span style="font-family:monospace;">${z.lat.toFixed(3)}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Lng:</span><span style="font-family:monospace;">${z.lng.toFixed(3)}</span></div>
+      </div>
+    </div>`);
+});
+
+// ===== SKA Water Stations (subtle, smaller than zone markers) =====
+// Real stations from skawater.com — coords are approximate, values are real (mostly N/A)
+const skawaStations = [
+  { code: 'RN-MC-01', value: 'N/A', lat: 7.620, lng: 100.090 },
+  { code: 'RN-MC-02', value: 'N/A', lat: 7.610, lng: 100.095 },
+  { code: 'RN-MC-03', value: 'N/A', lat: 7.600, lng: 100.100 },
+  { code: 'RN-1L', value: 'N/A', lat: 7.700, lng: 100.200 },
+  { code: 'RN-2L', value: 'N/A', lat: 7.620, lng: 100.210 },
+  { code: 'RN-3L', value: 'N/A', lat: 7.540, lng: 100.220 },
+  { code: 'RN-4L', value: '0', lat: 7.460, lng: 100.190 },
+  { code: 'RN-1L-3L', value: 'N/A', lat: 7.620, lng: 100.200 },
+  { code: 'RN-2L-3L', value: 'N/A', lat: 7.580, lng: 100.215 },
+  { code: 'RN-1R-01', value: 'N/A', lat: 7.720, lng: 100.260 },
+  { code: 'RN-1R-02', value: 'N/A', lat: 7.700, lng: 100.280 },
+  { code: 'RN-2R-01', value: 'N/A', lat: 7.620, lng: 100.290 },
+  { code: 'RN-2R-02', value: 'N/A', lat: 7.580, lng: 100.300 },
+  { code: 'RN-3R-01', value: 'N/A', lat: 7.460, lng: 100.280 }
+];
+
+skawaStations.forEach(s => {
+  // Small subtle pin (18px) — less prominent than 32px zone markers
+  const pinIcon = L.divIcon({
+    className: '',
+    html: `<div title="${s.code}: ${s.value}" style="background:rgba(100,116,139,0.65);width:12px;height:12px;border-radius:50%;border:1.5px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:pointer;"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+  const popupHtml = `<div style="font-family:Inter,sans-serif;min-width:200px;">
+    <div style="font-weight:700;color:#0f172a;font-size:13px;border-bottom:1px solid #e2e8f0;padding-bottom:4px;margin-bottom:6px;">📡 ${s.code}</div>
+    <table style="width:100%;font-size:11px;">
+      <tr><td style="color:#64748b;padding:2px 0;">ระดับน้ำ</td><td style="text-align:right;font-family:monospace;font-weight:600;">${s.value}</td></tr>
+      <tr><td style="color:#64748b;padding:2px 0;">ปริมาณน้ำ</td><td style="text-align:right;font-family:monospace;font-weight:600;">${s.value === '0' ? '0.00 ลบ.ม.' : 'N/A'}</td></tr>
+    </table>
+    <div style="margin-top:6px;font-size:9px;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:4px;">📍 พิกัดประมาณ (จากชื่อสถานี) · <a href="https://skawater.com/v2/waterflow/${s.code.replace('RN-','').toLowerCase()}.php" target="_blank" style="color:#0891b2;">ดูข้อมูลจริง ↗</a></div>
+  </div>`;
+  L.marker([s.lat, s.lng], { icon: pinIcon, zIndexOffset: 500 })
+    .addTo(map)
+    .bindPopup(popupHtml);
+});
+
+// Add lake overlay
+L.polygon([[7.85,100.27],[7.85,100.40],[7.70,100.45],[7.55,100.40],[7.55,100.27]], {
+  color: '#0891b2', fillColor: '#06b6d4', fillOpacity: 0.15, weight: 1.5, dashArray: '4 4'
+}).addTo(map).bindPopup('🌊 ทะเลสาบสงขลา');
+
+  // TODO: Rain Radar overlay (RainViewer API 404, Open-Meteo version planned)
+
+  // 🔄 Auto-reload full page every 10 minutes (refresh server-side data: SKA, stations, stats, timestamp)
+  let refreshCountdown = 600;
+  setInterval(() => {
+    refreshCountdown--;
+    const indicator = document.getElementById('refresh-indicator');
+    if (indicator) {
+      const m = Math.floor(refreshCountdown / 60);
+      const s = refreshCountdown % 60;
+      indicator.textContent = `🔄 รีเฟรชใน ${m}:${s.toString().padStart(2, '0')}`;
+      indicator.classList.toggle('opacity-50', refreshCountdown < 60);
+    }
+    if (refreshCountdown <= 0) location.reload();
+  }, 1000);
+</script>
+
+<script>
+// ===== Per-Zone Forecast Panel (5 zones) =====
+const WEATHER_CODES = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌦️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+
+async function loadZoneForecasts() {
+  const grid = document.getElementById('zone-forecast-grid');
+  const timeEl = document.getElementById('zone-forecast-time');
+  if (!grid || !zones) return;
+
+  // Check cache (10 min)
+  const cacheKey = 'zone-forecast-v1';
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      const {ts, html} = JSON.parse(cached);
+      if (Date.now() - ts < 600000) {
+        grid.innerHTML = html;
+        if (timeEl) timeEl.textContent = new Date(ts).toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // Fetch all 5 zones in parallel
+  const results = await Promise.all(zones.map(async z => {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${z.lat}&longitude=${z.lng}&current=temperature_2m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Asia/Bangkok&forecast_days=2`;
+      const r = await fetch(url);
+      const d = await r.json();
+      const c = d.current || {};
+      const t0 = d.daily;
+      return {
+        zone: z,
+        temp: c.temperature_2m,
+        rain: c.precipitation || 0,
+        code: c.weathercode || 0,
+        max: t0.temperature_2m_max[0],
+        min: t0.temperature_2m_min[0],
+        rainToday: t0.precipitation_sum[0],
+        rainTmrw: t0.precipitation_sum[1],
+        codeTmrw: t0.weathercode[1]
+      };
+    } catch(e) {
+      return {zone: z, error: true};
+    }
+  }));
+
+  // ✨ Phase 3 fix: expose results for Phase 3 crop tips
+  try { window.phase1Results = results; } catch(e) {}
+
+  // Render cards
+  grid.innerHTML = results.map(r => {
+    if (r.error) {
+      return `<div class="bg-red-50 p-3 rounded-lg text-xs text-red-600 text-center">⚠️ ${r.zone.name}<br>โหลดไม่สำเร็จ</div>`;
+    }
+    const emoji = WEATHER_CODES[r.code] || '🌡️';
+    const emojiTmrw = WEATHER_CODES[r.codeTmrw] || '🌡️';
+    // Rain level color
+    let bg = 'bg-emerald-50', border = 'border-emerald-200', text = 'text-emerald-700';
+    if (r.rainToday > 5) { bg = 'bg-rose-50'; border = 'border-rose-200'; text = 'text-rose-700'; }
+    else if (r.rainToday > 0) { bg = 'bg-amber-50'; border = 'border-amber-200'; text = 'text-amber-700'; }
+    return `
+      <div class="${bg} border ${border} rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer" onclick="map.flyTo([${r.zone.lat}, ${r.zone.lng}], 11, {duration:1})">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-xs font-semibold navy truncate">${r.zone.emoji} ${r.zone.name}</div>
+          <div class="text-2xl">${emoji}</div>
+        </div>
+        <div class="text-2xl font-bold navy font-mono">${r.temp?.toFixed(1) || '—'}<span class="text-xs text-slate-500">°C</span></div>
+        <div class="text-[10px] text-slate-500 mt-1">H ${r.max?.toFixed(0) || '—'}° / L ${r.min?.toFixed(0) || '—'}°</div>
+        <div class="text-[10px] ${text} font-semibold mt-1 pt-1 border-t ${border}">
+          🌧️ วันนี้ ${r.rainToday?.toFixed(1) || '0.0'} มม.
+        </div>
+        <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+          ${emojiTmrw} พรุ่งนี้ ${r.rainTmrw?.toFixed(1) || '0.0'} มม.
+        </div>
+      </div>`;
+  }).join('');
+
+  // Save to cache + update time
+  const now = Date.now();
+  if (timeEl) timeEl.textContent = new Date(now).toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+  try { localStorage.setItem(cacheKey, JSON.stringify({ts: now, html: grid.innerHTML})); } catch(e) {}
+}
+
+// Load zone forecasts after page ready
+loadZoneForecasts();
+</script>
+
+<script>
+// ===== 📢 Advisory Cards (SKA pattern: กล่องสี + สถานะ + ทำอะไร) =====
+async function loadAdvisories() {
+  const lat = 7.620, lng = 100.075;
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,weathercode&hourly=precipitation&daily=temperature_2m_max,precipitation_sum&timezone=Asia/Bangkok&forecast_days=2`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const rain24h = (d.hourly?.precipitation || []).slice(0, 24).reduce((s, v) => s + (v || 0), 0);
+    const wind = d.current?.wind_speed_10m || 0;
+    const tempMax = d.daily?.temperature_2m_max?.[0] || 0;
+    // Rain card
+    let rName, rEmoji, rBg, rTxt, rActs;
+    if (rain24h > 10) { rName = 'ฝนหนัก'; rEmoji = '🌧️'; rBg = 'bg-rose-50 border-rose-300'; rTxt = 'text-rose-700'; rActs = ['งดเก็บเกี่ยว', 'ตรวจท่อระบายน้ำ', 'งดพ่นยา']; }
+    else if (rain24h > 2) { rName = 'ฝนปานกลาง'; rEmoji = '🌦️'; rBg = 'bg-amber-50 border-amber-300'; rTxt = 'text-amber-700'; rActs = ['พ่นยาตอนเช้า', 'ระวังดินชะล้าง']; }
+    else { rName = 'ฝนน้อย'; rEmoji = '☀️'; rBg = 'bg-blue-50 border-blue-300'; rTxt = 'text-blue-700'; rActs = ['รดน้ำตอนเช้า', 'คลุมดินลดการระเหย']; }
+    // Wind card
+    let wName, wEmoji, wBg, wTxt, wActs;
+    if (wind > 30) { wName = 'ลมแรง'; wEmoji = '💨'; wBg = 'bg-rose-50 border-rose-300'; wTxt = 'text-rose-700'; wActs = ['ยึดโครงเรือน', 'ตรวจต้นไม้ใหญ่']; }
+    else if (wind > 15) { wName = 'ลมปานกลาง'; wEmoji = '🌬️'; wBg = 'bg-amber-50 border-amber-300'; wTxt = 'text-amber-700'; wActs = ['ระวังกิ่งหัก']; }
+    else { wName = 'ลมอ่อน'; wEmoji = '🍃'; wBg = 'bg-emerald-50 border-emerald-300'; wTxt = 'text-emerald-700'; wActs = ['ทำงานได้ตามปกติ']; }
+    // Temp card
+    let tName, tEmoji, tBg, tTxt, tActs;
+    if (tempMax > 35) { tName = 'ร้อนจัด'; tEmoji = '🥵'; tBg = 'bg-rose-50 border-rose-300'; tTxt = 'text-rose-700'; tActs = ['พ่นน้ำลดอุณหภูมิ', 'งดทำงานกลางวัน']; }
+    else if (tempMax > 30) { tName = 'ร้อน'; tEmoji = '☀️'; tBg = 'bg-amber-50 border-amber-300'; tTxt = 'text-amber-700'; tActs = ['ดื่มน้ำบ่อยๆ']; }
+    else if (tempMax < 20) { tName = 'เย็น'; tEmoji = '🧥'; tBg = 'bg-blue-50 border-blue-300'; tTxt = 'text-blue-700'; tActs = ['คลุมต้นอ่อน']; }
+    else { tName = 'ปกติ'; tEmoji = '🌤️'; tBg = 'bg-emerald-50 border-emerald-300'; tTxt = 'text-emerald-700'; tActs = ['ทำงานได้ตามปกติ']; }
+    // Flood card (from existing flood data if loaded)
+    let fName = 'ปลอดภัย', fEmoji = '✅', fBg = 'bg-emerald-50 border-emerald-300', fTxt = 'text-emerald-700', fActs = ['ทำงานได้ตามปกติ'];
+    // Render
+    const render = (emoji, name, txt, bg, data, acts) =>
+      `<div class="rounded-lg p-4 border-2 ${bg} text-center">
+        <div class="text-3xl mb-1">${emoji}</div>
+        <div class="font-bold text-base ${txt}">${name}</div>
+        <div class="text-xs text-slate-600 mb-2">${data}</div>
+        <div class="text-[11px] text-left space-y-1 mt-2 pt-2 border-t border-slate-200">${acts.map(a => '<div>✓ ' + a + '</div>').join('')}</div>
+      </div>`;
+    document.getElementById('adv-rain').outerHTML = render(rEmoji, rName, rTxt, rBg, rain24h.toFixed(1) + ' มม. ใน 24 ชม.', rActs);
+    document.getElementById('adv-wind').outerHTML = render(wEmoji, wName, wTxt, wBg, wind.toFixed(0) + ' กม./ชม.', wActs);
+    document.getElementById('adv-temp').outerHTML = render(tEmoji, tName, tTxt, tBg, 'สูงสุด ' + tempMax.toFixed(0) + '°C', tActs);
+    document.getElementById('adv-flood').outerHTML = render(fEmoji, fName, fTxt, fBg, 'ระดับน้ำปกติ', fActs);
+    document.getElementById('adv-time').textContent = 'อัปเดต ' + new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+  } catch(e) { console.error('Advisory load error:', e); }
+}
+loadAdvisories();
+setInterval(loadAdvisories, 600000);
+</script>
+
+<script>
+// ===== 🎯 Phase 1: Emergency Bar + Hero + 5-Zone Mini + Action Language =====
+const ZONE_CROP_NAMES = {
+  khuan_maphrao:   { name: 'ควนมะพร้าว', emoji: '🌾', action_ok: 'ข้าว: รดน้ำได้',          action_warn: 'ข้าว: ระวังน้ำขัง' },
+  tha_khae:        { name: 'ท่าแค',     emoji: '🌿', action_ok: 'พลู: เก็บใบได้',         action_warn: 'พลู: งดเก็บใบเปียก' },
+  khao_chai_son:   { name: 'เขาชัยสน',  emoji: '🍌', action_ok: 'กล้วย: ตัดเครือได้',       action_warn: 'กล้วย: ระวังลมหัก' },
+  ban_mai:         { name: 'บ้านใหม่',   emoji: '🥥', action_ok: 'มะพร้าว: เก็บลูกได้',      action_warn: 'มะพร้าว: ระวังน้ำเค็ม' },
+  ban_khao:        { name: 'บ้านขาว',   emoji: '🦐', action_ok: 'กุ้ง+พริก: ให้อาหารได้',  action_warn: 'กุ้ง: งดให้อาหารก่อนฝน' }
+};
+
+function phase1Level(rainToday, wind, floodP) {
+  if (rainToday > 30 || wind > 40 || floodP > 0.7) return 'red';
+  if (rainToday > 10 || wind > 25 || floodP > 0.5) return 'orange';
+  if (rainToday > 2  || wind > 15 || floodP > 0.3) return 'yellow';
+  return 'green';
+}
+
+function phase1Actions(rainToday, rainTmrw, codeTmrw) {
+  const out = [];
+  if (rainToday > 10)        out.push('❌ งดเก็บเกี่ยววันนี้');
+  else if (rainToday > 2)    out.push('⚠️ เก็บเกี่ยวเช้ามืด');
+  else                       out.push('✅ เก็บเกี่ยวได้ปกติ');
+  if (rainTmrw > 10)         out.push('🌧️ พรุ่งนี้: ฝนหนัก เตรียมพร้อม');
+  else                       out.push('☀️ พรุ่งนี้: ทำงานกลางแจ้งได้');
+  if (codeTmrw >= 95)        out.push('⛈️ ระวังฟ้าผ่า');
+  return out;
+}
+
+function phase1Emergency(maxRain, maxWind, floodP) {
+  if (maxRain > 30 || maxWind > 40 || floodP > 0.7) return { level: 'red',    emoji: '🚨', label: 'อันตราย' };
+  if (maxRain > 10 || maxWind > 25 || floodP > 0.5) return { level: 'orange', emoji: '⚠️', label: 'เตือนภัย' };
+  if (maxRain > 2  || maxWind > 15 || floodP > 0.3) return { level: 'yellow', emoji: '🟡', label: 'เฝ้าระวัง' };
+  return                                                  { level: 'green',  emoji: '✅', label: 'ปลอดภัย' };
+}
+
+async function loadPhase1() {
+  try {
+    const results = await Promise.all(zones.map(async z => {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${z.lat}&longitude=${z.lng}&current=temperature_2m,precipitation,weathercode,wind_speed_10m&hourly=precipitation&daily=temperature_2m_max,precipitation_sum,weathercode&timezone=Asia/Bangkok&forecast_days=2`;
+        const r = await fetch(url);
+        const d = await r.json();
+        const c = d.current || {};
+        const t0 = d.daily || {};
+        return {
+          zone: z,
+          temp: c.temperature_2m,
+          rain: c.precipitation || 0,
+          code: c.weathercode || 0,
+          wind: c.wind_speed_10m || 0,
+          max: t0.temperature_2m_max?.[0],
+          min: t0.temperature_2m_min?.[0],
+          rainToday: t0.precipitation_sum?.[0] || 0,
+          rainTmrw:  t0.precipitation_sum?.[1] || 0,
+          codeTmrw:  t0.weathercode?.[1] || 0,
+          hourlyRain: (d.hourly?.precipitation || []).slice(0, 12),
+          hourlyTime: (d.hourly?.time || []).slice(0, 12)
+        };
+      } catch (e) { return { zone: z, error: true }; }
+    }));
+
+    const maxRain = Math.max(...results.map(r => r.rainToday || 0));
+    const maxWind = Math.max(...results.map(r => r.wind || 0));
+    const floodP = 0.39; // synced with existing flood card
+
+    // === 1. Emergency Bar ===
+    const em = phase1Emergency(maxRain, maxWind, floodP);
+    const bar = document.getElementById('emergency-bar');
+    if (bar) {
+      bar.className = `emergency-bar warning-${em.level}`;
+      const lbl = document.getElementById('emergency-label');
+      lbl.textContent = `สถานะ: ${em.label}`;
+      lbl.className = `font-bold text-sm ${
+        em.level === 'green'  ? 'text-emerald-700' :
+        em.level === 'yellow' ? 'text-amber-700'   :
+        em.level === 'orange' ? 'text-orange-700'  : 'text-rose-800'
+      }`;
+      document.getElementById('emergency-emoji').textContent = em.emoji;
+      document.getElementById('emergency-sub').textContent = `· 5 โซน ${em.level === 'green' ? 'ปลอดภัย' : 'เฝ้าระวัง'} 24 ชม.`;
+    }
+    const colorCls = em.level === 'green'  ? 'text-emerald-700' :
+                     em.level === 'yellow' ? 'text-amber-700'   :
+                     em.level === 'orange' ? 'text-orange-700'  : 'text-rose-700';
+    const chipsEl = document.getElementById('emergency-chips');
+    if (chipsEl) {
+      chipsEl.innerHTML = `
+        <span class="px-2 py-1 rounded-full bg-white/70 border border-current font-semibold ${colorCls}">🌧️ ฝน ${maxRain.toFixed(1)} มม.</span>
+        <span class="px-2 py-1 rounded-full bg-white/70 border border-current font-semibold ${colorCls}">💨 ลม ${maxWind.toFixed(0)} กม./ชม.</span>
+        <span class="px-2 py-1 rounded-full bg-white/70 border border-current font-semibold ${colorCls}">🌊 เข็ม P(น้ำท่วม) ${floodP.toFixed(2)}</span>
+      `;
+    }
+
+    // === 2. Hero Section ===
+    const heroZone = results.find(r => r.zone.id === 'khuan_maphrao') || results[0];
+    const hero1 = document.getElementById('hero-rain-next');
+    const timelineEl = document.getElementById('hero-rain-timeline');
+    if (hero1 && timelineEl && heroZone.hourlyRain && heroZone.hourlyRain.length) {
+      let nextRain = null;
+      for (let i = 0; i < heroZone.hourlyRain.length; i++) {
+        if (heroZone.hourlyRain[i] > 0.5) { nextRain = { i, precip: heroZone.hourlyRain[i], time: heroZone.hourlyTime[i] }; break; }
+      }
+      if (nextRain) {
+        const dt = new Date(nextRain.time);
+        const timeStr = dt.toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit' });
+        hero1.innerHTML = `🌧️ ตก <span class="text-amber-300">${timeStr}</span> · ${nextRain.precip.toFixed(1)} มม.`;
+      } else {
+        hero1.innerHTML = `☀️ ไม่มีฝนใน 12 ชม.`;
+      }
+      const maxPrecip = Math.max(...heroZone.hourlyRain, 1);
+      timelineEl.innerHTML = heroZone.hourlyRain.map((p, i) => {
+        const h = new Date(heroZone.hourlyTime[i]).getHours();
+        const height = Math.max((p / maxPrecip) * 28, 2);
+        let cls = 'zero';
+        if (p > 10) cls = 'veryheavy';
+        else if (p > 5) cls = 'heavy';
+        else if (p > 1) cls = 'medium';
+        else if (p > 0.1) cls = 'light';
+        return `<div class="flex flex-col items-center gap-1" style="min-width: 22px;">
+          <div class="rain-bar ${cls}" style="height: ${height}px;"></div>
+          <div class="text-[9px] opacity-70 font-mono">${h}</div>
+        </div>`;
+      }).join('');
+    }
+
+    const heroActions = document.getElementById('hero-actions');
+    if (heroActions) {
+      const actions = [];
+      if (maxRain > 10) {
+        actions.push({ icon: '❌', text: 'งดเก็บเกี่ยววันนี้ (ฝนหนัก)' });
+        actions.push({ icon: '🔧', text: 'ตรวจท่อระบายน้ำ' });
+      } else if (maxRain > 2) {
+        actions.push({ icon: '⚠️', text: 'เก็บเกี่ยวเช้ามืด' });
+        actions.push({ icon: '💧', text: 'ระวังดินชะล้าง' });
+      } else {
+        actions.push({ icon: '✅', text: 'เก็บเกี่ยวได้ตามปกติ' });
+        actions.push({ icon: '💧', text: 'รดน้ำตอนเช้า' });
+      }
+      const maxRainTmrw = Math.max(...results.map(r => r.rainTmrw || 0));
+      if (maxRainTmrw > 10) actions.push({ icon: '🌧️', text: 'พรุ่งนี้: ฝนหนัก เตรียมพร้อม' });
+      else                   actions.push({ icon: '🌤️', text: 'พรุ่งนี้: ทำงานกลางแจ้งได้' });
+      heroActions.innerHTML = actions.slice(0, 3).map(a =>
+        `<li class="flex items-start gap-2"><span class="text-base leading-none">${a.icon}</span><span class="opacity-95">${a.text}</span></li>`
+      ).join('');
+    }
+
+    const timeEl = document.getElementById('hero-time');
+    if (timeEl) timeEl.textContent = '⏱ ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+    // === 3. 5-Zone Mini Status ===
+    const miniEl = document.getElementById('zone-mini-status');
+    if (miniEl) {
+      miniEl.innerHTML = results.map(r => {
+        const lvl = phase1Level(r.rainToday || 0, r.wind || 0, floodP);
+        const meta = ZONE_CROP_NAMES[r.zone.id];
+        const em = { green: '✅', yellow: '🟡', orange: '⚠️', red: '🚨' }[lvl];
+        return `<span class="zone-mini-chip ${lvl}" onclick="document.getElementById('zone-forecast-grid').scrollIntoView({behavior:'smooth'})" title="${meta.name} - ${(r.rainToday || 0).toFixed(1)} มม.">
+          ${em} ${meta.emoji} ${meta.name} <span class="font-mono">${(r.rainToday || 0).toFixed(1)}</span>มม
+        </span>`;
+      }).join('');
+    }
+
+    // === 4. Enhance per-zone grid with action language ===
+    const grid = document.getElementById('zone-forecast-grid');
+    if (grid) {
+      grid.innerHTML = results.map(r => {
+        if (r.error) {
+          return `<div class="bg-red-50 p-3 rounded-lg text-xs text-red-600 text-center">⚠️ ${r.zone.name}<br>โหลดไม่สำเร็จ</div>`;
+        }
+        const emoji = WEATHER_CODES[r.code] || '🌡️';
+        const emojiTmrw = WEATHER_CODES[r.codeTmrw] || '🌡️';
+        let bg = 'bg-emerald-50', border = 'border-emerald-200', text = 'text-emerald-700';
+        if (r.rainToday > 5) { bg = 'bg-rose-50'; border = 'border-rose-200'; text = 'text-rose-700'; }
+        else if (r.rainToday > 0) { bg = 'bg-amber-50'; border = 'border-amber-200'; text = 'text-amber-700'; }
+        const meta = ZONE_CROP_NAMES[r.zone.id];
+        const isWarn = r.rainToday > 5;
+        const actionClass = isWarn ? 'warn' : 'ok';
+        const actionText = isWarn ? meta.action_warn : meta.action_ok;
+        const actions = phase1Actions(r.rainToday, r.rainTmrw, r.codeTmrw);
+        return `
+          <div class="${bg} border ${border} rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer" onclick="map.flyTo([${r.zone.lat}, ${r.zone.lng}], 11, {duration:1})">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-xs font-semibold navy truncate">${r.zone.emoji} ${r.zone.name}</div>
+              <div class="text-2xl">${emoji}</div>
+            </div>
+            <div class="text-2xl font-bold navy font-mono">${r.temp?.toFixed(1) || '—'}<span class="text-xs text-slate-500">°C</span></div>
+            <div class="text-[10px] text-slate-500 mt-1">H ${r.max?.toFixed(0) || '—'}° / L ${r.min?.toFixed(0) || '—'}°</div>
+            <div class="text-[10px] ${text} font-semibold mt-1 pt-1 border-t ${border}">
+              🌧️ วันนี้ ${r.rainToday?.toFixed(1) || '0.0'} มม.
+            </div>
+            <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+              ${emojiTmrw} พรุ่งนี้ ${r.rainTmrw?.toFixed(1) || '0.0'} มม.
+            </div>
+            <div class="zone-action ${actionClass}">
+              <span>${isWarn ? '⚠️' : '✅'}</span>
+              <span>${actionText}</span>
+            </div>
+            ${actions.map(a => `<div class="zone-action-sub">${a}</div>`).join('')}
+          </div>`;
+      }).join('');
+      const ztEl = document.getElementById('zone-forecast-time');
+      if (ztEl) ztEl.textContent = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    }
+
+  } catch (e) {
+    console.error('Phase 1 load failed:', e);
+  }
+}
+
+loadPhase1();
+setInterval(loadPhase1, 10 * 60 * 1000);
+</script>
+
+<script>
+// ===== 🌊 Phase 2: Marine Weather Visualizations (Wave + Temp + Humidity + Wind) =====
+const PHASE2_CENTROID = { lat: 7.62, lng: 100.15 };
+const PHASE2_DIR_LABELS = ['เหนือ', 'ตะวันออกเฉียงเหนือ', 'ตะวันออก', 'ตะวันออกเฉียงใต้', 'ใต้', 'ตะวันตกเฉียงใต้', 'ตะวันตก', 'ตะวันตกเฉียงเหนือ'];
+
+function renderWaveGauge(waveH) {
+  const v = Math.max(0, Math.min(3, waveH));
+  const rot = (v / 3) * 180 - 90;
+  const needle = document.getElementById('wave-needle');
+  if (needle) needle.setAttribute('transform', `rotate(${rot} 100 100)`);
+  const valEl = document.getElementById('wave-value');
+  if (valEl) valEl.textContent = v.toFixed(2);
+  const actEl = document.getElementById('wave-action');
+  if (actEl) {
+    if (v >= 2.5) { actEl.className = 'phase2-viz-action danger'; actEl.textContent = '⛔ เรือเล็กงดออก'; }
+    else if (v >= 2.0) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '⚠️ ระวังคลื่นลมแรง'; }
+    else if (v >= 1.0) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '✅ เรือเล็กออกได้'; }
+    else { actEl.className = 'phase2-viz-action ok'; actEl.textContent = '✅ ทะเลสงบ'; }
+    actEl.style.display = 'inline-flex';
+  }
+}
+
+function renderThermometer(temp) {
+  const v = Math.max(0, Math.min(40, temp));
+  const tubeHeight = (v / 40) * 110;
+  const tubeEl = document.getElementById('thermo-mercury-tube');
+  if (tubeEl) {
+    tubeEl.setAttribute('y', 120 - tubeHeight);
+    tubeEl.setAttribute('height', tubeHeight);
+  }
+  let color = '#10b981';
+  if (v >= 35) color = '#dc2626';
+  else if (v >= 30) color = '#f59e0b';
+  else if (v < 20) color = '#93c5fd';
+  if (tubeEl) tubeEl.setAttribute('fill', color);
+  const bulb = document.getElementById('thermo-mercury-bulb');
+  if (bulb) bulb.setAttribute('fill', color);
+  const valEl = document.getElementById('temp-value');
+  if (valEl) valEl.textContent = v.toFixed(1);
+  const actEl = document.getElementById('temp-action');
+  if (actEl) {
+    if (v >= 35) { actEl.className = 'phase2-viz-action danger'; actEl.textContent = '🥵 ร้อนจัด'; }
+    else if (v >= 30) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '☀️ ร้อน · ดื่มน้ำ'; }
+    else if (v < 20) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '🧥 เย็น · คลุมต้นอ่อน'; }
+    else { actEl.className = 'phase2-viz-action ok'; actEl.textContent = '🌤️ ปกติ'; }
+    actEl.style.display = 'inline-flex';
+  }
+}
+
+function renderDropletMeter(humidity) {
+  const v = Math.max(0, Math.min(100, humidity));
+  const fillHeight = (v / 100) * 110;
+  const fillEl = document.getElementById('droplet-fill');
+  if (fillEl) {
+    fillEl.setAttribute('y', 115 - fillHeight);
+    fillEl.setAttribute('height', fillHeight);
+  }
+  // Show fill line indicator (top of water)
+  const lineEl = document.getElementById('droplet-line');
+  if (lineEl) {
+    lineEl.setAttribute('y1', 115 - fillHeight);
+    lineEl.setAttribute('y2', 115 - fillHeight);
+    lineEl.setAttribute('opacity', '1');
+  }
+  const valEl = document.getElementById('humidity-value');
+  if (valEl) valEl.textContent = v.toFixed(0);
+  const actEl = document.getElementById('humidity-action');
+  if (actEl) {
+    if (v >= 90) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '⚠️ เสี่ยงเชื้อรา'; }
+    else if (v >= 70) { actEl.className = 'phase2-viz-action ok'; actEl.textContent = '✅ ชื้นปกติ'; }
+    else if (v >= 40) { actEl.className = 'phase2-viz-action ok'; actEl.textContent = '✅ แห้งสบาย'; }
+    else { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '⚠️ แห้งมาก'; }
+    actEl.style.display = 'inline-flex';
+  }
+}
+
+function renderWindArrow(windDir, windSpeed) {
+  const group = document.getElementById('wind-arrow-group');
+  if (group) group.setAttribute('transform', `rotate(${windDir} 60 60)`);
+  // Color arrow based on speed
+  let arrowColor = '#1e3a8a';
+  if (windSpeed >= 40) arrowColor = '#dc2626';
+  else if (windSpeed >= 25) arrowColor = '#fb923c';
+  else if (windSpeed >= 15) arrowColor = '#f59e0b';
+  const line = group?.querySelector('line');
+  const polygon = group?.querySelector('polygon');
+  if (line) line.setAttribute('stroke', arrowColor);
+  if (polygon) polygon.setAttribute('fill', arrowColor);
+  const dot = document.getElementById('wind-arrow-dot');
+  if (dot) dot.setAttribute('fill', arrowColor);
+  const speedEl = document.getElementById('wind-speed');
+  if (speedEl) speedEl.textContent = windSpeed.toFixed(1);
+  const dirIdx = Math.round(windDir / 45) % 8;
+  const dirEl = document.getElementById('wind-dir-label');
+  if (dirEl) dirEl.textContent = `ทิศ ${PHASE2_DIR_LABELS[dirIdx]}`;
+  const actEl = document.getElementById('wind-action');
+  if (actEl) {
+    if (windSpeed >= 40) { actEl.className = 'phase2-viz-action danger'; actEl.textContent = '⛈️ ลมแรงมาก'; }
+    else if (windSpeed >= 25) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '⚠️ ลมแรง'; }
+    else if (windSpeed >= 15) { actEl.className = 'phase2-viz-action warn'; actEl.textContent = '🌬️ ลมปานกลาง'; }
+    else { actEl.className = 'phase2-viz-action ok'; actEl.textContent = '🍃 ลมอ่อน'; }
+    actEl.style.display = 'inline-flex';
+  }
+}
+
+async function loadPhase2() {
+  try {
+    // Marine data (wave)
+    const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${PHASE2_CENTROID.lat}&longitude=${PHASE2_CENTROID.lng}&current=wave_height,wave_direction,wave_period&timezone=Asia/Bangkok`;
+    const marineData = await fetch(marineUrl).then(r => r.json()).catch(() => null);
+    const waveHeight = marineData?.current?.wave_height || 0;
+
+    // Weather details (humidity + wind direction + wind speed)
+    const detailUrl = `https://api.open-meteo.com/v1/forecast?latitude=${PHASE2_CENTROID.lat}&longitude=${PHASE2_CENTROID.lng}&current=relative_humidity_2m,wind_direction_10m,wind_speed_10m&timezone=Asia/Bangkok`;
+    const detailData = await fetch(detailUrl).then(r => r.json()).catch(() => null);
+    const humidity = detailData?.current?.relative_humidity_2m || 0;
+    const windDir = detailData?.current?.wind_direction_10m || 0;
+    const windSpeed = detailData?.current?.wind_speed_10m || 0;
+
+    // Aggregate from Phase 1 results (for temp only) — fallback to detail if not ready
+    const zoneResults = window.phase1Results || [];
+    const temps = zoneResults.map(r => r.temp || 0).filter(t => t > 0);
+    const avgTemp = temps.length ? temps.reduce((a, b) => a + b, 0) / temps.length : (detailData?.current?.temperature_2m || 30);
+
+    // Render all 4 visualizations
+    renderWaveGauge(waveHeight);
+    renderThermometer(avgTemp);
+    renderDropletMeter(humidity);
+    renderWindArrow(windDir, windSpeed);
+
+    // Update time
+    const tEl = document.getElementById('phase2-time');
+    if (tEl) tEl.textContent = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+  } catch (e) {
+    console.error('Phase 2 load failed:', e);
+  }
+}
+
+loadPhase2();
+setInterval(loadPhase2, 10 * 60 * 1000);
+</script>
+
+<script>
+// ===== 🌾 Phase 3: Crop Tips per Zone + Bullet Chart + Auto-rotate =====
+const PHASE3_CROP_DATA = {
+  khuan_maphrao: { name: 'ควนมะพร้าว', emoji: '🌾', main_crop: 'ข้าวสังข์หยด', color: '#10b981', province: 'พัทลุง' },
+  tha_khae:      { name: 'ท่าแค',      emoji: '🌿', main_crop: 'พลู',              color: '#16a34a', province: 'พัทลุง' },
+  khao_chai_son: { name: 'เขาชัยสน',   emoji: '🍌', main_crop: 'กล้วยหอมทอง',  color: '#f59e0b', province: 'พัทลุง' },
+  ban_mai:       { name: 'บ้านใหม่',   emoji: '🥥', main_crop: 'มะพร้าวน้ำหอม', color: '#dc2626', province: 'สงขลา' },
+  ban_khao:      { name: 'บ้านขาว',   emoji: '🦐', main_crop: 'กุ้ง+พริก',     color: '#9333ea', province: 'สงขลา' }
+};
+
+function getCropAdvice(zoneId, w) {
+  const advice = [];
+  const rain = w.rainToday || 0;
+  const temp = w.temp || 30;
+  const wind = w.wind || 0;
+  const humidity = w.humidity || 65;
+
+  if (zoneId === 'khuan_maphrao') {
+    if (rain > 10) advice.push({ type: 'danger', text: '🌧️ ฝนหนัก! ตรวจท่อระบายน้ำในนาข้าว' });
+    else if (rain > 2) advice.push({ type: 'warn', text: '🌦️ ฝนปานกลาง ระวังน้ำขังในนา' });
+    else advice.push({ type: 'ok', text: '☀️ ฝนน้อย รดน้ำเสริมในนาได้' });
+    if (temp > 33) advice.push({ type: 'warn', text: '🌡️ ร้อน เพิ่มระดับน้ำในนา' });
+    if (humidity > 85) advice.push({ type: 'warn', text: '💧 ชื้นสูง เสี่ยงโรคใบไหม้ พ่นสารชีวภัณฑ์' });
+    if (rain < 1 && temp > 32) advice.push({ type: 'info', text: '🌱 ข้าวช่วงตั้งท้อง ต้องการน้ำ 5-10 มม./วัน' });
+  } else if (zoneId === 'tha_khae') {
+    if (rain > 5) advice.push({ type: 'danger', text: '🌧️ ฝนตก! งดเก็บใบพลู (ใบเปียกเน่า ราคาตก)' });
+    else advice.push({ type: 'ok', text: '✅ เก็บใบพลูได้ ราคาดี ~50,000 บ./ไร่' });
+    if (humidity > 80) advice.push({ type: 'warn', text: '💧 ชื้นสูง ระวังเชื้อราใบพลู ตัดแต่งทรงพุ่ม' });
+    if (wind > 25) advice.push({ type: 'warn', text: '💨 ลมแรง ตรวจค้ำยอดพลู' });
+  } else if (zoneId === 'khao_chai_son') {
+    if (rain > 10) advice.push({ type: 'danger', text: '🌧️ ฝนหนัก ตรวจท่อระบายน้ำ ระวังโค่น' });
+    else advice.push({ type: 'ok', text: '✅ ต้นกล้วยได้น้ำเพียงพอ ผลผลิต 800 ตัน/ปี' });
+    if (wind > 30) advice.push({ type: 'danger', text: '💨 ลมแรงมาก ค้ำต้นกล้วย + ตัดใบลดแรงเสียดทาน' });
+    else if (wind > 20) advice.push({ type: 'warn', text: '💨 ลมปานกลาง ตรวจค้ำหลัก' });
+  } else if (zoneId === 'ban_mai') {
+    if (rain < 1 && temp > 32) advice.push({ type: 'warn', text: '☀️ แล้ง+ร้อน รดน้ำมะพร้าว 200 ลิตร/ต้น' });
+    else advice.push({ type: 'ok', text: '✅ มะพร้าวได้น้ำเพียงพอ ผลิต 9,000 ตัน/ปี' });
+    advice.push({ type: 'info', text: '🌊 ระวังน้ำเค็มหนุน (ก.พ.-พ.ค.) ใช้เครื่องวัดความเค็ม' });
+    if (wind > 30) advice.push({ type: 'danger', text: '💨 ลมแรง ตรวจต้นมะพร้าวและทางมะพร้าว' });
+  } else if (zoneId === 'ban_khao') {
+    if (rain > 15) advice.push({ type: 'danger', text: '🌧️ ฝนหนัก! งดให้อาหารกุ้ง 1-2 วัน (กุ้งเครียด อาจตาย)' });
+    else if (rain > 5) advice.push({ type: 'warn', text: '🌦️ ฝนปานกลาง ลดอาหารกุ้ง 50%' });
+    else advice.push({ type: 'ok', text: '✅ ให้อาหารกุ้งได้ปกติ ผลิต 40 ตัน/ปี' });
+    if (humidity > 85) advice.push({ type: 'warn', text: '💧 ชื้นสูง ระวังพริกเน่า + เชื้อรา' });
+    if (rain > 5) advice.push({ type: 'warn', text: '🌶️ งดเก็บพริกขณะเปียก เก็บตอนเช้ามืด' });
+    if (wind > 25) advice.push({ type: 'warn', text: '💨 ลมแรง ตรวจขอบคันบ่อกุ้ง' });
+  }
+  if (wind > 25) advice.push({ type: 'warn', text: '💨 ตรวจต้นไม้ใหญ่ ตัดกิ่งเปราะ ป้องกันลมหัก' });
+  return advice.slice(0, 4);
+}
+
+function computeCropHealth(zoneId, w) {
+  const rain = w.rainToday || 0, temp = w.temp || 30, wind = w.wind || 0, humidity = w.humidity || 65;
+  let score = 100;
+  if (rain > 30) score -= 40; else if (rain > 10) score -= 20; else if (rain > 2) score -= 5;
+  if (temp > 35) score -= 20; else if (temp > 33) score -= 10; else if (temp < 22) score -= 10;
+  if (wind > 40) score -= 30; else if (wind > 25) score -= 15; else if (wind > 15) score -= 5;
+  if (humidity > 90) score -= 15; else if (humidity < 40) score -= 10;
+  return Math.max(0, Math.min(100, score));
+}
+
+function renderPhase3Card(zoneId, weather) {
+  const meta = PHASE3_CROP_DATA[zoneId];
+  const advice = getCropAdvice(zoneId, weather);
+  const health = computeCropHealth(zoneId, weather);
+  let healthColor = '#10b981';
+  if (health < 50) healthColor = '#dc2626';
+  else if (health < 75) healthColor = '#f59e0b';
+  const healthLabel = health >= 80 ? 'ดีมาก' : health >= 60 ? 'ดี' : health >= 40 ? 'ปานกลาง' : 'ต้องระวัง';
+  const cropEmoji = weather.rainToday > 5 ? '⛈️' : (weather.temp > 33 ? '🥵' : (weather.wind > 25 ? '💨' : '🌤️'));
+  return `
+    <div class="phase3-grid slide-in" style="--zone-color: ${meta.color}">
+      <div>
+        <div class="phase3-zone-header">
+          <span class="phase3-zone-emoji">${meta.emoji}</span>
+          <div>
+            <div class="text-xl font-bold navy">${meta.name}</div>
+            <div class="text-xs text-slate-600">${meta.province} · <b>${meta.main_crop}</b></div>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="phase3-health-num" style="color: ${healthColor}">${health}</span>
+          <span class="text-sm text-slate-500 font-bold">/ 100</span>
+          <span class="phase3-tip ${health >= 75 ? 'ok' : health >= 50 ? 'warn' : 'danger'}" style="margin: 0; padding: 2px 8px; font-size: 11px;">${healthLabel}</span>
+        </div>
+        <svg viewBox="0 0 300 60" style="width:100%;height:60px;">
+          <rect x="0" y="20" width="150" height="20" fill="#fee2e2" />
+          <rect x="150" y="20" width="75" height="20" fill="#fef3c7" />
+          <rect x="225" y="20" width="75" height="20" fill="#d1fae5" />
+          <rect x="0" y="20" width="${health * 3}" height="20" fill="${healthColor}" opacity="0.85" rx="2" />
+          <line x1="210" y1="14" x2="210" y2="46" stroke="#0f172a" stroke-width="2" />
+          <text x="210" y="12" text-anchor="middle" font-size="9" fill="#0f172a" font-weight="700">เป้า 70</text>
+          <text x="0" y="56" class="phase3-bullet-label" text-anchor="start">0</text>
+          <text x="150" y="56" class="phase3-bullet-label" text-anchor="middle">50</text>
+          <text x="300" y="56" class="phase3-bullet-label" text-anchor="end">100</text>
+        </svg>
+        <div class="text-[10px] text-slate-500 mt-2">📊 Crop Health Index · ${cropEmoji} ปัจจัย: ฝน ${weather.rainToday?.toFixed(1) || '0.0'}มม. / ลม ${weather.wind?.toFixed(0) || '0'}กม.</div>
+      </div>
+      <div>
+        <div class="text-sm font-bold text-slate-700 mb-2">📋 คำแนะนำเฉพาะ ${meta.main_crop}</div>
+        ${advice.map(a => `<div class="phase3-tip ${a.type}">${a.text}</div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+let phase3CurrentIndex = 0;
+let phase3AutoRotate = null;
+let phase3ProgressInterval = null;
+
+function showPhase3Card(index) {
+  phase3CurrentIndex = index;
+  const zoneResults = window.phase1Results || [];
+  if (index >= zoneResults.length) return;
+  const zoneId = zoneResults[index].zone.id;
+  const weather = {
+    rainToday: zoneResults[index].rainToday,
+    rainTmrw: zoneResults[index].rainTmrw,
+    temp: zoneResults[index].temp,
+    wind: zoneResults[index].wind,
+    code: zoneResults[index].code
+  };
+  const humidityEl = document.getElementById('humidity-value');
+  if (humidityEl) weather.humidity = parseFloat(humidityEl.textContent) || 65;
+  const cardEl = document.getElementById('phase3-card');
+  if (cardEl) cardEl.innerHTML = renderPhase3Card(zoneId, weather);
+  document.querySelectorAll('.phase3-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+}
+
+function startPhase3AutoRotate() {
+  if (phase3AutoRotate) clearInterval(phase3AutoRotate);
+  if (phase3ProgressInterval) clearInterval(phase3ProgressInterval);
+  const progressBar = document.getElementById('phase3-progress-bar');
+  if (progressBar) {
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+    void progressBar.offsetWidth; // force reflow
+    progressBar.style.transition = 'width 0.1s linear';
+    let startTime = Date.now();
+    phase3ProgressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, (elapsed / 6000) * 100);
+      progressBar.style.width = pct + '%';
+    }, 80);
+  }
+  phase3AutoRotate = setInterval(() => {
+    const next = (phase3CurrentIndex + 1) % 5;
+    showPhase3Card(next);
+  }, 6000);
+}
+
+function initPhase3() {
+  const zoneResults = window.phase1Results || [];
+  if (zoneResults.length === 0) { setTimeout(initPhase3, 500); return; }
+  const dotsEl = document.getElementById('phase3-dots');
+  if (dotsEl) {
+    dotsEl.innerHTML = zoneResults.map((r, i) => {
+      const meta = PHASE3_CROP_DATA[r.zone.id];
+      return `<span class="phase3-dot ${i === 0 ? 'active' : ''}" data-zone="${i}" style="color: ${meta.color}" title="${meta.name} - ${meta.main_crop}">${meta.emoji}</span>`;
+    }).join('');
+  }
+  showPhase3Card(0);
+  startPhase3AutoRotate();
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList?.contains('phase3-dot')) {
+    const index = parseInt(e.target.dataset.zone);
+    showPhase3Card(index);
+    if (phase3AutoRotate) clearInterval(phase3AutoRotate);
+    startPhase3AutoRotate();
+  }
+});
+
+initPhase3();
+</script>
+
+<script>
+// ===== 📡 Phase 4: TMD 7-Day Forecast + Warning =====
+async function loadPhase4() {
+  try {
+    const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=7.62&longitude=100.15&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,wind_speed_10m_max&timezone=Asia/Bangkok&forecast_days=7`;
+    const forecastData = await fetch(forecastUrl).then(r => r.json()).catch(() => null);
+    if (forecastData && forecastData.daily) {
+      renderPhase4Forecast(forecastData.daily);
+    }
+    const warnTimeEl = document.getElementById('phase4-warning-time');
+    if (warnTimeEl) {
+      warnTimeEl.textContent = new Date().toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' });
+    }
+  } catch (e) {
+    console.error('Phase 4 load failed:', e);
+  }
+}
+
+function renderPhase4Forecast(daily) {
+  const days = [];
+  const thaiDays = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+  for (let i = 0; i < daily.time.length; i++) {
+    const date = new Date(daily.time[i]);
+    const dayName = i === 0 ? 'วันนี้' : thaiDays[date.getDay()];
+    const emoji = (typeof WEATHER_CODES !== 'undefined' ? WEATHER_CODES[daily.weathercode[i]] : null) || '🌡️';
+    const max = daily.temperature_2m_max[i]?.toFixed(0);
+    const min = daily.temperature_2m_min[i]?.toFixed(0);
+    const rain = daily.precipitation_sum[i]?.toFixed(1);
+    const wind = daily.wind_speed_10m_max[i]?.toFixed(0);
+    days.push(`
+      <div class="phase4-forecast-card">
+        <div class="phase4-day-name">${dayName}</div>
+        <div class="phase4-day-date">${date.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })}</div>
+        <div class="phase4-day-emoji">${emoji}</div>
+        <div class="phase4-day-temp">${max}° <span class="phase4-day-mini">${min}°</span></div>
+        <div class="phase4-day-mini">🌧️ ${rain} มม.</div>
+        <div class="phase4-day-mini">💨 ${wind}</div>
+      </div>
+    `);
+  }
+  const grid = document.getElementById('phase4-forecast');
+  if (grid) grid.innerHTML = days.join('');
+}
+
+loadPhase4();
+setInterval(loadPhase4, 30 * 60 * 1000);
+</script>
+
+<script>
+// ===== 🧪 Phase 6: Edge Case Handling =====
+function showErrorState(containerId, title, message) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = `
+    <div class="text-center text-slate-400 py-8">
+      <div class="text-4xl mb-2">⚠️</div>
+      <div class="font-bold text-slate-700 mb-1">${title}</div>
+      <div class="text-xs text-slate-500 mb-3">${message}</div>
+      <button onclick="location.reload()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-bold min-h-[44px]" aria-label="ลองโหลดข้อมูลใหม่">🔄 ลองอีกครั้ง</button>
+    </div>
+  `;
+}
+
+// Offline indicator
+function showOfflineBanner() {
+  if (document.getElementById('offline-banner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'offline-banner';
+  banner.setAttribute('role', 'status');
+  banner.setAttribute('aria-live', 'polite');
+  banner.innerHTML = '<div style="background:#dc2626; color:white; padding:8px 16px; text-align:center; font-size:13px; font-weight:600;">⚠️ ออฟไลน์ — กำลังใช้ข้อมูลจาก cache</div>';
+  document.body.insertBefore(banner, document.body.firstChild);
+}
+function hideOfflineBanner() {
+  document.getElementById('offline-banner')?.remove();
+}
+window.addEventListener('online', () => { hideOfflineBanner(); location.reload(); });
+window.addEventListener('offline', showOfflineBanner);
+if (!navigator.onLine) showOfflineBanner();
+</script>
+
+<!-- 📱 Phase 5: PWA Service Worker + Pull-to-refresh + Update notification -->
+<script>
+// ===== 📱 Phase 5: PWA Service Worker Registration =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => {
+        console.log('✅ [SW] Registered:', reg.scope);
+      })
+      .catch((err) => {
+        console.log('❌ [SW] Registration failed:', err);
+      });
+  });
+  // Show update notification when new SW takes over
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    showUpdateBanner();
+  });
+}
+
+function showUpdateBanner() {
+  const existing = document.getElementById('sw-update-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'sw-update-banner';
+  banner.innerHTML = `
+    <div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #1e3a8a, #2563eb); color:white; padding:14px 20px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.25); z-index:99999; display:flex; gap:12px; align-items:center; font-size:14px; font-weight:500; max-width:90%; animation:slideUp 0.4s ease;">
+      <span style="font-size:20px;">🔄</span>
+      <span>เวอร์ชันใหม่พร้อมใช้งาน</span>
+      <button onclick="location.reload()" style="background:white; color:#1e3a8a; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; font-size:13px; min-height:36px;">รีเฟรช</button>
+      <button onclick="document.getElementById('sw-update-banner').remove()" style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.3); padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px; min-height:36px;">ปิด</button>
+    </div>
+  `;
+  if (!document.getElementById('sw-update-banner-styles')) {
+    const style = document.createElement('style');
+    style.id = 'sw-update-banner-styles';
+    style.textContent = '@keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(20px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }';
+    document.head.appendChild(style);
+  }
+  document.body.appendChild(banner);
+}
+
+// ===== 🔄 Pull-to-refresh (mobile) =====
+(function() {
+  let ptrStartY = 0;
+  let ptrPulling = false;
+  const PTR_THRESHOLD = 80;
+  let indicator = null;
+
+  function ensureIndicator() {
+    if (indicator) return indicator;
+    const div = document.createElement('div');
+    div.id = 'ptr-indicator';
+    div.innerHTML = '<div class="ptr-inner"><span id="ptr-icon">⬇️</span> <span id="ptr-text">ดึงลงเพื่อรีเฟรช</span></div>';
+    document.body.appendChild(div);
+    indicator = div;
+    return div;
+  }
+
+  // Inject ptr styles once
+  if (!document.getElementById('ptr-styles')) {
+    const style = document.createElement('style');
+    style.id = 'ptr-styles';
+    style.textContent = `
+      #ptr-indicator { position:fixed; top:0; left:0; right:0; z-index:99998; pointer-events:none; }
+      #ptr-indicator .ptr-inner {
+        background:rgba(30,58,138,0.96); color:white; padding:18px 14px;
+        text-align:center; transform:translateY(-100%); transition:transform 0.25s, opacity 0.25s;
+        backdrop-filter:blur(8px); box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px;
+      }
+      #ptr-icon { font-size:18px; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function getInner() { return indicator ? indicator.firstElementChild : null; }
+
+  document.addEventListener('touchstart', (e) => {
+    if (window.scrollY === 0) {
+      ptrStartY = e.touches[0].pageY;
+      ptrPulling = true;
+      ensureIndicator();
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!ptrPulling) return;
+    const inner = getInner();
+    if (!inner) return;
+    const dy = e.touches[0].pageY - ptrStartY;
+    if (dy > 0 && dy < 250) {
+      const offset = Math.min(dy * 0.5, 110);
+      inner.style.transform = `translateY(${offset}px)`;
+      inner.style.opacity = Math.min(dy / PTR_THRESHOLD, 1);
+      const text = document.getElementById('ptr-text');
+      const icon = document.getElementById('ptr-icon');
+      if (dy > PTR_THRESHOLD) {
+        if (text) text.textContent = 'ปล่อยเพื่อรีเฟรช';
+        if (icon) icon.textContent = '🔄';
+      } else {
+        if (text) text.textContent = 'ดึงลงเพื่อรีเฟรช';
+        if (icon) icon.textContent = '⬇️';
+      }
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!ptrPulling) return;
+    const inner = getInner();
+    const dy = e.changedTouches[0].pageY - ptrStartY;
+    const text = document.getElementById('ptr-text');
+    const icon = document.getElementById('ptr-icon');
+    if (dy > PTR_THRESHOLD) {
+      if (text) text.textContent = 'กำลังรีเฟรช...';
+      if (icon) icon.textContent = '⏳';
+      setTimeout(() => location.reload(), 500);
+    } else if (inner) {
+      inner.style.transform = 'translateY(-100%)';
+      inner.style.opacity = 0;
+    }
+    ptrPulling = false;
+  });
+})();
+</script>
+
+</body>
+</html>

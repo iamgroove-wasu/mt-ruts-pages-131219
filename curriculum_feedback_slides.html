@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ข้อคิดเห็นการปรับปรุงหลักสูตร</title>
+  
+  <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/3.0.23/tailwind.min.js"></script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;700;900&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; background: #000; color: #fff; overflow: hidden; }
+    .slides-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; }
+    .slide { width: 100%; height: 100%; max-width: 450px; max-height: 800px; aspect-ratio: 9/16; position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; transform: translateX(100%); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
+    .slide.active { opacity: 1; transform: translateX(0); }
+    .slide.prev { opacity: 0; transform: translateX(-100%); }
+    .light-spot { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; pointer-events: none; }
+    .spot-blue { width: 250px; height: 250px; background: #3b82f6; top: -80px; right: -80px; animation: float1 25s ease-in-out infinite; }
+    .spot-indigo { width: 200px; height: 200px; background: #6366f1; bottom: -60px; left: -60px; animation: float2 20s ease-in-out infinite; }
+    .spot-cyan { width: 150px; height: 150px; background: #06b6d4; top: 40%; left: 50%; transform: translate(-50%, -50%); animation: float3 15s ease-in-out infinite; }
+    @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-40px, 20px); } 50% { transform: translate(20px, 40px); } 75% { transform: translate(40px, -15px); } }
+    @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(30px, -30px); } 66% { transform: translate(-20px, 20px); } }
+    @keyframes float3 { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.2); } }
+    .slide-content { position: relative; z-index: 10; text-align: center; width: 100%; }
+    .progress-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 100; }
+    .progress-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+    .progress-dot.active { background: #fff; transform: scale(1.4); }
+    .page-number { position: fixed; bottom: 45px; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: rgba(255,255,255,0.4); z-index: 100; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; background: rgba(99, 102, 241, 0.3); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.5); margin-bottom: 0.75rem; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem; text-align: left; }
+    .detail-list { text-align: left; font-size: 0.7rem; }
+    .detail-list li { margin-bottom: 0.4rem; padding-left: 0.2rem; }
+    .da-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.65rem; font-weight: 700; background: rgba(139, 92, 246, 0.25); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); margin: 0.1rem; }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+    
+    <!-- Slide 1: Cover -->
+    <div class="slide active">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">ข้อคิดเห็นจากการประชุม</p>
+        <h1 class="text-2.5xl font-black mb-3 leading-tight">การปรับปรุงหลักสูตร<br>เทคโนโลยีเครื่องกล</h1>
+        <p class="text-base font-light text-gray-300">อวท. เครื่องกล • มทร.ศรีวิชัย</p>
+        <p class="text-xs font-light text-gray-500 mt-6">มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+      </div>
+    </div>
+    
+    <!-- Slide 2: Dublin Accord Overview -->
+    <div class="slide">
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">1</p>
+        <h1 class="text-2xl font-black mb-1">มาตรฐานสากล</h1>
+        <h2 class="text-xl font-bold text-purple-400 mb-3">Dublin Accord</h2>
+        
+        <div class="text-left detail-list space-y-1">
+          <p class="text-gray-400 text-xs mb-2">เกณฑ์มาตรฐานสากลสำหรับ Engineering Technician</p>
+          <li><span class="text-purple-300 font-bold">DA1:</span> ความรู้และความเข้าใจ</li>
+          <li><span class="text-purple-300 font-bold">DA2:</span> การวิเคราะห์ปัญหา</li>
+          <li><span class="text-purple-300 font-bold">DA3:</span> การออกแบบและพัฒนาวิธีแก้ปัญหา</li>
+          <li><span class="text-purple-300 font-bold">DA4:</span> การประเมินผล</li>
+          <li><span class="text-purple-300 font-bold">DA5:</span> การสื่อสารและการทำงานเป็นทีม</li>
+          <li><span class="text-purple-300 font-bold">DA6:</span> การเรียนรู้ตลอดชีวิตและพัฒนาวิชาชีพ</li>
+        </div>
+        <div class="mt-2 bg-purple-900/20 border border-purple-500/20 rounded-lg p-2">
+          <p class="text-purple-300 text-xs">✓ PLO สอดคล้องกับเกณฑ์สภาวิศวกร</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 3: PLO 1-2 -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">PLO</p>
+        <h1 class="text-xl font-black mb-3">PLOs ↔ Dublin Accord</h1>
+        
+        <div class="space-y-2 text-left">
+          <div class="card">
+            <p class="text-indigo-300 font-bold text-sm">PLO1: แก้ปัญหาทางเทคโนโลยีเครื่องกล</p>
+            <p class="text-gray-500 text-xs">วิเคราะห์และประยุกต์ใช้ความรู้คณิตศาสตร์/วิทยาศาสตร์/หลักการเครื่องกล</p>
+            <div class="mt-1"><span class="da-badge">DA1: ความรู้</span><span class="da-badge">DA2: วิเคราะห์</span></div>
+          </div>
+          
+          <div class="card">
+            <p class="text-indigo-300 font-bold text-sm">PLO2: วางแผนและวิเคราะห์ระบบงาน</p>
+            <p class="text-gray-500 text-xs">ใช้เทคโนโลยีสมัยใหม่เพื่อปรับปรุงประสิทธิภาพ</p>
+            <div class="mt-1"><span class="da-badge">DA2: วิเคราะห์</span><span class="da-badge">DA3: ออกแบบ</span></div>
+          </div>
+          
+          <div class="card">
+            <p class="text-indigo-300 font-bold text-sm">PLO3: ประเมินสภาพและสมรรถนะระบบ</p>
+            <p class="text-gray-500 text-xs">กำหนดแนวทางบำรุงรักษาตามมาตรฐานอุตสาหกรรม</p>
+            <div class="mt-1"><span class="da-badge">DA4: ประเมิน</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 4: PLO 4-5 -->
+    <div class="slide">
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-blue"></div>
+      <div class="slide-content">
+        <p class="tag">PLO</p>
+        <h1 class="text-xl font-black mb-3">PLOs ↔ Dublin Accord</h1>
+        
+        <div class="space-y-2 text-left">
+          <div class="card">
+            <p class="text-indigo-300 font-bold text-sm">PLO4: พัฒนาเทคโนโลยี/นวัตกรรม</p>
+            <p class="text-gray-500 text-xs">ออกแบบพัฒนานวัตกรรม คำนึงความปลอดภัย/พลังงาน/สิ่งแวดล้อม ใช้เทคโนโลยีดิจิทัล</p>
+            <div class="mt-1"><span class="da-badge">DA3: ออกแบบ</span></div>
+          </div>
+          
+          <div class="card">
+            <p class="text-indigo-300 font-bold text-sm">PLO5: สื่อสารและนำเสนอข้อมูล</p>
+            <p class="text-gray-500 text-xs">ถูกต้อง ชัดเจน เหมาะสมกับผู้รับสาร</p>
+            <div class="mt-1"><span class="da-badge">DA5: สื่อสาร</span></div>
+          </div>
+          
+          <div class="card">
+            <p class="text-indigo-300 font-bold text-sm">PLO6: ทำงานเป็นทีม + จริยธรรม</p>
+            <p class="text-gray-500 text-xs">ประสานงาน จัดการงาน วินัย ความปลอดภัย จริยธรรม</p>
+            <div class="mt-1"><span class="da-badge">DA5: ทีมงาน</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 5: PLO 7 + Summary -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-indigo"></div>
+      <div class="slide-content">
+        <p class="tag">PLO</p>
+        <h1 class="text-xl font-black mb-3">PLOs ↔ Dublin Accord</h1>
+        
+        <div class="card mb-3">
+          <p class="text-indigo-300 font-bold text-sm">PLO7: ปฏิบัติงานจริงในสถานประกอบการ</p>
+          <p class="text-gray-500 text-xs">ปรับตัวรับมือกับการเปลี่ยนแปลงเทคโนโลยีและสภาพแวดล้อม</p>
+          <div class="mt-1"><span class="da-badge">DA6: เรียนรู้ตลอดชีวิต</span></div>
+        </div>
+        
+        <div class="text-left detail-list bg-gray-800/40 rounded-lg p-2">
+          <p class="text-gray-400 text-xs font-bold mb-1">สรุป Dublin Accord ครอบคลุมทุกด้าน</p>
+          <div class="grid grid-cols-3 gap-1">
+            <span class="da-badge">DA1</span>
+            <span class="da-badge">DA2</span>
+            <span class="da-badge">DA3</span>
+            <span class="da-badge">DA4</span>
+            <span class="da-badge">DA5</span>
+            <span class="da-badge">DA6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 6: โครงสร้างหลักสูตร -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">2</p>
+        <h1 class="text-2xl font-black mb-4">โครงสร้างหลักสูตร</h1>
+        
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div class="bg-blue-900/40 border border-blue-500/40 rounded-xl p-3">
+            <p class="text-4xl font-black text-blue-400">72</p>
+            <p class="text-xs text-gray-400">หน่วยกิต<br>(ขั้นต่ำ)</p>
+          </div>
+          <div class="bg-emerald-900/40 border border-emerald-500/40 rounded-xl p-3">
+            <p class="text-3xl font-black text-emerald-400">830</p>
+            <p class="text-xs text-gray-400">ชม. ปฏิบัติ</p>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800/50 rounded-lg p-2 mb-2">
+          <p class="text-sm text-gray-300">ทฤษฎี: <span class="text-gray-500">510 ชม.</span> <span class="text-green-400 font-bold">→</span> ปฏิบัติ: <span class="text-green-400 font-bold">830 ชม.</span></p>
+        </div>
+        
+        <p class="text-emerald-400 text-xs font-bold">สัดส่วน: ปฏิบัติ 62% : ทฤษฎี 38%</p>
+        <p class="text-gray-500 text-xs mt-1">✓ เน้นฝีมือ สอดคล้อง อวท.</p>
+      </div>
+    </div>
+    
+    <!-- Slide 7: รายวิชาใหม่ -->
+    <div class="slide">
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">3</p>
+        <h1 class="text-2xl font-black mb-2">รายวิชาใหม่</h1>
+        <h2 class="text-lg font-bold text-green-400 mb-3">⚡ เทคโนโลยียานยนต์ไฟฟ้า (EV)</h2>
+        
+        <div class="detail-list grid grid-cols-2 gap-2">
+          <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-2 text-left">
+            <p class="text-green-300 font-bold text-xs">⚡ มอเตอร์ไฟฟ้า</p>
+            <p class="text-gray-500 text-xs">ไฟฟ้า • มอเตอร์กำลัง</p>
+          </div>
+          <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-2 text-left">
+            <p class="text-green-300 font-bold text-xs">🔋 แบตเตอรี่</p>
+            <p class="text-gray-500 text-xs">เทคโนโลยี • BMS</p>
+          </div>
+          <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-2 text-left">
+            <p class="text-green-300 font-bold text-xs">🔌 ระบบชาร์จ</p>
+            <p class="text-gray-500 text-xs">มาตรฐาน • สถานี</p>
+          </div>
+          <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-2 text-left">
+            <p class="text-green-300 font-bold text-xs">🔧 บำรุงรักษา</p>
+            <p class="text-gray-500 text-xs">เชิงพยากรณ์</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 8: วิชาเฉพาะด้าน -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-indigo"></div>
+      <div class="slide-content">
+        <p class="tag">3</p>
+        <h1 class="text-2xl font-black mb-2">รายวิชาใหม่</h1>
+        <h2 class="text-lg font-bold text-orange-400 mb-3">วิชาเฉพาะด้าน</h2>
+        
+        <div class="detail-list grid grid-cols-2 gap-2">
+          <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-2 text-left">
+            <p class="text-orange-300 font-bold text-sm">💨 หม้อไอน้ำ</p>
+            <p class="text-gray-500 text-xs">Boilers อุตสาหกรรม</p>
+          </div>
+          <div class="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-2 text-left">
+            <p class="text-cyan-300 font-bold text-sm">❄️ เครื่องทำความเย็น</p>
+            <p class="text-gray-500 text-xs">Refrigeration & HVAC</p>
+          </div>
+          <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-2 text-left">
+            <p class="text-yellow-300 font-bold text-sm">🔧 บำรุงรักษา</p>
+            <p class="text-gray-500 text-xs">เครื่องจักร • Predictive</p>
+          </div>
+          <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-2 text-left">
+            <p class="text-purple-300 font-bold text-sm">📐 การออกแบบ</p>
+            <p class="text-gray-500 text-xs">CAD/CAE • Reverse Eng.</p>
+          </div>
+        </div>
+        
+        <p class="text-gray-400 text-xs mt-3">→ ตอบโจทย์อาชีพใหม่ในอุตสาหกรรม 4.0</p>
+      </div>
+    </div>
+    
+    <!-- Slide 9: นโยบาย -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">4</p>
+        <h1 class="text-2xl font-black mb-3">ความสอดคล้องนโยบาย</h1>
+        
+        <div class="detail-list grid grid-cols-2 gap-2 mb-3">
+          <div class="bg-blue-900/40 border border-blue-500/40 rounded-xl p-3">
+            <p class="text-2xl font-black text-blue-400">4.0</p>
+            <p class="text-xs">Industry<br>4.0</p>
+          </div>
+          <div class="bg-green-900/40 border border-green-500/40 rounded-xl p-3">
+            <p class="text-2xl font-black text-green-400">S-C</p>
+            <p class="text-xs">New<br>S-Curve</p>
+          </div>
+          <div class="bg-yellow-900/40 border border-yellow-500/40 rounded-xl p-3">
+            <p class="text-2xl font-black text-yellow-400">BCG</p>
+            <p class="text-xs">BCG<br>Model</p>
+          </div>
+          <div class="bg-purple-900/40 border border-purple-500/40 rounded-xl p-3">
+            <p class="text-2xl font-black text-purple-400">14</p>
+            <p class="text-xs">แผนพัฒนาฯ<br>ฉบับที่ 14</p>
+          </div>
+        </div>
+        
+        <p class="text-gray-400 text-xs">✓ สอดคล้อง Thailand 4.0 • Bio-Circular-Green Economy</p>
+      </div>
+    </div>
+    
+    <!-- Slide 10: ข้อเสนอแนะ -->
+    <div class="slide">
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-blue"></div>
+      <div class="slide-content">
+        <p class="tag">5</p>
+        <h1 class="text-2xl font-black mb-3">ข้อเสนอแนะ</h1>
+        
+        <div class="space-y-2 text-left">
+          <div class="card bg-blue-900/20 border-blue-500/30">
+            <p class="text-blue-300 font-bold text-sm">1. ระบุจุดเด่น</p>
+            <p class="text-gray-500 text-xs">ชี้จุดแข็ง และความแตกต่างจากวิศวกรรมศาสตร์ทั่วไป</p>
+          </div>
+          
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold text-sm">2. เปรียบเทียบข้อมูล</p>
+            <p class="text-gray-500 text-xs">ตารางเปรียบเทียบหลักสูตรเดิม-ใหม่</p>
+          </div>
+          
+          <div class="card bg-purple-900/20 border-purple-500/30">
+            <p class="text-purple-300 font-bold text-sm">3. แสดงความเชื่อมโยง</p>
+            <p class="text-gray-500 text-xs">รายวิชา → กลยุทธ์ → โอกาสอาชีพใหม่</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 11: สรุป -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <p class="tag">สรุป</p>
+        <h1 class="text-2xl font-black mb-4">5 ประเด็นสำคัญ</h1>
+        
+        <div class="detail-list text-left grid grid-cols-1 gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-blue-400 font-bold">1</span>
+            <span class="text-gray-300">Dublin Accord มาตรฐานสากล (ภาษาไทย)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-purple-400 font-bold">2</span>
+            <span class="text-gray-300">72 หน่วยกิต • ปฏิบัติ 830 > ทฤษฎี 510</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-green-400 font-bold">3</span>
+            <span class="text-gray-300">EV • หม้อไอน้ำ • เครื่องทำความเย็น • บำรุงรักษา</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-yellow-400 font-bold">4</span>
+            <span class="text-gray-300">Industry 4.0 • New S-Curve • BCG • แผน 14</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-orange-400 font-bold">5</span>
+            <span class="text-gray-300">จุดเด่น • เปรียบเทียบ • เชื่อมโยงอาชีพ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 12: Ending -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-indigo"></div>
+      <div class="light-spot spot-cyan"></div>
+      <div class="slide-content">
+        <span class="text-5xl text-gray-500 block mb-3">✓</span>
+        <p class="text-xl font-bold mb-2">มติเห็นชอบในหลักการ</p>
+        <p class="text-gray-400 text-sm mb-2">นำข้อเสนอไปปรับแก้ในเล่มหลักสูตร</p>
+        <p class="text-gray-500 text-xs">ก่อนส่งให้ผู้เกี่ยวข้องตรวจสอบ</p>
+        
+        <div class="mt-6 pt-3 border-t border-gray-700">
+          <p class="text-gray-600 text-xs">มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+          <p class="text-gray-700 text-xs">สาขาวิชาเทคโนโลยีเครื่องกล</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="page-number" id="pageNumber">1 / 12</div>
+  
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const pageNumber = document.getElementById('pageNumber');
+    let currentSlide = 0;
+    
+    slides.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = `progress-dot ${index === 0 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(index));
+      progressBar.appendChild(dot);
+    });
+    
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active', 'prev');
+        if (index === currentSlide) slide.classList.add('active');
+        else if (index < currentSlide) slide.classList.add('prev');
+      });
+      
+      document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+      
+      pageNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+    
+    function nextSlide() { if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); } }
+    function prevSlide() { if (currentSlide > 0) { currentSlide--; updateSlides(); } }
+    function goToSlide(index) { currentSlide = index; updateSlides(); }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+    });
+    
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard อาจารย์วสุ | มทร.ศรีวิชัย</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #eee; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header { 
+            text-align: center; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #1e3a5f 0%, #2980b9 100%);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .header h1 { font-size: 18px; color: #fff; }
+        .header p { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 3px; }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+        .tab {
+            flex: 1;
+            padding: 12px 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        .tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .tab.active {
+            color: #00d4ff;
+            border-bottom-color: #00d4ff;
+            background: rgba(0,212,255,0.1);
+        }
+        
+        /* Content */
+        .content { padding: 10px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* Calendar */
+        .calendar-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .calendar-header h2 { font-size: 16px; color: #00d4ff; }
+        .calendar-nav {
+            display: flex;
+            gap: 5px;
+        }
+        .calendar-nav button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .calendar-nav button:hover { background: rgba(0,212,255,0.3); }
+        
+        /* Calendar Grid - Mobile First */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+        .calendar-day-header {
+            text-align: center;
+            padding: 5px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            font-size: 10px;
+        }
+        .calendar-day {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 5px;
+            min-height: 60px;
+            max-height: 120px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .calendar-day:hover { background: rgba(255,255,255,0.1); }
+        .calendar-day.other-month { opacity: 0.3; }
+        .calendar-day.today { 
+            background: rgba(0,212,255,0.2);
+            border: 2px solid #00d4ff;
+        }
+        .calendar-day.past {
+            opacity: 0.4;
+            background: rgba(255,255,255,0.02);
+        }
+        .day-number {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #fff;
+        }
+        .past .day-number { color: rgba(255,255,255,0.5); }
+        .today .day-number { color: #00d4ff; }
+        
+        /* Events in Calendar */
+        .day-events {
+            font-size: 9px;
+            line-height: 1.3;
+            max-height: 90px;
+            overflow-y: auto;
+            word-wrap: break-word;
+        }
+        .event-item {
+            background: rgba(0,212,255,0.2);
+            border-left: 2px solid #00d4ff;
+            padding: 2px 4px;
+            margin-bottom: 2px;
+            border-radius: 0 3px 3px 0;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .event-item.busy {
+            background: rgba(255,100,100,0.2);
+            border-left-color: #ff6464;
+        }
+        .event-item.meeting {
+            background: rgba(255,200,0,0.2);
+            border-left-color: #ffc800;
+        }
+        .event-item.exam {
+            background: rgba(150,100,255,0.2);
+            border-left-color: #9664ff;
+        }
+        .event-item.holiday {
+            background: rgba(0,200,0,0.15);
+            border-left-color: #00c800;
+            font-style: italic;
+        }
+        
+        /* Summer Semester Info */
+        .summer-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .summer-info h3 {
+            font-size: 14px;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+        .summer-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .summer-table th, .summer-table td {
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .summer-table th {
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+        }
+        .summer-table tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            font-size: 10px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+        .legend-dot.normal { background: rgba(0,212,255,0.5); }
+        .legend-dot.meeting { background: rgba(255,200,0,0.5); }
+        .legend-dot.exam { background: rgba(150,100,255,0.5); }
+        .legend-dot.busy { background: rgba(255,100,100,0.5); }
+        .legend-dot.past { background: rgba(255,255,255,0.2); }
+        .legend-dot.holiday { background: rgba(0,200,0,0.5); }
+
+        /* Project Room */
+        .project-room {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .project-room h4 {
+            font-size: 14px;
+            color: #00d4ff;
+            margin-bottom: 12px;
+        }
+        .project-subroom {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        .project-subroom h5 {
+            font-size: 13px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        
+        /* Project Tracking Section */
+        .project-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+        }
+        .project-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #00d4ff;
+        }
+        .project-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 5px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .project-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,212,255,0.4);
+        }
+        .project-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .header h1 { font-size: 22px; }
+            .header p { font-size: 13px; }
+            .tab { font-size: 14px; padding: 15px 20px; }
+            .content { padding: 20px; }
+            .calendar-container { padding: 20px; }
+            .calendar-header h2 { font-size: 20px; }
+            .calendar-day-header { font-size: 12px; padding: 8px; }
+            .calendar-day { padding: 10px; min-height: 80px; }
+            .day-number { font-size: 14px; }
+            .day-events { font-size: 11px; }
+            .event-item { padding: 3px 6px; margin-bottom: 3px; }
+            .legend { font-size: 12px; gap: 20px; }
+            .legend-dot { width: 10px; height: 10px; }
+            .project-section h3 { font-size: 18px; }
+            .project-info { font-size: 14px; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📅 Dashboard อาจารย์วสุ สุขสุวรณ</h1>
+        <p>มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย | คณะวิศวกรรมศาสตร์</p>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('schedule')">📅 ตารางสอน/งาน</div>
+        <div class="tab" onclick="showTab('project')">📊 Project Tracking</div>
+    </div>
+    
+    <div class="content">
+        <!-- Schedule Tab -->
+        <div id="schedule" class="section active">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2 id="calendarTitle">เมษายน 2569</h2>
+                    <div class="calendar-nav">
+                        <button onclick="changeMonth(-1)">◀</button>
+                        <button onclick="goToToday()">วันนี้</button>
+                        <button onclick="changeMonth(1)">▶</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <div class="loading">กำลังโหลด...</div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot normal"></div> งาน</div>
+                    <div class="legend-item"><div class="legend-dot meeting"></div> ประชุม</div>
+                    <div class="legend-item"><div class="legend-dot exam"></div> สอบ</div>
+                    <div class="legend-item"><div class="legend-dot busy"></div> ไม่ว่าง</div>
+                    <div class="legend-item"><div class="legend-dot holiday"></div> วันหยุด</div>
+                    <div class="legend-item"><div class="legend-dot past"></div> ผ่านไปแล้ว</div>
+                </div>
+            </div>
+            
+            <!-- Summer Semester Info -->
+            <div class="summer-info">
+                <h3>📅 ปฏิทินภาคการศึกษาฤดูร้อน 3/2568</h3>
+                <table class="summer-table">
+                    <thead>
+                        <tr>
+                            <th>วันที่</th>
+                            <th>งาน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>6-17 เม.ย.</td><td>ลงทะเบียนภาคฤดูร้อน</td></tr>
+                        <tr><td>27 เม.ย.</td><td>เปิดภาคเรียน + เพิ่ม/ถอนรายวิชาได้</td></tr>
+                        <tr><td>3 พ.ค.</td><td>วันสุดท้ายเพิ่ม/ถอนรายวิชา (ไม่มี W)</td></tr>
+                        <tr><td>8 พ.ค.</td><td>วันสุดท้ายส่งเกรด I (ไม่สมบูรณ์)</td></tr>
+                        <tr><td>25 พ.ค.</td><td>วันสุดท้ายยื่นขอสำเร็จการศึกษา</td></tr>
+                        <tr><td>31 พ.ค.</td><td>วันสุดท้ายถอนรายวิชา (มี W)</td></tr>
+                        <tr><td>14 มิ.ย.</td><td>วันสุดท้ายภาคเรียน</td></tr>
+                        <tr><td>19 มิ.ย.</td><td>วันสุดท้ายส่งเกรด</td></tr>
+                        <tr><td>24 มิ.ย.</td><td>อนุมัติผลการเรียน</td></tr>
+                        <tr><td>29 มิ.ย.</td><td>ประกาศผลอย่างเป็นทางการ</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Project Tracking Tab -->
+        <div id="project" class="section">
+            <div class="project-section">
+                <h3>📊 ระบบติดตามโครงการนักศึกษา</h3>
+                <p style="color:rgba(255,255,255,0.7); margin-bottom: 15px; font-size: 13px;">
+                    นักศึกษาอัพโหลดไฟล์โครงการตามลิงค์ด้านล่าง
+                </p>
+                
+                <!-- 4 Rooms -->
+                <div class="project-room">
+                    <h4>📁 ปี 2 - รายวิชาโครงการนักศึกษา</h4>
+                    
+                    <div class="project-subroom">
+                        <h5>🔵 เทคโนโลยีเครื่องกล ปกติ 67</h5>
+                        <a href="https://drive.google.com/drive/folders/1LEDDM1AhF9MGOZWJucuedlYsk4U1j6fd" target="_blank" class="project-link">📂 เปิดโฟลเดอร์</a>
+                    </div>
+                    
+                    <div class="project-subroom">
+                        <h5>🟢 เทคโนโลยีเครื่องกล สมทบ 67</h5>
+                        <a href="https://drive.google.com/drive/folders/1JhEXaeRfZpkcHkxBnyfsvxMK6hCNT4ht" target="_blank" class="project-link">📂 เปิดโฟลเดอร์</a>
+                    </div>
+                </div>
+                
+                <div class="project-room">
+                    <h4>📁 ปี 1 - รายวิชาเตรียมโครงการนักศึกษา</h4>
+                    
+                    <div class="project-subroom">
+                        <h5>🔵 เทคโนโลยีเครื่องกล ปกติ 68 + สมทบ 68</h5>
+                        <a href="https://drive.google.com/drive/folders/16YTvb2x6uT-KIu2EQ8xFN7g1f9xvfgau" target="_blank" class="project-link">📂 เปิดโฟลเดอร์</a>
+                    </div>
+                </div>
+                
+                <div class="project-info">
+                    <h4>📌 คำแนะนำสำหรับนักศึกษา</h4>
+                    <ul style="margin-left: 15px; margin-top: 8px;">
+                        <li>อัปโหลดไฟล์โครงการตามชื่อ-นามสกุล ของนักศึกษา</li>
+                        <li>อัปเดตสถานะความก้าวหน้าทุกสัปดาห์</li>
+                        <li>ตรวจสอบข้อมูลให้ถูกต้องก่อนส่ง</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let events = {};
+        let currentMonth = 3; // April (0-indexed)
+        let currentYear = 2026;
+        
+        const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
+                           'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        const thaiDays = ['อา', 'จ', 'อัง', 'พ', 'พฤ', 'ศ', 'ส'];
+        
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+        
+        function goToToday() {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            renderCalendar();
+        }
+        
+        function renderCalendar() {
+            document.getElementById('calendarTitle').textContent = `${thaiMonths[currentMonth]} ${currentYear}`;
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            // Day headers
+            thaiDays.forEach(day => {
+                grid.innerHTML += `<div class="calendar-day-header">${day}</div>`;
+            });
+            
+            // Get first day of month and total days
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDay = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+            
+            // Previous month days
+            const prevMonth = new Date(currentYear, currentMonth, 0);
+            const prevDays = prevMonth.getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                grid.innerHTML += `<div class="calendar-day other-month"><div class="day-number">${prevDays - i}</div></div>`;
+            }
+            
+            // Current month days
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            
+            for (let day = 1; day <= totalDays; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isPast = dateStr < todayStr;
+                const isToday = dateStr === todayStr;
+                
+                let classes = 'calendar-day';
+                if (isPast) classes += ' past';
+                if (isToday) classes += ' today';
+                
+                let eventsHtml = '';
+                if (events[dateStr]) {
+                    events[dateStr].forEach(evt => {
+                        const typeClass = evt.type === 'meeting' ? 'meeting' : 
+                                         evt.type === 'exam' ? 'exam' : 
+                                         evt.type === 'busy' ? 'busy' : '';
+                        eventsHtml += `<div class="event-item ${typeClass}">${evt.text}</div>`;
+                    });
+                }
+                
+                // Show holiday if no events
+                if (!events[dateStr] && holidays[dateStr]) {
+                    eventsHtml = `<div class="event-item holiday">${holidays[dateStr]}</div>`;
+                }
+                
+                grid.innerHTML += `
+                    <div class="${classes}">
+                        <div class="day-number">${day}</div>
+                        <div class="day-events">${eventsHtml}</div>
+                    </div>
+                `;
+            }
+            
+            // Next month days
+            const remaining = 42 - (startDay + totalDays);
+            for (let i = 1; i <= remaining; i++) {
+                grid.innerHTML += `<div class="calendar-day other-month"><div class="day-number">${i}</div></div>`;
+            }
+        }
+        
+        async function loadEvents() {
+            try {
+                const response = await fetch('calendar.md');
+                const text = await response.text();
+                parseCalendarText(text);
+                renderCalendar();
+            } catch (e) {
+                console.log('Error loading calendar.md:', e);
+                events = {};
+                renderCalendar();
+            }
+        }
+        
+        let holidays = {};
+        
+        function parseCalendarText(text) {
+            events = {};
+            holidays = {};
+            const lines = text.split('\n');
+            let currentDate = null;
+            let inHolidaySection = false;
+            let lastMonth = null;
+            
+            // Month patterns
+            const monthMap = {
+                'มกราคม': '01', 'กุมภาพันธ์': '02', 'มีนาคม': '03', 'เมษายน': '04',
+                'พฤษภาคม': '05', 'มิถุนายน': '06', 'กรกฎาคม': '07', 'สิงหาคม': '08',
+                'กันยายน': '09', 'ตุลาคม': '10', 'พฤศจิกายน': '11', 'ธันวาคม': '12',
+                'ม.ค.': '01', 'ก.พ.': '02', 'มี.ค.': '03', 'เม.ย.': '04',
+                'พ.ค.': '05', 'มิ.ย.': '06', 'ก.ค.': '07', 'ส.ค.': '08',
+                'ก.ย.': '09', 'ต.ค.': '10', 'พ.ย.': '11', 'ธ.ค.': '12'
+            };
+            
+            // Work keywords
+            const workKeywords = ['สอบ', 'ประชุม', 'งาน', 'ฝึก', 'นำเสนอ', 'ปฐมนิเทศ', 'ซ้อม', 'สัมมนา', 'วิทยากร', 'โครงการ', 'คณะกรรมการ', 'ชมรม', 'ตรวจ', 'รับ', 'ส่ง', 'เสวนา', 'ฟัง'];
+            // Exclude keywords
+            const excludeKeywords = ['Deadline', '⚠️', '📌', 'ไฟดับ', 'วันครบรอบ', '🌸', 'วันหยุดราชการ'];
+            
+            lines.forEach((line, index) => {
+                // Skip exclude lines
+                if (excludeKeywords.some(k => line.includes(k))) return;
+                
+                // Detect holiday section (after วันหยุดราชการ line)
+                if (line.includes('วันหยุดราชการ')) {
+                    inHolidaySection = true;
+                    // Find current month
+                    for (let m in monthMap) {
+                        if (line.includes(m)) {
+                            lastMonth = monthMap[m];
+                            break;
+                        }
+                    }
+                    return;
+                }
+                
+                // End holiday section at new header
+                if (inHolidaySection && line.startsWith('## ')) {
+                    inHolidaySection = false;
+                }
+                
+                // Parse holiday table rows: | 1 ม.ค. 69 | วันขึ้นปีใหม่ |
+                if (inHolidaySection) {
+                    // Pattern: | 1 ม.ค. 69 | วันหยุด | or | 13-15 เม.ย. 69 | วันหยุด |
+                    const holMatch = line.match(/^\|\s*(\d+)(?:-(\d+))?\s+([ก-ฮ]\.?[\w\.]*)\.?\s*(\d+)\s*\|\s*(.+?)\s*\|/);
+                    if (holMatch) {
+                        const day = holMatch[1].padStart(2, '0');
+                        const holName = holMatch[3].trim();
+                        if (holName && lastMonth) {
+                            holidays[`2026-${lastMonth}-${day}`] = holName;
+                        }
+                        return;
+                    }
+                    // Check for month in this line
+                    for (let m in monthMap) {
+                        if (line.includes(m)) {
+                            lastMonth = monthMap[m];
+                            break;
+                        }
+                    }
+                    return;
+                }
+                
+                // Check for date header: ### 1 เม.ย. (พุธ)
+                const dateMatch = line.match(/###\s*(\d+)\s+(.+?)\s+\(/);
+                if (dateMatch) {
+                    const day = dateMatch[1].padStart(2, '0');
+                    const monthStr = dateMatch[2];
+                    for (let m in monthMap) {
+                        if (monthStr.includes(m) || monthStr.includes(m.replace('.', ''))) {
+                            currentDate = `2026-${monthMap[m]}-${day}`;
+                            break;
+                        }
+                    }
+                    return;
+                }
+                
+                // Only process bullet lines
+                if (!line.trim().startsWith('-')) return;
+                
+                // Find time: **09:00-12:00 น.** or **09:00 น.**
+                const timeMatch = line.match(/\*\*(\d{1,2}:\d{2})(?:\s*-\s*(\d{1,2}:\d{2}))?\s*น\.\*\*/);
+                if (!timeMatch) return;
+                
+                // Check working hours (8:00-18:00)
+                const startH = parseInt(timeMatch[1].split(':')[0]);
+                const endH = timeMatch[2] ? parseInt(timeMatch[2].split(':')[0]) : startH;
+                if (endH < 8 || startH >= 18) return;
+                
+                // Check if work event
+                const isWork = workKeywords.some(k => line.includes(k));
+                if (!isWork) return;
+                
+                if (currentDate) {
+                    if (!events[currentDate]) events[currentDate] = [];
+                    
+                    // Time display
+                    const timeDisplay = timeMatch[2] 
+                        ? `${timeMatch[1]}-${timeMatch[2]} น.` 
+                        : `${timeMatch[1]} น.`;
+                    
+                    // Description after time
+                    let desc = line.replace(/\*\*[\d:\s-น\.]+\*\*/, '').trim();
+                    desc = desc.replace(/^[-•\s]+/, '').trim();
+                    desc = desc.replace(/[✅⚠️🔴🌸💻📧🎮🌱📌]+/g, '').trim();
+                    
+                    let type = 'normal';
+                    if (desc.includes('ประชุม') || desc.includes('คณะ') || desc.includes('ชมรม') || desc.includes('สมาคม')) type = 'meeting';
+                    else if (desc.includes('สอบ') || desc.includes('ตรวจ')) type = 'exam';
+                    else if (desc.includes('ไม่ว่าง')) type = 'busy';
+                    
+                    events[currentDate].push({ text: `${timeDisplay} ${desc}`, type });
+                }
+            });
+        }
+        
+        // Initialize
+        loadEvents();
+    </script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ภาคผนวก ข - การปรับปรุงหมดวิชาเฉพาะ</title>
+  
+  <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/3.0.23/tailwind.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;700;900&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; background: #0f172a; color: #fff; overflow: hidden; }
+    .slides-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; }
+    .slide { width: 100%; height: 100%; max-width: 450px; max-height: 800px; aspect-ratio: 9/16; position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; transform: translateX(100%); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
+    .slide.active { opacity: 1; transform: translateX(0); }
+    .slide.prev { opacity: 0; transform: translateX(-100%); }
+    .light-spot { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.2; pointer-events: none; }
+    .spot-blue { width: 250px; height: 250px; background: #3b82f6; top: -80px; right: -80px; animation: float1 25s ease-in-out infinite; }
+    .spot-red { width: 200px; height: 200px; background: #ef4444; bottom: -60px; left: -60px; animation: float2 20s ease-in-out infinite; }
+    .spot-green { width: 150px; height: 150px; background: #22c55e; top: 40%; left: 50%; transform: translate(-50%, -50%); animation: float3 15s ease-in-out infinite; }
+    @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-40px, 20px); } 50% { transform: translate(20px, 40px); } 75% { transform: translate(40px, -15px); } }
+    @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(30px, -30px); } 66% { transform: translate(-20px, 20px); } }
+    @keyframes float3 { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.2); } }
+    .slide-content { position: relative; z-index: 10; text-align: center; width: 100%; }
+    .progress-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 100; }
+    .progress-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+    .progress-dot.active { background: #fff; transform: scale(1.4); }
+    .page-number { position: fixed; bottom: 45px; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: rgba(255,255,255,0.4); z-index: 100; }
+    .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; background: rgba(59, 130, 246, 0.3); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.5); margin-bottom: 0.75rem; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem; text-align: left; }
+    .badge-cancel { background: rgba(239, 68, 68, 0.3); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); }
+    .badge-revise { background: rgba(245, 158, 11, 0.3); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.5); }
+    .badge-new { background: rgba(34, 197, 94, 0.3); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.5); }
+    .badge-keep { background: rgba(59, 130, 246, 0.3); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.5); }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+    
+    <!-- Slide 1: Cover -->
+    <div class="slide active">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-red"></div>
+      <div class="slide-content">
+        <p class="tag">ภาคผนวก ข</p>
+        <h1 class="text-2xl font-black mb-3 leading-tight">สาระในการปรับปรุงแก้ไข<br>หมวดวิชาเฉพาะ</h1>
+        <p class="text-base font-light text-gray-300">หลักสูตรเทคโนโลยีเครื่องกล</p>
+        <p class="text-sm font-light text-gray-500 mt-6">เปรียบเทียบ พ.ศ. 2565 ↔ หลักสูตรใหม่</p>
+      </div>
+    </div>
+    
+    <!-- Slide 2: Summary Overview -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-red"></div>
+      <div class="slide-content">
+        <p class="tag">สรุปรวม</p>
+        <h1 class="text-2xl font-black mb-4">ภาพรวมการเปลี่ยนแปลง</h1>
+        
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="card bg-red-900/20 border border-red-500/30">
+            <p class="text-3xl font-black text-red-400">11</p>
+            <p class="text-xs text-gray-400">ยกเลิก</p>
+          </div>
+          <div class="card bg-orange-900/20 border border-orange-500/30">
+            <p class="text-3xl font-black text-orange-400">4</p>
+            <p class="text-xs text-gray-400">ปรับปรุง</p>
+          </div>
+          <div class="card bg-green-900/20 border border-green-500/30">
+            <p class="text-3xl font-black text-green-400">18</p>
+            <p class="text-xs text-gray-400">วิชาใหม่</p>
+          </div>
+          <div class="card bg-blue-900/20 border border-blue-500/30">
+            <p class="text-3xl font-black text-blue-400">30+</p>
+            <p class="text-xs text-gray-400">คงเดิม</p>
+          </div>
+        </div>
+        
+        <p class="text-gray-400 text-xs">หมวดวิชาเฉพาะ บังคับ + เลือก</p>
+      </div>
+    </div>
+    
+    <!-- Slide 3: Cancelled -->
+    <div class="slide">
+      <div class="light-spot spot-red"></div>
+      <div class="slide-content">
+        <p class="tag badge-cancel">ยกเลิก</p>
+        <h1 class="text-2xl font-black mb-3">รายวิชาที่ยกเลิก (11 วิชา)</h1>
+        
+        <div class="text-left space-y-2 text-xs">
+          <div class="card bg-red-900/10 border border-red-500/20">
+            <p class="text-red-300 font-bold">04-422-210</p>
+            <p class="text-gray-400">วิศวกรรมการบำรุงรักษา</p>
+          </div>
+          <div class="card bg-red-900/10 border border-red-500/20">
+            <p class="text-red-300 font-bold">04-422-211</p>
+            <p class="text-gray-400">ปฏิบัติการวิศวกรรมการบำรุงรักษา</p>
+          </div>
+          <div class="card bg-red-900/10 border border-red-500/20">
+            <p class="text-red-300 font-bold">04-424-204</p>
+            <p class="text-gray-400">เทคโนโลยีโรงผลิตกำลัง</p>
+          </div>
+          <div class="card bg-red-900/10 border border-red-500/20">
+            <p class="text-red-300 font-bold">04-425-201</p>
+            <p class="text-gray-400">เทคโนโลยียานยนต์สมัยใหม่</p>
+          </div>
+          <div class="card bg-red-900/10 border border-red-500/20">
+            <p class="text-red-300 font-bold">04-424-201</p>
+            <p class="text-gray-400">ปฏิบัติการเครื่องจักรกลฯ</p>
+          </div>
+          <p class="text-gray-500">+ อีก 6 วิชา...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 4: Revised -->
+    <div class="slide">
+      <div class="light-spot spot-red"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag badge-revise">ปรับปรุง</p>
+        <h1 class="text-2xl font-black mb-3">รายวิชาที่ปรับปรุง (4 วิชา)</h1>
+        
+        <div class="space-y-2 text-left">
+          <div class="card bg-orange-900/20 border border-orange-500/30">
+            <p class="text-orange-300 font-bold text-sm">04-423-103 ระบบอัตโนมัติและการควบคุม</p>
+            <p class="text-gray-500 text-xs">ปรับสาระให้ทันสมัย</p>
+          </div>
+          <div class="card bg-orange-900/20 border border-orange-500/30">
+            <p class="text-orange-300 font-bold text-sm">04-113-101 กลศาสตร์และการออกแบบฯ</p>
+            <p class="text-gray-500 text-xs">ขยายเนื้อหา + Design</p>
+          </div>
+          <div class="card bg-orange-900/20 border border-orange-500/30">
+            <p class="text-orange-300 font-bold text-sm">04-113-102 เทคโนโลยีความร้อนฯ</p>
+            <p class="text-gray-500 text-xs">ปรับปรุงเนื้อหา</p>
+          </div>
+          <div class="card bg-orange-900/20 border border-orange-500/30">
+            <p class="text-orange-300 font-bold text-sm">04-114-205 เตรียมฝึกงานฯ</p>
+            <p class="text-gray-500 text-xs">เพิ่มศึกษาสถานประกอบการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 5: New Courses - Part 1 -->
+    <div class="slide">
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag badge-new">วิชาใหม่</p>
+        <h1 class="text-2xl font-black mb-3">รายวิชาใหม่ (1/3)</h1>
+        
+        <div class="text-left space-y-2 text-xs">
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">AI และ IoT</p>
+            <p class="text-gray-400">04-111-109, 110 เทคโนโลยีปัญญาประดิษฐ์และระบบสารสนเทศอุตสาหกรรม</p>
+          </div>
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">Smart Instrumentation</p>
+            <p class="text-gray-400">04-112-203, 204 เครื่องมือวัดอัจฉริยะและระบบควบคุมเชื่อมต่อ</p>
+          </div>
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">บำรุงรักษาเชิงพยากรณ์</p>
+            <p class="text-gray-400">04-113-209, 210 วิศวกรรมการบำรุงรักษาเครื่องจักร</p>
+          </div>
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">Design Thinking</p>
+            <p class="text-gray-400">04-114-101 เทคโนโลยีเครื่องกลสมัยใหม่และการคิดเชิงออกแบบ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 6: New Courses - Part 2 (EV) -->
+    <div class="slide">
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag badge-new">วิชาใหม่</p>
+        <h1 class="text-2xl font-black mb-2">⚡ ยานยนต์ไฟฟ้า (EV)</h1>
+        <p class="text-orange-400 text-sm mb-3">6 วิชา ครอบคลุมตั้งแต่ไฟฟ้าพื้นฐาน → บำรุงรักษา</p>
+        
+        <div class="grid grid-cols-2 gap-2 text-xs text-left">
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">04-113-213</p>
+            <p class="text-gray-400">เทคโนโลยียานยนต์ไฟฟ้า<br>+ ปฏิบัติ (214)</p>
+          </div>
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">04-113-215</p>
+            <p class="text-gray-400">มอเตอร์และอิเล็กทรอนิกส์กำลัง<br>+ ปฏิบัติ (216)</p>
+          </div>
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">04-113-217</p>
+            <p class="text-gray-400">การจัดการพลังงาน<br>+ ปฏิบัติ (218)</p>
+          </div>
+          <div class="card bg-green-900/20 border-green-500/30">
+            <p class="text-green-300 font-bold">04-113-204</p>
+            <p class="text-gray-400">เทคโนโลยีโรงผลิตกำลัง<br>และระบบพลังงาน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 7: Visual - Before vs After -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="slide-content">
+        <p class="tag">Visual</p>
+        <h1 class="text-2xl font-black mb-4">การเปลี่ยนแปลงหลัก</h1>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="text-left">
+            <p class="text-red-400 font-bold text-sm mb-2">เดิม (พ.ศ. 2565)</p>
+            <div class="space-y-2 text-xs">
+              <div class="bg-gray-800/50 rounded p-2">เทคโนโลยียานยนต์สมัยใหม่</div>
+              <div class="bg-gray-800/50 rounded p-2">วิศวกรรมการบำรุงรักษา</div>
+              <div class="bg-gray-800/50 rounded p-2">เครื่องมือวัดแบบเดิม</div>
+              <div class="bg-gray-800/50 rounded p-2">ไม่มี AI/IoT</div>
+            </div>
+          </div>
+          
+          <div class="text-left">
+            <p class="text-green-400 font-bold text-sm mb-2">ใหม่ (ปรับปรุง)</p>
+            <div class="space-y-2 text-xs">
+              <div class="bg-green-900/30 rounded p-2 border border-green-500/30">⚡ ยานยนต์ไฟฟ้า (EV)</div>
+              <div class="bg-green-900/30 rounded p-2 border border-green-500/30">🔧 บำรุงรักษาเชิงพยากรณ์</div>
+              <div class="bg-green-900/30 rounded p-2 border border-green-500/30">📡 Smart Instrumentation</div>
+              <div class="bg-green-900/30 rounded p-2 border border-green-500/30">🤖 AI + IoT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 8: Key Changes -->
+    <div class="slide">
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-blue"></div>
+      <div class="slide-content">
+        <p class="tag">Summary</p>
+        <h1 class="text-2xl font-black mb-3">จุดเปลี่ยนสำคัญ</h1>
+        
+        <div class="text-left space-y-3 text-sm">
+          <div class="flex items-start gap-2">
+            <span class="text-green-400 text-xl">✓</span>
+            <p class="text-gray-300">เพิ่ม AI & IoT สำหรับ Industry 4.0</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-green-400 text-xl">✓</span>
+            <p class="text-gray-300">เพิ่ม EV (ยานยนต์ไฟฟ้า) 6 วิชา ครบวงจร</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-green-400 text-xl">✓</span>
+            <p class="text-gray-300">เพิ่ม Smart Instrumentation & เช���่���มต่อ IoT</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-green-400 text-xl">✓</span>
+            <p class="text-gray-300">เพิ่ม Predictive Maintenance</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-green-400 text-xl">✓</span>
+            <p class="text-gray-300">เพิ่ม Design Thinking & นวัตกรรม</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-green-400 text-xl">✓</span>
+            <p class="text-gray-300">ปรับปรุงระบบพลังงานและโรงผลิตกำลัง</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 9: Ending -->
+    <div class="slide">
+      <div class="light-spot spot-blue"></div>
+      <div class="light-spot spot-green"></div>
+      <div class="light-spot spot-red"></div>
+      <div class="slide-content">
+        <span class="text-5xl text-gray-500 block mb-3">📚</span>
+        <p class="text-xl font-bold mb-2">ภาคผนวก ข</p>
+        <p class="text-gray-400 text-sm mb-2">สาระในการปรับปรุงแก้ไขหมวดวิชาเฉพาะ</p>
+        
+        <div class="mt-6 pt-3 border-t border-gray-700">
+          <p class="text-gray-600 text-xs">หลักสูตรเทคโนโลยีเครื่องกล (ต่อเนื่อง)</p>
+          <p class="text-gray-700 text-xs">มทร.ศรีวิชัย</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="page-number" id="pageNumber">1 / 9</div>
+  
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const pageNumber = document.getElementById('pageNumber');
+    let currentSlide = 0;
+    
+    slides.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = `progress-dot ${index === 0 ? 'active' : ''}`;
+      dot.addEventListener('click', () => goToSlide(index));
+      progressBar.appendChild(dot);
+    });
+    
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active', 'prev');
+        if (index === currentSlide) slide.classList.add('active');
+        else if (index < currentSlide) slide.classList.add('prev');
+      });
+      
+      document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+      
+      pageNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+    
+    function nextSlide() { if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); } }
+    function prevSlide() { if (currentSlide > 0) { currentSlide--; updateSlides(); } }
+    function goToSlide(index) { currentSlide = index; updateSlides(); }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+    });
+    
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+    });
+  </script>
+</body>
+</html>

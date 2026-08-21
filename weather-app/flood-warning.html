@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌊 แนวโน้มน้ำท่วม/น้ำแล้ง 7 วันข้างหน้า — วช.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:,">
+<style>
+  /* ============================================ */
+  /* PROFESSIONAL DESIGN SYSTEM (วช. ลุ่มน้ำทะเลสาบสงขลา) */
+  /* ============================================ */
+  :root {
+    --c-navy-50: #f0f4ff; --c-navy-100: #dbe5fe; --c-navy-200: #b6cdfe;
+    --c-navy-500: #3b5fb8; --c-navy-600: #2a4894; --c-navy-700: #1e3a8a;
+    --c-navy-800: #15296b; --c-navy-900: #0a1e3f;
+    --c-slate-50: #f8fafc; --c-slate-100: #f1f5f9; --c-slate-200: #e2e8f0;
+    --c-slate-300: #cbd5e1; --c-slate-400: #94a3b8; --c-slate-500: #64748b;
+    --c-slate-600: #475569; --c-slate-700: #334155; --c-slate-800: #1e293b; --c-slate-900: #0f172a;
+    --c-emerald-50: #ecfdf5; --c-emerald-500: #10b981; --c-emerald-600: #059669; --c-emerald-700: #047857;
+    --c-amber-50: #fffbeb; --c-amber-500: #f59e0b; --c-amber-600: #d97706;
+    --c-rose-50: #fff1f2; --c-rose-500: #f43f5e; --c-rose-600: #e11d48; --c-rose-700: #be123c;
+    --c-cyan-500: #06b6d4; --c-sky-500: #0ea5e9;
+    --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 6px rgba(15,23,42,0.04), 0 2px 4px rgba(15,23,42,0.04);
+    --shadow-lg: 0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04);
+    --shadow-xl: 0 20px 25px rgba(15,23,42,0.08), 0 10px 10px rgba(15,23,42,0.04);
+    --radius-sm: 6px; --radius: 10px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body { font-family: 'Inter', 'Sarabun', sans-serif; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); color: var(--c-slate-900); letter-spacing: -0.011em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .navy { color: var(--c-navy-700); }
+  .bg-navy { background: var(--c-navy-700); }
+
+  /* Cards */
+  .card { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition), transform var(--transition); }
+  .card:hover { box-shadow: var(--shadow-md); }
+  .card-elev { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+  .card-border-l { border-left: 4px solid; }
+  .card-border-l-blue { border-left-color: var(--c-sky-500); }
+  .card-border-l-rose { border-left-color: var(--c-rose-500); }
+  .card-border-l-amber { border-left-color: var(--c-amber-500); }
+  .card-border-l-emerald { border-left-color: var(--c-emerald-500); }
+  .card-border-l-purple { border-left-color: #a78bfa; }
+  .card-border-l-slate { border-left-color: var(--c-slate-300); }
+
+  /* Section title */
+  h2.section-title { font-family: 'Sarabun', sans-serif; font-size: 18px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.01em; }
+  h2.page-title { font-family: 'Sarabun', sans-serif; font-size: 28px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.02em; }
+
+  /* Status pill */
+  .status-pill { padding: 5px 12px; border-radius: 999px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; letter-spacing: 0.01em; }
+  .status-danger { background: var(--c-rose-50); color: var(--c-rose-700); border: 1px solid rgba(225,29,72,0.25); }
+  .status-warn { background: var(--c-amber-50); color: var(--c-amber-600); border: 1px solid rgba(217,119,6,0.25); }
+  .status-ok { background: var(--c-emerald-50); color: var(--c-emerald-700); border: 1px solid rgba(4,120,87,0.25); }
+  .status-blue { background: var(--c-navy-50); color: var(--c-navy-700); border: 1px solid rgba(30,58,138,0.25); }
+  .status-purple { background: #f3e8ff; color: #6b21a8; border: 1px solid rgba(167,139,250,0.25); }
+
+  /* Status dot */
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+  .status-active { background: var(--c-emerald-500); }
+  .status-warn { background: var(--c-amber-500); }
+  .status-danger { background: var(--c-rose-500); }
+
+  /* Project header (same as main site) */
+  .project-header { background: linear-gradient(135deg, #0a1e3f 0%, #15296b 50%, #1e3a8a 100%); color: white; padding: 16px 24px; box-shadow: 0 4px 20px rgba(10,30,63,0.25); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(251,191,36,0.3); }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 20px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 56px; width: auto; max-width: 92px; object-fit: contain; display: block; border-radius: 6px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); transition: transform var(--transition); }
+  .header-divider { width: 1px; height: 64px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.5), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', sans-serif; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; line-height: 1.45; margin-top: 6px; letter-spacing: -0.005em; word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.02em; }
+
+  /* Nav (sub-bar) */
+  .subnav { background: white; border-bottom: 1px solid var(--c-slate-200); position: sticky; top: 88px; z-index: 40; }
+  .subnav-inner { max-width: 1320px; margin: 0 auto; padding: 8px 24px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .nav-link { padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; color: var(--c-slate-600); transition: all 200ms; text-decoration: none; }
+  .nav-link:hover { background: var(--c-slate-100); }
+  .nav-link.active { background: var(--c-navy-700); color: white; }
+
+  /* Zone card */
+  .zone-card { transition: all 200ms; cursor: pointer; }
+  .zone-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+  /* P(flood) gauge */
+  .pflood-gauge {
+    width: 100%; height: 8px; background: var(--c-slate-100);
+    border-radius: 4px; overflow: hidden; margin-top: 8px;
+  }
+  .pflood-fill { height: 100%; transition: width 0.3s; }
+
+  /* Components mini */
+  .comp-mini { text-align: center; padding: 6px 4px; background: var(--c-slate-50); border-radius: var(--radius-sm); }
+  .comp-mini .c-label { font-size: 9px; color: var(--c-slate-500); text-transform: uppercase; letter-spacing: 0.05em; }
+  .comp-mini .c-value { font-size: 16px; font-weight: 700; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--c-slate-100); }
+  ::-webkit-scrollbar-thumb { background: var(--c-slate-300); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-slate-400); }
+
+  /* pulse */
+  .pulse-dot { animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+</style>
+</head>
+<body>
+
+<!-- Project Header (same as main site) -->
+<header class="project-header">
+  <div class="project-header-inner">
+    <div class="project-header-row">
+      <div class="logo-cluster">
+        <div class="logo-item">
+          <div class="w-14 h-14 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center text-2xl">🌾</div>
+        </div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="project-info">
+        <div class="project-eyebrow">วช. ลุ่มน้ำทะเลสาบสงขลา</div>
+        <div class="project-name">Agricultural Monitoring System · Trust by Design</div>
+        <div class="project-tagline">ข้อมูลย้อนหลัง 11 ปี + พยากรณ์ 7 วัน</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="logo-cluster">
+        <div class="w-14 h-14 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center text-2xl pulse-dot">🚨</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Sub Nav -->
+<nav class="subnav">
+  <div class="subnav-inner">
+    <a href="index.html" class="nav-link">🏠 หน้าหลัก</a>
+    <a href="advisory.html" class="nav-link">🌿 คำแนะนำ</a>
+    <a href="forecast.html" class="nav-link">🌦️ พยากรณ์</a>
+    <a href="calendar.html" class="nav-link">📅 ปฏิทิน</a>
+    <a href="flood-warning.html" class="nav-link active">🌊 ระวัง</a>
+  </div>
+</nav>
+
+<div class="max-w-7xl mx-auto p-4 md:p-6 space-y-5">
+
+  <!-- Loading -->
+  <div id="loading" class="card p-12 text-center">
+    <div class="inline-block w-12 h-12 border-4 border-slate-200 border-t-navy rounded-full animate-spin mb-3"></div>
+    <div class="text-slate-500 text-sm">กำลังโหลดข้อมูล...</div>
+  </div>
+
+  <!-- Content -->
+  <div id="content" style="display:none;">
+
+    <!-- Overall status -->
+    <div id="overall" class="card-elev p-6 text-center"></div>
+
+    <!-- Baseline panel -->
+    <div id="baselinePanel" class="card p-5"></div>
+
+    <!-- Zones -->
+    <div>
+      <h2 class="section-title mb-3">📍 สถานะ 5 ตำบล (พยากรณ์ 7 วันข้างหน้า)</h2>
+      <div id="zoneGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- Model explanation -->
+    <div class="card card-border-l card-border-l-purple p-5">
+      <h2 class="section-title mb-2">🔮 สูตรคำนวณโอกาสน้ำท่วม 7 วัน</h2>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        <b>P(flood)</b> = rain_score × 0.35 + season_score × 0.25 + historical_score × 0.25 + water_score × 0.15
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+        <div class="bg-slate-50 rounded p-2">
+          <div class="font-bold navy">🌧️ rain (0.35)</div>
+          <div class="text-slate-500">ฝน 24h+72h จาก ensemble</div>
+        </div>
+        <div class="bg-slate-50 rounded p-2">
+          <div class="font-bold navy">📅 season (0.25)</div>
+          <div class="text-slate-500">พ.ย.-ธ.ค.=1.0, มี.ค.-พ.ค.=0.2</div>
+        </div>
+        <div class="bg-slate-50 rounded p-2">
+          <div class="font-bold navy">📊 historical (0.25)</div>
+          <div class="text-slate-500">DDPM 11 ปี (2558-2568)</div>
+        </div>
+        <div class="bg-slate-50 rounded p-2">
+          <div class="font-bold navy">🌊 water (0.15)</div>
+          <div class="text-slate-500">SKA MSL real-time</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer (same as main site) -->
+<footer class="bg-slate-900 text-slate-400 mt-12 py-8 px-4">
+  <div class="max-w-7xl mx-auto text-center">
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center text-base">🌾</div>
+      <span class="font-bold text-white">วช. ลุ่มน้ำทะเลสาบสงขลา</span>
+    </div>
+    <p class="text-xs mb-3">Agricultural Monitoring System · Trust by Design · 🚨 Flood/Drought Warning</p>
+    <div class="flex justify-center gap-6 text-[11px] text-slate-500">
+      <span>v2.1 · 10 ส.ค. 2569</span>
+      <span>·</span>
+      <span>5 zones · DDPM 11y baseline · WCS v1.0</span>
+      <span>·</span>
+      <span>Multi-source: WeatherNext + ECMWF + SKA</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const ZONES_META = {
+  khuan_maphrao: { emoji: '🌾', name: 'ควนมะพร้าว', province: 'พัทลุง', crop: 'ข้าว' },
+  tha_khae:      { emoji: '🌳', name: 'ท่าแค',      province: 'พัทลุง', crop: 'พลู' },
+  khao_chai_son: { emoji: '⛰️', name: 'เขาชัยสน',   province: 'พัทลุง', crop: 'กล้วย' },
+  ban_mai:       { emoji: '🏘️', name: 'บ้านใหม่',   province: 'สงขลา', crop: 'มะพร้าว' },
+  ban_khao:      { emoji: '🦐', name: 'บ้านขาว',    province: 'สงขลา', crop: 'กุ้ง+พริก' },
+};
+
+const STATUS = {
+  normal:  { icon: '🟢', label: 'ปกติ',     pill: 'status-ok' },
+  watch:   { icon: '🟡', label: 'เฝ้าระวัง', pill: 'status-warn' },
+  warning: { icon: '🟠', label: 'ระวัง',     pill: 'status-warn' },
+  danger:  { icon: '🔴', label: 'ระวังสูง',  pill: 'status-danger' },
+};
+
+const P_LEVEL = {
+  minimal:  { label: '🟢 ต่ำมาก',  color: 'text-emerald-600', bar: 'var(--c-emerald-500)' },
+  low:      { label: '🟡 ต่ำ',     color: 'text-sky-600',     bar: 'var(--c-sky-500)' },
+  moderate: { label: '🟠 ปานกลาง', color: 'text-amber-600',   bar: 'var(--c-amber-500)' },
+  high:     { label: '🔴 สูง',     color: 'text-rose-600',    bar: 'var(--c-rose-500)' },
+  extreme:  { label: '🔴🔴 สูงมาก', color: 'text-rose-700',  bar: 'var(--c-rose-700)' },
+};
+
+const ANOMALY_LABEL = {
+  normal:       { icon: '✅', color: 'bg-emerald-50 text-emerald-700', text: 'อยู่ในเกณฑ์ปกติ' },
+  above_normal: { icon: '⚠️', color: 'bg-amber-50 text-amber-700',     text: 'ฝน/น้ำ มากกว่าปกติ 20%' },
+  extreme:      { icon: '🔴', color: 'bg-rose-50 text-rose-700',         text: 'ฝน/น้ำ มากผิดปกติ' },
+  unknown:      { icon: '❓', color: 'bg-slate-50 text-slate-500',       text: 'ไม่มีข้อมูลเทียบ' },
+};
+
+async function loadData() {
+  try {
+    const [summary, full] = await Promise.all([
+      fetch('/flood-warning.php?format=summary').then(r => r.json()),
+      fetch('/flood-warning.php').then(r => r.json()),
+    ]);
+    render(summary, full);
+  } catch (e) {
+    document.getElementById('loading').innerHTML =
+      '<div class="text-rose-600">โหลดข้อมูลไม่สำเร็จ: ' + e.message + '</div>';
+  }
+}
+
+function render(summary, full) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  // Overall banner
+  const ov = STATUS[summary.overall_status];
+  const overallEl = document.getElementById('overall');
+  const borderClass = summary.overall_status === 'danger' ? 'border-rose-500 border-2' :
+                      summary.overall_status === 'warning' ? 'border-amber-500 border-2' :
+                      summary.overall_status === 'watch' ? 'border-amber-300 border-2' : 'border-emerald-300 border-2';
+  overallEl.className = `card-elev p-6 text-center ${borderClass}`;
+  overallEl.innerHTML = `
+    <div class="text-5xl mb-2">${summary.overall_icon}</div>
+    <div class="text-2xl font-bold navy mb-1">${summary.overall_label}</div>
+    <div class="text-sm text-slate-500">สถานะรวม 5 โซน · Predictive Model WCS v1.0 · ${new Date(summary.generated_at).toLocaleString('th-TH')}</div>
+  `;
+
+  // Baseline panel
+  const bl = summary.baseline;
+  if (bl) {
+    const v = bl.villages_affected;
+    document.getElementById('baselinePanel').innerHTML = `
+      <h2 class="section-title mb-3">📊 ข้อมูลย้อนหลัง 11 ปี (พ.ศ. 2558-2568 · จ.พัทลุง)</h2>
+        <p class="text-xs text-slate-500 mb-3">ใช้ดูว่า “ปกติ” ของแต่ละปีเป็นยังไง · ช่วง พ.ย.-ธ.ค. = <b class="text-rose-600">ฤดูน้ำท่วม</b></p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+        <div class="bg-slate-50 rounded-lg p-3">
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">ครั้ง/ปี (avg)</div>
+          <div class="font-mono text-lg font-bold navy mt-1">${bl.occurrences.mean.toFixed(1)}</div>
+          <div class="text-[10px] text-slate-400 mt-1">⚠️ ≥${bl.occurrences.extreme_threshold} = extreme</div>
+        </div>
+        <div class="bg-slate-50 rounded-lg p-3">
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">อำเภอ (avg)</div>
+          <div class="font-mono text-lg font-bold navy mt-1">${bl.districts_affected.mean.toFixed(0)}/11</div>
+          <div class="text-[10px] text-slate-400 mt-1">11 = ครอบคลุมทั้งหมด</div>
+        </div>
+        <div class="bg-slate-50 rounded-lg p-3">
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">ตำบล (avg)</div>
+          <div class="font-mono text-lg font-bold navy mt-1">${bl.subdistricts_affected.mean.toFixed(0)}/65</div>
+          <div class="text-[10px] text-slate-400 mt-1">ปกติ: ${bl.subdistricts_affected.typical_range[0]}-${bl.subdistricts_affected.typical_range[1]}</div>
+        </div>
+        <div class="bg-slate-50 rounded-lg p-3">
+          <div class="text-[10px] text-slate-500 uppercase tracking-wider">หมู่บ้าน (avg)</div>
+          <div class="font-mono text-lg font-bold navy mt-1">${v.mean.toFixed(0)}</div>
+          <div class="text-[10px] text-slate-400 mt-1">extreme: ≥${v.extreme_threshold}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Zone cards
+  document.getElementById('zoneGrid').innerHTML = (full.zones || []).map(z => {
+    const m = ZONES_META[z.zone.id] || { emoji: '📍', name: z.zone.name };
+    const fs = STATUS[z.flood.status];
+    const ds = STATUS[z.drought.status];
+    const p = z.prediction || {};
+    const pLvl = P_LEVEL[p.level] || P_LEVEL.minimal;
+    const c = p.components || {};
+    const anom = ANOMALY_LABEL[z.anomaly?.status] || ANOMALY_LABEL.unknown;
+    const pPct = ((p.probability || 0) * 100).toFixed(0);
+
+    return `
+      <div class="zone-card card p-4 hover:shadow-md">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">${m.emoji}</span>
+            <div>
+              <div class="font-bold navy text-base">${m.name}</div>
+              <div class="text-[10px] text-slate-500">${m.province} · ${m.crop} · ${z.zone.households || 0} HH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <div class="bg-sky-50 rounded p-2 text-center">
+            <div class="text-[9px] text-slate-500 uppercase">🌊 น้ำท่วม</div>
+            <div class="text-base">${fs.icon}</div>
+            <div class="text-[11px] font-semibold">${fs.label}</div>
+          </div>
+          <div class="bg-amber-50 rounded p-2 text-center">
+            <div class="text-[9px] text-slate-500 uppercase">🏜️ น้ำแล้ง</div>
+            <div class="text-base">${ds.icon}</div>
+            <div class="text-[11px] font-semibold">${ds.label}</div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 rounded-lg p-3 border border-purple-200">
+          <div class="flex items-center justify-between">
+            <div class="text-[10px] text-purple-700 uppercase font-bold tracking-wider">🔮 P(flood)</div>
+            <div class="text-[10px] font-mono ${pLvl.color} font-bold">${pLvl.label}</div>
+          </div>
+          <div class="font-mono text-2xl font-extrabold ${pLvl.color} mt-1">${(p.probability || 0).toFixed(2)}</div>
+          <div class="pflood-gauge">
+            <div class="pflood-fill" style="width:${pPct}%; background:${pLvl.bar};"></div>
+          </div>
+          <div class="grid grid-cols-4 gap-1 mt-2">
+            <div class="comp-mini"><div class="c-label">🌧️ ฝน</div><div class="c-value">${(c.rain||0).toFixed(2)}</div></div>
+            <div class="comp-mini"><div class="c-label">📅 ฤดู</div><div class="c-value">${(c.season||0).toFixed(2)}</div></div>
+            <div class="comp-mini"><div class="c-label">📊 ประวัติ</div><div class="c-value">${(c.historical||0).toFixed(2)}</div></div>
+            <div class="comp-mini"><div class="c-label">🌊 น้ำ</div><div class="c-value">${(c.water||0).toFixed(2)}</div></div>
+          </div>
+        </div>
+
+        <div class="mt-2 p-2 rounded text-[10px] ${anom.color} font-medium">
+          <b>${anom.icon} Anomaly:</b> ${z.anomaly?.note || anom.text}
+        </div>
+
+        <div class="grid grid-cols-2 gap-x-3 gap-y-1 mt-2 text-[11px]">
+          <div class="flex justify-between"><span class="text-slate-500">🌧️ 24h</span><span class="font-mono font-semibold">${z.forecast.rain_24h_mm.toFixed(1)} mm</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">🌧️ 7d</span><span class="font-mono font-semibold">${z.forecast.rain_7d_mm.toFixed(1)} mm</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">📅 แห้งต่อ</span><span class="font-mono font-semibold">${z.forecast.consecutive_dry_forecast} วัน</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">🌊 SKA MSL</span><span class="font-mono font-semibold">${z.ska_water_level_m != null ? z.ska_water_level_m.toFixed(2)+' m' : '—'}</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+loadData();
+setInterval(loadData, 5 * 60 * 1000);
+</script>
+</body>
+</html>

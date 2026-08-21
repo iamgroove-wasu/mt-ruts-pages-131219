@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฟอร์มอุทธรณ์/ร้องเรียนผลการสอบ | มทร.ศรีวิชัย</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%); color: #333; min-height: 100vh; padding: 20px 0; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        .header { background: linear-gradient(135deg, #1e3a5f, #2d5a87); color: white; padding: 25px 30px; border-radius: 16px 16px 0 0; text-align: center; }
+        .header h1 { font-size: 1.5rem; margin-bottom: 5px; font-weight: 700; }
+        .header p { font-size: 0.9rem; opacity: 0.85; }
+        .content { background: white; padding: 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .info-box { background: #eff6ff; border-left: 4px solid #1e3a5f; padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; }
+        .info-box h3 { color: #1e3a5f; font-size: 1rem; margin-bottom: 8px; }
+        .info-box ol { padding-left: 20px; font-size: 0.9rem; color: #475569; line-height: 1.7; }
+        .info-box ol li { margin-bottom: 4px; }
+        .section-title { font-size: 1.05rem; font-weight: 700; color: #1e3a5f; margin: 25px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #e0e0e0; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #1e3a5f; font-size: 0.95rem; }
+        .form-group label .qnum { background: #1e3a5f; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-right: 8px; font-weight: 600; }
+        input[type="text"], input[type="email"], input[type="number"], input[type="date"], input[type="tel"], select, textarea {
+            width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #1e3a5f; }
+        textarea { min-height: 100px; resize: vertical; }
+        .rating-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .rating-group label { flex: 1; min-width: 60px; text-align: center; padding: 12px 8px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; font-weight: normal; transition: all 0.2s; margin: 0; }
+        .rating-group input { display: none; }
+        .rating-group input:checked + span { color: white; }
+        .rating-group label:has(input:checked) { border-color: #1e3a5f; background: #1e3a5f; color: white; }
+        .rating-group label:hover { border-color: #2d5a87; }
+        .btn-submit { background: #1e3a5f; color: white; padding: 14px 32px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 25px; font-family: inherit; transition: background 0.2s; }
+        .btn-submit:hover { background: #2d5a87; }
+        .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+        .required { color: #ef4444; font-weight: 700; }
+        .help-text { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+        .hidden { display: none !important; }
+        #successMsg { text-align: center; padding: 40px 20px; }
+        #successMsg h2 { color: #10b981; margin-bottom: 12px; font-size: 1.6rem; }
+        #successMsg p { color: #475569; line-height: 1.7; }
+        #successMsg .icon { font-size: 4rem; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ แบบฟอร์มอุทธรณ์/ร้องเรียนผลการสอบ</h1>
+            <p>หลักสูตรเทคโนโลยีเครื่องกล | มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</p>
+        </div>
+        <div class="content">
+
+            <div class="info-box">
+                <h3>📌 กระบวนการอุทธรณ์ผลการประเมิน</h3>
+                <ol>
+                    <li><strong>การปรึกษาหารือ</strong> — นักศึกษาเข้าพบอาจารย์ผู้สอนเพื่อรับคำอธิบายเบื้องต้น</li>
+                    <li><strong>การยื่นคำร้อง</strong> — กรณีไม่ได้ข้อยุติ ยื่นผ่านอาจารย์ที่ปรึกษา หรือที่ฝ่ายวิชาการคณะฯ</li>
+                    <li><strong>การพิจารณาอุทธรณ์</strong> — คณะกรรมการฯ พิจารณาด้วยความเป็นธรรมและโปร่งใส</li>
+                    <li><strong>การรายงานผล</strong> — แจ้งกลับนักศึกษา + บันทึกต่อสำนักงานส่งเสริมวิชาการฯ</li>
+                </ol>
+            </div>
+
+            <form id="appealForm">
+
+                <div class="section-title">📋 ข้อมูลผู้ยื่นคำร้อง</div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="qnum">1</span> รหัสนักศึกษา <span class="required">*</span></label>
+                        <input type="text" name="student_id" required placeholder="เช่น 6512345678">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="qnum">2</span> ชื่อ-สกุล <span class="required">*</span></label>
+                        <input type="text" name="full_name" required placeholder="ชื่อ นามสกุล">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="qnum">3</span> สาขาวิชา <span class="required">*</span></label>
+                        <input type="text" name="department" required placeholder="เช่น เทคโนโลยีเครื่องกล">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="qnum">4</span> ชั้นปี <span class="required">*</span></label>
+                        <select name="year" required>
+                            <option value="">-- เลือกชั้นปี --</option>
+                            <option value="1">ปี 1</option>
+                            <option value="2">ปี 2</option>
+                            <option value="3">ปี 3</option>
+                            <option value="4">ปี 4</option>
+                            <option value="5">ปี 5</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="qnum">5</span> อีเมล <span class="required">*</span></label>
+                        <input type="email" name="email" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="qnum">6</span> เบอร์โทรศัพท์</label>
+                        <input type="tel" name="phone" placeholder="0xx-xxx-xxxx">
+                    </div>
+                </div>
+
+                <div class="section-title">📚 ข้อมูลรายวิชา</div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="qnum">7</span> รหัสวิชา <span class="required">*</span></label>
+                        <input type="text" name="course_id" required placeholder="เช่น 04012345">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="qnum">8</span> ชื่อวิชา <span class="required">*</span></label>
+                        <input type="text" name="course_name" required placeholder="ชื่อวิชา">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="qnum">9</span> อาจารย์ผู้สอน <span class="required">*</span></label>
+                        <input type="text" name="instructor" required>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="qnum">10</span> ภาคการศึกษา <span class="required">*</span></label>
+                        <input type="text" name="semester" required placeholder="เช่น 1/2569">
+                    </div>
+                </div>
+
+                <div class="section-title">📝 รายละเอียดการอุทธรณ์</div>
+
+                <div class="form-group">
+                    <label><span class="qnum">11</span> ประเภทคำร้อง <span class="required">*</span></label>
+                    <select name="appeal_type" required>
+                        <option value="">-- เลือกประเภท --</option>
+                        <option value="อุทธรณ์คะแนนสอบ">อุทธรณ์คะแนนสอบ</option>
+                        <option value="ร้องเรียนการสอบ">ร้องเรียนการสอบ (พฤติกรรม/ความไม่เหมาะสม)</option>
+                        <option value="อุทธรณ์การตัดสินผลการเรียน">อุทธรณ์การตัดสินผลการเรียน (F, I)</option>
+                        <option value="ร้องเรียนพฤติกรรมการสอน">ร้องเรียนพฤติกรรมการสอน</option>
+                        <option value="ขอดูกระดาษคำตอบ/ผลการตรวจ">ขอดูกระดาษคำตอบ/ผลการตรวจ</option>
+                        <option value="อื่นๆ">อื่นๆ</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="qnum">12</span> คะแนนที่ได้รับ</label>
+                        <input type="number" name="current_score" step="0.01" min="0" max="100" placeholder="เช่น 65">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="qnum">13</span> คะแนนที่คาดหวัง</label>
+                        <input type="number" name="expected_score" step="0.01" min="0" max="100" placeholder="เช่น 75">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><span class="qnum">14</span> เหตุผล/รายละเอียด <span class="required">*</span></label>
+                    <textarea name="details" required placeholder="อธิบายเหตุผลและรายละเอียดเพิ่มเติม...&#10;&#10;ตัวอย่าง:&#10;- ขอให้ตรวจสอบคะแนนข้อสอบข้อ 5 เนื่องจากคำตอบถูกต้อง&#10;- พบความผิดพลาดในการรวมคะแนน"></textarea>
+                    <p class="help-text">โปรดอธิบายให้ชัดเจน เพื่อให้คณะกรรมการพิจารณาได้อย่างรวดเร็ว</p>
+                </div>
+
+                <div class="section-title">⭐ ความพึงพอใจต่อกระบวนการ (1 = น้อยมาก, 5 = มากที่สุด)</div>
+
+                <div class="form-group">
+                    <label>1. ความชัดเจนของเกณฑ์การประเมิน</label>
+                    <div class="rating-group">
+                        <label><input type="radio" name="rating_clarity" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="rating_clarity" value="2"><span>2</span></label>
+                        <label><input type="radio" name="rating_clarity" value="3"><span>3</span></label>
+                        <label><input type="radio" name="rating_clarity" value="4"><span>4</span></label>
+                        <label><input type="radio" name="rating_clarity" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. ความโปร่งใสในการให้คะแนน</label>
+                    <div class="rating-group">
+                        <label><input type="radio" name="rating_transparency" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="rating_transparency" value="2"><span>2</span></label>
+                        <label><input type="radio" name="rating_transparency" value="3"><span>3</span></label>
+                        <label><input type="radio" name="rating_transparency" value="4"><span>4</span></label>
+                        <label><input type="radio" name="rating_transparency" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>3. ความเป็นธรรม</label>
+                    <div class="rating-group">
+                        <label><input type="radio" name="rating_fairness" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="rating_fairness" value="2"><span>2</span></label>
+                        <label><input type="radio" name="rating_fairness" value="3"><span>3</span></label>
+                        <label><input type="radio" name="rating_fairness" value="4"><span>4</span></label>
+                        <label><input type="radio" name="rating_fairness" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>4. ความรวดเร็วในการดำเนินการ</label>
+                    <div class="rating-group">
+                        <label><input type="radio" name="rating_speed" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="rating_speed" value="2"><span>2</span></label>
+                        <label><input type="radio" name="rating_speed" value="3"><span>3</span></label>
+                        <label><input type="radio" name="rating_speed" value="4"><span>4</span></label>
+                        <label><input type="radio" name="rating_speed" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>5. ความพึงพอใจโดยรวม</label>
+                    <div class="rating-group">
+                        <label><input type="radio" name="rating_overall" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="rating_overall" value="2"><span>2</span></label>
+                        <label><input type="radio" name="rating_overall" value="3"><span>3</span></label>
+                        <label><input type="radio" name="rating_overall" value="4"><span>4</span></label>
+                        <label><input type="radio" name="rating_overall" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>6. ข้อเสนอแนะเพิ่มเติม</label>
+                    <textarea name="suggestions" placeholder="ข้อเสนอแนะเพิ่มเติมเกี่ยวกับกระบวนการอุทธรณ์..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">📨 ส่งคำร้อง</button>
+            </form>
+
+            <div id="successMsg" class="hidden">
+                <div class="icon">✅</div>
+                <h2>ส่งคำร้องสำเร็จ</h2>
+                <p>คำร้องของท่านได้รับการบันทึกเรียบร้อยแล้ว<br>เจ้าหน้าที่จะดำเนินการตรวจสอบและแจ้งผลกลับทางอีเมลที่ท่านระบุ</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://wasu-schedule.serveousercontent.com/MT-AUNQA/MT-AUNQA-api-v2.php';
+
+        document.getElementById('appealForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ กำลังส่ง...';
+
+            const formData = new FormData(e.target);
+            const data = {};
+            const ratings = [];
+
+            for (let [key, value] of formData.entries()) {
+                if (key.startsWith('rating_')) {
+                    ratings.push(parseInt(value));
+                } else {
+                    data[key] = value;
+                }
+            }
+
+            data.ratings = ratings;
+
+            try {
+                const resp = await fetch(API_URL + '?survey=S13&action=submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await resp.json();
+
+                if (result.success) {
+                    document.getElementById('appealForm').classList.add('hidden');
+                    document.getElementById('successMsg').classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                } else {
+                    alert('❌ เกิดข้อผิดพลาด: ' + (result.error || 'ไม่ทราบสาเหตุ'));
+                    btn.disabled = false;
+                    btn.textContent = '📨 ส่งคำร้อง';
+                }
+            } catch (err) {
+                alert('❌ เกิดข้อผิดพลาด: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = '📨 ส่งคำร้อง';
+            }
+        });
+    </script>
+</body>
+</html>

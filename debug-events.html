@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Debug: Calendar Events</title>
+</head>
+<body>
+    <h1>Debug: Events on April 20</h1>
+    <pre id="output">Loading...</pre>
+    
+    <script>
+        let events = {};
+        let currentDate = null;
+        
+        const monthMap = {
+            'มกราคม': '01', 'กุมภาพันธ์': '02', 'มีนาคม': '03', 'เมษายน': '04',
+            'พฤษภาคม': '05', 'มิถุนายน': '06', 'กรกฎาคม': '07', 'สิงหาคม': '08',
+            'กันยายน': '09', 'ตุลาคม': '10', 'พฤศจิกายน': '11', 'ธันวาคม': '12',
+            'ม.ค.': '01', 'ก.พ.': '02', 'มี.ค.': '03', 'เม.ย.': '04',
+            'พ.ค.': '05', 'มิ.ย.': '06', 'ก.ค.': '07', 'ส.ค.': '08',
+            'ก.ย.': '09', 'ต.ค.': '10', 'พ.ย.': '11', 'ธ.ค.': '12'
+        };
+        
+        const workKeywords = ['สอบ', 'ประชุม', 'งาน', 'ฝึก', 'นำเสนอ', 'ปฐมนิเทศ', 'ซ้อม', 'สัมมนา', 'วิทยากร', 'โครงการ', 'คณะกรรมการ', 'ชมรม', 'ตรวจ', 'รับ', 'ส่ง', 'เสวนา', 'ฟัง', 'บทความ', 'ปริญญา', 'โครงร่าง', 'วิชาการ'];
+        const excludeKeywords = ['⚠️', '📌', 'ไฟดับ', 'วันครบรอบ', '🌸', 'วันหยุดราชการ'];
+        
+        fetch('calendar.md?v=' + Date.now())
+            .then(r => r.text())
+            .then(text => {
+                const lines = text.split('\n');
+                
+                lines.forEach((line, i) => {
+                    // Date header
+                    const dateMatch = line.match(/###\s*(\d+)\s+(.+?)\s+\(/);
+                    if (dateMatch) {
+                        const day = dateMatch[1].padStart(2, '0');
+                        const monthStr = dateMatch[2];
+                        for (let m in monthMap) {
+                            if (monthStr.includes(m)) {
+                                currentDate = '2026-' + monthMap[m] + '-' + day;
+                                break;
+                            }
+                        }
+                        return;
+                    }
+                    
+                    if (!line.trim().startsWith('-')) return;
+                    if (excludeKeywords.some(k => line.includes(k))) return;
+                    
+                    const timeMatch = line.match(/\*\*(\d{1,2}:\d{2})(?:\s*-\s*(\d{1,2}:\d{2}))?\s*น\.\*\*/);
+                    if (!timeMatch) return;
+                    
+                    const startH = parseInt(timeMatch[1].split(':')[0]);
+                    const endH = timeMatch[2] ? parseInt(timeMatch[2].split(':')[0]) : startH;
+                    if (endH < 8 || startH > 18) return;
+                    
+                    const isWork = workKeywords.some(k => line.includes(k));
+                    if (!isWork) return;
+                    
+                    if (currentDate) {
+                        if (!events[currentDate]) events[currentDate] = [];
+                        events[currentDate].push({ text: line.substring(0, 100) });
+                    }
+                });
+                
+                document.getElementById('output').textContent = JSON.stringify(events, null, 2);
+                document.getElementById('count').textContent = 'April 20: ' + (events['2026-04-20'] ? events['2026-04-20'].length : 0) + ' events';
+            })
+            .catch(e => {
+                document.getElementById('output').textContent = 'Error: ' + e;
+            });
+    </script>
+    
+    <p id="count"></p>
+</body>
+</html>

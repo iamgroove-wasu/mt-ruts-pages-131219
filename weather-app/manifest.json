@@ -1,0 +1,44 @@
+{
+  "name": "ลุ่มน้ำทะเลสาบสงขลา - Weather",
+  "short_name": "Weather SLB",
+  "description": "ระบบพยากรณ์อากาศเพื่อเกษตรกร ลุ่มน้ำทะเลสาบสงขลา",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#1e3a8a",
+  "orientation": "any",
+  "lang": "th",
+  "dir": "ltr",
+  "categories": ["weather", "agriculture", "utilities"],
+  "icons": [
+    {
+      "src": "assets/logos/logo-ruts.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logos/logo-ruts.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "พยากรณ์ 7 วัน",
+      "short_name": "7-Day",
+      "description": "ดูพยากรณ์อากาศ 7 วันข้างหน้า",
+      "url": "/#phase4-forecast",
+      "icons": [{ "src": "assets/logos/logo-ruts.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "คำแนะนำพืช",
+      "short_name": "Crop Tips",
+      "description": "คำแนะนำเฉพาะพืช 5 โซน",
+      "url": "/#phase3-card",
+      "icons": [{ "src": "assets/logos/logo-ruts.jpg", "sizes": "192x192" }]
+    }
+  ]
+}

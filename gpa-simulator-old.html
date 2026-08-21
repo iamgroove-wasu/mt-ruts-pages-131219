@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPA Simulator · หลักสูตรเทคโนโลยีเครื่องกล · มทร.ศรีวิชัย</title>
+<meta name="description" content="เครื่องมือจำลองผลเกรด หลักสูตรอุตสาหกรรมศาสตรบัณฑิต สาขาวิชาเทคโนโลยีเครื่องกล (ต่อเนื่อง) มทร.ศรีวิชัย">
+<meta name="theme-color" content="#1e3a8a">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --primary:#1e3a8a;--primary-light:#3b82f6;--primary-dark:#1e293b;
+  --accent:#06b6d4;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--text-muted:#64748b;
+  --shadow:0 1px 3px rgba(0,0,0,.05),0 4px 12px rgba(0,0,0,.05);
+  --shadow-lg:0 4px 24px rgba(30,58,138,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun','Noto Sans Thai',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+header{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;padding:28px 0;box-shadow:var(--shadow-lg)}
+.brand{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo{width:64px;height:64px;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;border:2px solid rgba(255,255,255,.3);text-align:center;line-height:1.1;backdrop-filter:blur(8px)}
+h1{font-size:24px;font-weight:700;margin-bottom:4px}
+header p.sub{font-size:13px;opacity:.92}
+nav.breadcrumb{font-size:13px;margin-top:6px;opacity:.88}
+nav.breadcrumb a{color:#fff;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.5)}
+nav.breadcrumb a:hover{border-bottom-style:solid}
+nav.breadcrumb span{opacity:.7}
+main{padding:24px 0 60px}
+section{margin-bottom:22px}
+h2{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--primary-dark)}
+.hint{color:var(--text-muted);font-size:13px;margin-bottom:14px}
+.notice{background:#fef3c7;border-left:4px solid var(--warning);padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:18px}
+.notice.hidden{display:none}
+
+/* Controls */
+.controls{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;background:var(--card);padding:16px 18px;border-radius:14px;box-shadow:var(--shadow);margin-bottom:20px}
+.control-group{display:flex;flex-direction:column;gap:5px}
+.control-group label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
+.control-group.right{margin-left:auto;flex-direction:row;align-items:center;gap:8px}
+select{padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px;color:var(--text);cursor:pointer;font-family:inherit;min-width:220px}
+select:focus{outline:none;border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+button.btn-primary,button.btn-secondary,button.btn-ghost{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-secondary{background:#fff;color:var(--text);border-color:var(--border)}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+.btn-ghost{background:transparent;color:var(--text-muted);border-color:transparent}
+.btn-ghost:hover{background:var(--bg);color:var(--primary)}
+
+/* Semester tabs */
+.sem-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.sem-tab{padding:7px 12px;border:none;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);border-radius:7px;font-family:inherit;transition:all .15s;white-space:nowrap}
+.sem-tab.active{background:var(--primary);color:#fff;box-shadow:var(--shadow)}
+.sem-tab:hover:not(.active){color:var(--primary);background:#fff}
+.sem-tab .badge{display:inline-block;background:rgba(255,255,255,.25);padding:1px 5px;border-radius:8px;font-size:10px;margin-left:3px;font-weight:500}
+.sem-tab:not(.active) .badge{background:var(--border);color:var(--text-muted)}
+
+/* Summary */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+.card{background:var(--card);padding:16px;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card.highlight{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;border:none}
+.card.highlight .label,.card.highlight .sub{color:rgba(255,255,255,.85)}
+.card .label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.card .value{font-size:30px;font-weight:800;line-height:1;margin-bottom:4px}
+.card .value.small{font-size:17px}
+.card .sub{font-size:11px;color:var(--text-muted)}
+.card.highlight .value{font-size:32px}
+
+/* Quick grade */
+.quick-section{background:var(--card);padding:14px 18px;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px}
+.quick-section summary{cursor:pointer;font-weight:600;color:var(--primary);font-size:14px;padding:6px 0}
+.quick-section summary:hover{color:var(--primary-dark)}
+.quick-section[open] summary{margin-bottom:10px}
+.quick-buttons{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Course table */
+.course-table{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.category-block{margin-bottom:0}
+.category-header{background:linear-gradient(to right,var(--primary) 0%,var(--primary-light) 100%);color:#fff;padding:12px 18px;font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.category-header .badge{background:rgba(255,255,255,.2);padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;backdrop-filter:blur(8px)}
+.sem-row td{background:#e0e7ff;padding:8px 18px;font-weight:700;font-size:12px;color:var(--primary-dark);border-top:1px solid var(--border)}
+.group-row td{background:#f1f5f9;padding:8px 18px;font-weight:600;font-size:12px;color:var(--primary-dark)}
+.group-summary{display:inline-flex;gap:10px;font-size:11px;color:var(--text-muted);font-weight:400;margin-left:10px}
+table.courses{width:100%;border-collapse:collapse}
+table.courses th{background:#f8fafc;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--border)}
+table.courses td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px}
+table.courses tr:last-child td{border-bottom:none}
+table.courses tr:hover td{background:#fafbfd}
+table.courses td.code{font-family:ui-monospace,monospace;font-size:11px;color:var(--text-muted);white-space:nowrap}
+table.courses td.name{font-weight:500}
+table.courses td.credits{text-align:center;font-weight:600;color:var(--primary);width:70px}
+table.courses td.grade{width:130px;text-align:center}
+table.courses td.impact{width:140px;text-align:center;font-size:11px}
+table.courses td.cum{width:60px;text-align:center;font-weight:600;font-size:12px}
+.cum.pass{color:var(--success)}
+.cum.fail{color:var(--danger)}
+.cum.special{color:var(--text-muted);font-style:italic}
+.row-cancelled{opacity:.5;text-decoration:line-through}
+.row-cancelled select{background:#f1f5f9;cursor:not-allowed}
+select.grade{padding:5px 6px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:12px;color:var(--text);cursor:pointer;font-family:inherit;width:100%;min-width:100px}
+select.grade:focus{outline:none;border-color:var(--primary-light)}
+select.grade.has-grade{background:#ecfdf5;border-color:var(--success);font-weight:600}
+.impact-text{font-size:10px;color:var(--text-muted);margin-top:2px}
+
+/* Chart */
+.chart-section{background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.chart-grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:768px){.chart-grid{grid-template-columns:2fr 1fr}}
+.chart-container{position:relative;height:260px}
+
+/* Footer */
+footer{background:var(--primary-dark);color:rgba(255,255,255,.85);padding:22px 0;font-size:13px;text-align:center}
+footer p{margin:3px 0}
+footer a{color:var(--accent);text-decoration:none}
+footer a:hover{text-decoration:underline}
+.disclaimer{font-size:11px;opacity:.7;margin-top:6px}
+
+/* Print */
+@media print{
+  header,footer,.controls,.notice,.quick-section,.btn-primary,.btn-secondary,.btn-ghost{display:none!important}
+  body{background:#fff}
+  main{padding:0}
+  .card,.course-table,.chart-section{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+  .summary{margin-bottom:12px}
+  .card .value{font-size:22px}
+  .impact-text{display:none}
+}
+
+/* Mobile */
+@media(max-width:768px){
+  .controls{flex-direction:column;align-items:stretch}
+  .control-group.right{margin-left:0;flex-direction:row;justify-content:flex-end}
+  .summary{grid-template-columns:repeat(2,1fr)}
+  h1{font-size:20px}
+  .card .value{font-size:24px}
+  select{min-width:0;width:100%}
+  .course-table{overflow-x:auto}
+  table.courses{min-width:600px}
+  .sem-tabs{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="brand">
+      <div class="logo">มทร.<br>ศรีวิชัย</div>
+      <div>
+        <h1>🧮 GPA Simulator</h1>
+        <p class="sub">หลักสูตรอุตสาหกรรมศาสตรบัณฑิต สาขาวิชาเทคโนโลยีเครื่องกล (ต่อเนื่อง)</p>
+        <nav class="breadcrumb">
+          <a href="/">หน้าหลัก</a> ›
+          <a href="/curriculum-2565.html">หลักสูตร</a> ›
+          <span>GPA Simulator</span>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div id="notice2570" class="notice hidden">
+    ℹ️ <b>หลักสูตร 2570</b> มีวิชาใหม่ 18 วิชา (AI, EV, Smart Instrument)
+    ที่ยังไม่ได้เพิ่มในระบบนี้ — วิชาที่ขีดฆ่า = ถูกยกเลิกในหลักสูตรใหม่
+  </div>
+
+  <section class="controls">
+    <div class="control-group">
+      <label>📋 หลักสูตร</label>
+      <select id="curriculum">
+        <option value="2565">หลักสูตร 2565 (75 หน่วยกิต)</option>
+        <option value="2570">หลักสูตร 2570 (89 หน่วยกิต · มีวิชาใหม่)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>📅 เทอม</label>
+      <div class="sem-tabs" id="semTabs">
+        <button class="sem-tab" data-sem="1-1">ปี 1 เทอม 1</button>
+        <button class="sem-tab" data-sem="1-2">ปี 1 เทอม 2</button>
+        <button class="sem-tab" data-sem="2-1">ปี 2 เทอม 1</button>
+        <button class="sem-tab" data-sem="2-2">ปี 2 เทอม 2</button>
+        <button class="sem-tab active" data-sem="all">รวม GPAX</button>
+      </div>
+    </div>
+    <div class="control-group right">
+      <button id="resetBtn" class="btn-ghost" title="ล้างข้อมูลทั้งหมด">🗑️ ล้าง</button>
+      <button id="printBtn" class="btn-secondary" title="พิมพ์ / บันทึก PDF">🖨️ พิมพ์</button>
+    </div>
+  </section>
+
+  <section class="summary" id="summary">
+    <div class="card">
+      <div class="label" id="gpaSemLabel">🎯 GPA เทอมนี้</div>
+      <div class="value" id="gpaSem">—</div>
+      <div class="sub" id="gpaSemSub">ยังไม่ได้กรอกเกรด</div>
+    </div>
+    <div class="card highlight">
+      <div class="label">📊 GPAX สะสม</div>
+      <div class="value" id="gpaCum">—</div>
+      <div class="sub" id="gpaCumSub">ยังไม่ได้กรอกเกรด</div>
+    </div>
+    <div class="card">
+      <div class="label" id="creditsRegLabel">📝 ลงทะเบียน</div>
+      <div class="value" id="creditsReg">0</div>
+      <div class="sub" id="creditsRegSub">หน่วยกิต</div>
+    </div>
+    <div class="card">
+      <div class="label">✅ ผ่านสะสม</div>
+      <div class="value" id="creditsPass">0</div>
+      <div class="sub">หน่วยกิต</div>
+    </div>
+    <div class="card">
+      <div class="label">🏆 สถานะ</div>
+      <div class="value small" id="status">—</div>
+      <div class="sub" id="statusSub">รอข้อมูล</div>
+    </div>
+  </section>
+
+  <section class="quick-section">
+    <details>
+      <summary>⚡ เครื่องมือช่วยเติมเกรด (เร็ว ๆ)</summary>
+      <div class="quick-buttons">
+        <button class="btn-secondary" data-fill="A">เ เติม A ทั้งหมด (เทอมนี้)</button>
+        <button class="btn-secondary" data-fill="B+">📙 เติม B+ ทั้งหมด</button>
+        <button class="btn-secondary" data-fill="B">📘 เติม B ทั้งหมด</button>
+        <button class="btn-secondary" data-fill="C+">📕 เติม C+ ทั้งหมด</button>
+        <button class="btn-secondary" data-fill="C">📒 เติม C ทั้งหมด</button>
+        <button class="btn-secondary" data-clear-sem>🗑 เคลียร์เกรดเทอมนี้</button>
+        <button class="btn-ghost" data-clear-all style="color:var(--danger)">⚠️ เคลียร์ทั้งหมด</button>
+      </div>
+      <p class="hint" style="margin:8px 0 0">ใช้สำหรับจำลอง "ถ้าเทอมนี้ได้เกรดนี้หมด GPAX จะเป็นเท่าไหร่"</p>
+    </details>
+  </section>
+
+  <section class="course-section">
+    <h2>📚 รายวิชา</h2>
+    <p class="hint" id="tableHint">คลิก dropdown เลือกเกรด (A-F, W, I, S, U) → ระบบคำนวณ GPA/GPAX แบบ realtime</p>
+    <div id="courseContainer"></div>
+  </section>
+
+  <section class="chart-section">
+    <h2>📊 การกระจายเกรด</h2>
+    <div class="chart-grid">
+      <div class="chart-container"><canvas id="gradeChart"></canvas></div>
+      <div id="gradeList" style="font-size:13px;color:var(--text-muted)"></div>
+    </div>
+  </section>
+
+
+<section class="quick-section" style="margin-top:14px">
+  <details>
+    <summary>🛠️ Debug (กดเปิดดูข้อมูลด้านใน)</summary>
+    <div style="padding:12px;font-size:12px">
+      <button class="btn-secondary" id="copyDebugBtn" style="margin-bottom:8px">📋 ก๊อปปี้ข้อมูลไปแปะแชท</button>
+      <pre id="debugOutput" style="background:var(--bg);padding:10px;border-radius:8px;overflow-x:auto;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:11px;max-height:300px"></pre>
+    </div>
+  </details>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2569 มทร.ศรีวิชัย · คณะวิศวกรรมศาสตร์ · สาขาวิศวกรรมเครื่องกล</p>
+    <p>ประธานหลักสูตร ผศ.ดร.วสุ สุขสุวรรณ · wasu.s@rmutsv.ac.th</p>
+    <p class="disclaimer">
+      ⚠️ เครื่องมือนี้ใช้สำหรับจำลองผลเกรดเบื้องต้นเท่านั้น ไม่ใช่ผลทางการ ·
+      เก็บข้อมูลใน localStorage (รีเฟรชเว็บ = ข้อมูลหาย) ·
+      <a href="/curriculum-2565.html">หลักสูตร 2565</a> ·
+      <a href="/curriculum-2570.html">หลักสูตร 2570</a> ·
+      <a href="/">กลับหน้าหลัก</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ===================== DATA =====================
+const COURSES = [
+  // 1. หมวดวิชาศึกษาทั่วไป (12 วิชา, 36 หน่วยกิต)
+  {code:"00-018-001",name:"ศาสตร์พระราชา",credits:3,cat:"1",group:"1.1",in2565:true,in2570:true,year:1,sem:1},
+  {code:"00-023-001",name:"พลเมืองกับจิตสำนึกต่อสังคม",credits:3,cat:"1",group:"1.2",in2565:true,in2570:true,year:1,sem:1},
+  {code:"00-035-001",name:"สนทนาภาษาอังกฤษ",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:1,sem:1},
+  {code:"00-035-002",name:"การอ่านและการเขียนภาษาอังกฤษ",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:1,sem:2},
+  {code:"00-034-001",name:"มนุษย์กับวรรณกรรม",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:2,sem:1},
+  {code:"00-034-002",name:"ภาษาไทยเพื่อการสื่อสาร",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:2,sem:1},
+  {code:"00-034-003",name:"ทักษะการอ่านภาษาไทย",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:2,sem:1},
+  {code:"00-034-004",name:"ทักษะการเขียนภาษาไทย",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"00-034-005",name:"ศิลปะการพูด",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"00-034-006",name:"การอ่านและการเขียนเชิงวิชาการ",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:1,sem:2},
+  {code:"00-034-007",name:"การอ่านเพื่อการเรียนรู้ตลอดชีวิต",credits:3,cat:"1",group:"1.3",in2565:true,in2570:true,year:1,sem:2},
+  {code:"00-048-001",name:"เทคโนโลยีและนวัตกรรม",credits:3,cat:"1",group:"1.4",in2565:true,in2570:true,year:1,sem:1},
+
+  // 2.1 กลุ่มวิชาพื้นฐานวิชาชีพ
+  {code:"04-421-101",name:"แนะนำงานเทคโนโลยีเครื่องกล",credits:2,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:1,sem:1},
+  {code:"04-421-102",name:"เทคโนโลยีสารสนเทศทางอุตสาหกรรม",credits:1,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:1,sem:1},
+  {code:"04-421-103",name:"ปฏิบัติการเทคโนโลยีสารสนเทศทางอุตสาหกรรม",credits:1,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:1,sem:1},
+  {code:"04-421-104",name:"จิตวิทยาอุตสาหกรรมและองค์กร",credits:1,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:1,sem:2},
+  {code:"04-421-105",name:"วัสดุอุตสาหกรรม",credits:2,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:1,sem:2},
+  {code:"04-421-206",name:"อาชีวอนามัยและความปลอดภัยในสถานประกอบการ",credits:2,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-421-207",name:"การเป็นผู้ประกอบการ",credits:2,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-421-208",name:"การพัฒนาทรัพยากรมนุษย์และการฝึกอบรม",credits:1,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-421-209",name:"ปฏิบัติการการพัฒนาทรัพยากรมนุษย์และการฝึกอบรม",credits:1,cat:"2.1",group:"2.1",in2565:true,in2570:true,year:2,sem:2},
+
+  // 2.2 กลุ่มวิชาชีพบังคับ
+  {code:"04-422-101",name:"[วิชาชีพบังคับ 1]",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:1,sem:1},
+  {code:"04-422-102",name:"[วิชาชีพบังคับ 2]",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:1,sem:1},
+  {code:"04-422-103",name:"กลศาสตร์วัสดุ",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:1,sem:2},
+  {code:"04-422-104",name:"เทคโนโลยีความร้อนและของไหล",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:1,sem:2},
+  {code:"04-422-105",name:"คอมพิวเตอร์ช่วยงานวิศวกรรมและการออกแบบ",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:1,sem:2},
+  {code:"04-422-106",name:"ปฏิบัติการคอมพิวเตอร์ช่วยงานวิศวกรรมและการออกแบบ",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:1,sem:2},
+  {code:"04-422-107",name:"[วิชาชีพบังคับ 3]",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-422-108",name:"เตรียมฝึกงาน",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-422-109",name:"[วิชาชีพบังคับ 4]",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-422-210",name:"วิศวกรรมการบำรุงรักษา",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:false,year:2,sem:2},
+  {code:"04-422-211",name:"ปฏิบัติการวิศวกรรมการบำรุงรักษา",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:false,year:2,sem:2},
+  {code:"04-422-212",name:"โครงงานเทคโนโลยีเครื่องกล",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-423-101",name:"นิวแมติกส์และไฮดรอลิกส์ในงานอุตสาหกรรม",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-423-102",name:"[วิชาชีพบังคับ 5]",credits:1,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-423-103",name:"ระบบอัตโนมัติและการควบคุม",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-423-104",name:"ปฏิบัติการระบบอัตโนมัติและการควบคุม",credits:2,cat:"2.2",group:"2.2",in2565:true,in2570:true,year:2,sem:2},
+
+  // 2.3 กลุ่มวิชาชีพเลือก (ยกเลิก 9 วิชาใน 2570)
+  {code:"04-424-201",name:"ปฏิบัติการเครื่องจักรกลอุตสาหกรรม",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:1},
+  {code:"04-424-202",name:"เครื่องมือวัดและระบบควบคุม",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:1},
+  {code:"04-424-203",name:"ปฏิบัติการเครื่องมือวัดและระบบควบคุม",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:1},
+  {code:"04-424-204",name:"เทคโนโลยีโรงผลิตกำลัง",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:1},
+  {code:"04-424-205",name:"หม้อไอน้ำอุตสาหกรรม",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-424-206",name:"ปฏิบัติการหม้อไอน้ำอุตสาหกรรม",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-424-207",name:"เครื่องทำความเย็นอุตสาหกรรม",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-424-208",name:"ปฏิบัติการเครื่องทำความเย็นอุตสาหกรรม",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-425-201",name:"เทคโนโลยียานยนต์สมัยใหม่",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:1},
+  {code:"04-425-202",name:"มอเตอร์และอิเล็กทรอนิกส์กำลังสำหรับยานยนต์ไฟฟ้า",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-425-203",name:"ปฏิบัติการมอเตอร์และอิเล็กทรอนิกส์กำลังสำหรับยานยนต์ไฟฟ้า",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-425-204",name:"การอนุรักษ์พลังงานและสิ่งแวดล้อม",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:1},
+  {code:"04-425-205",name:"การจัดการพลังงานสำหรับยานยนต์ไฟฟ้า",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:1},
+  {code:"04-425-206",name:"ระบบรองรับน้ำหนักและการขับเคลื่อนยานยนต์สมัยใหม่",credits:2,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-425-207",name:"ปฏิบัติการระบบรองรับน้ำหนักและการขับเคลื่อนยานยนต์",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:true,year:2,sem:2},
+  {code:"04-425-208",name:"ปฏิบัติการบำรุงรักษายานยนต์ไฟฟ้า",credits:1,cat:"2.3",group:"2.3",in2565:true,in2570:false,year:2,sem:2}
+];
+
+const GRADES = {
+  "A":  {point:4.0,label:"A",countCredit:true,pass:true},
+  "B+": {point:3.5,label:"B+",countCredit:true,pass:true},
+  "B":  {point:3.0,label:"B",countCredit:true,pass:true},
+  "C+": {point:2.5,label:"C+",countCredit:true,pass:true},
+  "C":  {point:2.0,label:"C",countCredit:true,pass:true},
+  "D+": {point:1.5,label:"D+",countCredit:true,pass:true},
+  "D":  {point:1.0,label:"D",countCredit:true,pass:true},
+  "F":  {point:0.0,label:"F",countCredit:true,pass:false},
+  "W":  {point:null,label:"W (ถอน)",countCredit:false,pass:false},
+  "I":  {point:0.0,label:"I (ไม่สมบูรณ์)",countCredit:true,pass:false},
+  "S":  {point:null,label:"S (ผ่าน)",countCredit:true,pass:true},
+  "U":  {point:null,label:"U (ไม่ผ่าน)",countCredit:false,pass:false},
+  "Au": {point:null,label:"Au (เรียนฟรี)",countCredit:false,pass:false},
+  "":   {point:null,label:"—",countCredit:false,pass:false}
+};
+
+const SEMESTER_KEYS = ["1-1","1-2","2-1","2-2"];
+const SEMESTER_LABELS = {"1-1":"ปี 1 เทอม 1","1-2":"ปี 1 เทอม 2","2-1":"ปี 2 เทอม 1","2-2":"ปี 2 เทอม 2"};
+
+// ===================== STATE =====================
+let state = {
+  curriculum: "2565",
+  selectedSem: "all",
+  grades: { "1-1": {}, "1-2": {}, "2-1": {}, "2-2": {} }
+};
+const STORAGE_KEY = "gpa-sim-v2";
+const TOTAL_CREDITS = { "2565": 75, "2570": 89 };
+
+// ===================== HELPERS =====================
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(!s || typeof s !== "object") return;
+    
+    // Initialize grades structure
+    const safeGrades = {"1-1":{},"1-2":{},"2-1":{},"2-2":{}};
+    
+    // Migration from v1 (old format: grades[code]=grade)
+    if(s.grades && !s.grades["1-1"] && !s.grades["all"]){
+      // Old format detected — distribute by year/sem
+      Object.entries(s.grades).forEach(([code,grade])=>{
+        if(typeof code !== "string" || !GRADES[grade]) return;
+        const c = COURSES.find(x=>x.code===code);
+        if(c && c.year && c.sem){
+          const key = `${c.year}-${c.sem}`;
+          if(safeGrades[key]) safeGrades[key][code] = grade;
+        }
+      });
+    } else if(s.grades){
+      // New format — copy safe values
+      Object.entries(s.grades).forEach(([sem, codes])=>{
+        if(!safeGrades[sem]) return;
+        Object.entries(codes).forEach(([code,grade])=>{
+          if(typeof code==="string" && GRADES[grade]){
+            safeGrades[sem][code] = grade;
+          }
+        });
+      });
+    }
+    
+    state = {
+      curriculum: s.curriculum === "2570" ? "2570" : "2565",
+      selectedSem: ["1-1","1-2","2-1","2-2","all"].includes(s.selectedSem) ? s.selectedSem : "all",
+      grades: safeGrades
+    };
+  }catch(e){
+    console.warn("loadState failed — using defaults", e);
+    // Reset to safe defaults
+    state.grades = {"1-1":{},"1-2":{},"2-1":{},"2-2":{}};
+  }
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e){console.warn("saveState failed",e)}
+}
+function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function fmt(n,d=2){return n==null||isNaN(n)?"—":n.toFixed(d)}
+function getActiveCourses(){
+  const flag = state.curriculum === "2565" ? "in2565" : "in2570";
+  return COURSES.filter(c=>c[flag]);
+}
+function getSemCourses(sem){
+  // sem = "1-1".."2-2" or "all"
+  const active = getActiveCourses();
+  if(sem==="all") return active;
+  const [y,s] = sem.split("-").map(Number);
+  return active.filter(c=>c.year===y && c.sem===s);
+}
+
+// ===================== CALCULATION =====================
+function calculateForScope(scope){
+  // scope = "all" or specific sem key
+  const courses = scope==="all"
+    ? getActiveCourses()
+    : getSemCourses(scope);
+
+  let totalCredits=0, totalPoints=0, creditsReg=0, creditsPass=0;
+  const byGroup={}, gradeCount={};
+
+  courses.forEach(c=>{
+    // Find grade from semester or from any semester for "all"
+    let g = "";
+    if(scope==="all"){
+      // Look in each semester
+      for(const sk of SEMESTER_KEYS){
+        if(state.grades[sk] && state.grades[sk][c.code]){
+          g = state.grades[sk][c.code]; break;
+        }
+      }
+    } else {
+      g = (state.grades[scope] && state.grades[scope][c.code]) || "";
+    }
+    const grade = GRADES[g] || GRADES[""];
+
+    if(!byGroup[c.group]) byGroup[c.group] = {credits:0, points:0};
+    byGroup[c.group].credits += c.credits;
+
+    if(grade.point !== null){
+      totalCredits += c.credits;
+      totalPoints += c.credits * grade.point;
+      byGroup[c.group].points += c.credits * grade.point;
+      creditsReg += c.credits;
+    }
+    if(grade.countCredit) creditsPass += grade.pass ? c.credits : 0;
+    if(g) gradeCount[g] = (gradeCount[g]||0) + 1;
+  });
+
+  const gpa = totalCredits > 0 ? totalPoints/totalCredits : null;
+  return {gpa, totalCredits, totalPoints, creditsReg, creditsPass, byGroup, gradeCount, courses};
+}
+
+function calculateCumulative(){
+  return calculateForScope("all");
+}
+
+// ===================== RENDER =====================
+function render(){
+  const sem = state.selectedSem;
+  const isAll = sem === "all";
+  const semData = calculateForScope(sem);
+  const cumData = calculateCumulative();
+  const $ = id=>document.getElementById(id);
+
+  // Semester badges
+  document.querySelectorAll(".sem-tab").forEach(b=>{
+    const isActive = b.dataset.sem === sem;
+    b.classList.toggle("active", isActive);
+    // Count badge
+    const sk = b.dataset.sem;
+    if(sk !== "all"){
+      const sd = calculateForScope(sk);
+      const txt = sd.totalCredits > 0 ? `<span class="badge">${sd.creditsReg}cr</span>` : "";
+      b.innerHTML = SEMESTER_LABELS[sk] + txt;
+    } else {
+      const cd = cumData;
+      const txt = cd.totalCredits > 0 ? `<span class="badge">${cd.creditsReg}cr</span>` : "";
+      b.innerHTML = "รวม GPAX" + txt;
+    }
+  });
+
+  // Summary
+  $("gpaSem").textContent = fmt(semData.gpa);
+  $("gpaCum").textContent = fmt(cumData.gpa);
+  $("gpaSemSub").textContent = semData.creditsReg > 0 ? `${semData.creditsReg} หน่วยกิต` : "ยังไม่ได้กรอกเกรด";
+  $("gpaCumSub").textContent = cumData.totalCredits > 0 ? `${cumData.totalCredits}/${TOTAL_CREDITS[state.curriculum]} หน่วยกิต` : "ยังไม่ได้กรอกเกรด";
+  $("creditsReg").textContent = isAll ? cumData.creditsReg : semData.creditsReg;
+  $("creditsRegSub").textContent = isAll ? `จาก ${TOTAL_CREDITS[state.curriculum]} cr` : "หน่วยกิต";
+  $("creditsPass").textContent = cumData.creditsPass;
+
+  // Labels adjust
+  $("gpaSemLabel").textContent = isAll ? "🎯 GPAX" : `🎯 GPA ${SEMESTER_LABELS[sem]||sem}`;
+  $("creditsRegLabel").textContent = isAll ? "📝 ลงทะเบียน (รวม)" : "📝 ลงทะเบียน";
+
+  // Status (based on cumulative)
+  const target = TOTAL_CREDITS[state.curriculum];
+  const cumReg = cumData.totalCredits;
+  const ratio = cumReg / target;
+  let status="—", sub="รอข้อมูล";
+  if(cumReg === 0){ status="—"; sub="รอข้อมูล"; }
+  else if(cumData.gpa !== null && cumData.gpa < 2.0){ status="⚠️ เสี่ยง", sub="GPAX ต่ำกว่า 2.0"; }
+  else if(ratio >= 1.0 && cumData.gpa >= 2.0){ status="✅ สำเร็จ", sub="ครบหน่วยกิต"; }
+  else if(cumData.gpa !== null && cumData.gpa >= 3.5){ status="⭐ เกียรตินิยม", sub="GPAX ≥ 3.50"; }
+  else if(cumData.gpa !== null){ status="📚 กำลังศึกษา", sub=`เหลือ ${target-cumReg} หน่วยกิต`; }
+  $("status").textContent = status;
+  $("statusSub").textContent = sub;
+
+  // Notice for 2570
+  document.getElementById("notice2570").classList.toggle("hidden", state.curriculum==="2565");
+
+  // Hint
+  const hintEl = document.getElementById("tableHint");
+  if(isAll){
+    hintEl.textContent = "แสดงรายวิชาทั้งหมด แยกตามเทอม → เปลี่ยนเกรดจะอัปเดตทั้ง GPAX และ GPA เทอม";
+  } else {
+    hintEl.textContent = `แสดงเฉพาะวิชาของ${SEMESTER_LABELS[sem]} → กรอกเกรดเพื่อดู GPA เทอม + ผลต่อ GPAX`;
+  }
+
+  // Course table
+  renderTable(sem, semData, cumData);
+
+  // Chart
+  renderChart(semData.gradeCount);
+}
+
+function renderTable(scope, semData, cumData){
+  // Group courses by semester (if all) or category (if specific)
+  if(scope === "all"){
+    renderTableAll(semData, cumData);
+  } else {
+    renderTableSemester(scope, semData, cumData);
+  }
+}
+
+function renderTableSemester(scope, semData, cumData){
+  const courses = semData.courses;
+  // Group by category > group
+  const byCat = {};
+  courses.forEach(c=>{
+    if(!byCat[c.cat]) byCat[c.cat] = {name: getCatName(c.cat), groups:{}};
+    if(!byCat[c.cat].groups[c.group]) byCat[c.cat].groups[c.group] = [];
+    byCat[c.cat].groups[c.group].push(c);
+  });
+
+  let html = '<div class="course-table">';
+  for(const ck of Object.keys(byCat)){
+    const cat = byCat[ck];
+    let catCredits=0;
+    Object.values(cat.groups).forEach(arr=>arr.forEach(c=>catCredits+=c.credits));
+    html += `<div class="category-block"><div class="category-header"><span>${escapeHtml(cat.name)}</span><span class="badge">${Object.values(cat.groups).flat().length} วิชา · ${catCredits} cr</span></div>`;
+    html += '<table class="courses"><thead><tr><th>รหัส</th><th>ชื่อวิชา</th><th>หน่วยกิต</th><th>เกรด</th><th>ค่า</th><th>ผลต่อ GPA</th></tr></thead><tbody>';
+
+    for(const gk of Object.keys(cat.groups)){
+      const arr = cat.groups[gk];
+      html += `<tr class="group-row"><td colspan="6">${escapeHtml(arr[0].group)} · ${arr.length} วิชา</td></tr>`;
+      arr.forEach(c=>renderCourseRow(c, scope, html));
+    }
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+  document.getElementById("courseContainer").innerHTML = html;
+  bindGradeEvents();
+}
+
+function renderTableAll(allData, cumData){
+  // Show all semesters grouped by semester > category > group
+  let html = '<div class="course-table">';
+  for(const sk of SEMESTER_KEYS){
+    const semCourses = getSemCourses(sk);
+    if(semCourses.length === 0) continue;
+    let semCredits=0, semPoints=0, semReg=0;
+    semCourses.forEach(c=>{
+      const g = (state.grades[sk] && state.grades[sk][c.code]) || "";
+      const grade = GRADES[g] || GRADES[""];
+      semCredits += c.credits;
+      if(grade.point !== null){ semPoints += c.credits*grade.point; semReg += c.credits; }
+    });
+    const semGpa = semReg > 0 ? semPoints/semReg : null;
+    html += `<div class="category-block">`;
+    html += `<div class="category-header" style="background:linear-gradient(to right,#475569,#64748b)"><span>📅 ${SEMESTER_LABELS[sk]}</span><span class="badge">${semCourses.length} วิชา · ${semCredits} cr${semGpa!==null?` · GPA ${fmt(semGpa)}`:""}</span></div>`;
+    html += '<table class="courses"><thead><tr><th>รหัส</th><th>ชื่อวิชา</th><th>หน่วยกิต</th><th>เกรด</th><th>ค่า</th><th>ผลต่อ GPA</th></tr></thead><tbody>';
+
+    // Group by category
+    const byCat = {};
+    semCourses.forEach(c=>{
+      if(!byCat[c.cat]) byCat[c.cat] = {name: getCatName(c.cat), courses:[]};
+      byCat[c.cat].courses.push(c);
+    });
+
+    for(const ck of Object.keys(byCat)){
+      const cat = byCat[ck];
+      html += `<tr class="group-row"><td colspan="6">${escapeHtml(cat.name)} · ${cat.courses.length} วิชา</td></tr>`;
+      cat.courses.forEach(c=>renderCourseRow(c, sk, html));
+    }
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+  document.getElementById("courseContainer").innerHTML = html;
+  bindGradeEvents();
+}
+
+function renderCourseRow(c, sem, html){
+  const flag = state.curriculum==="2565" ? "in2565" : "in2570";
+  const cancelled = !c[flag];
+  const currentGrade = (state.grades[sem] && state.grades[sem][c.code]) || "";
+  const grade = GRADES[currentGrade] || GRADES[""];
+  const pointCell = currentGrade && grade.point!==null ? `${grade.point.toFixed(1)}` : '<span class="cum special">—</span>';
+  const cls = currentGrade && grade.pass===false ? 'cum fail' : (currentGrade && grade.pass ? 'cum pass' : 'cum special');
+
+  // Calculate impact: if changed to A, what's the GPAX delta
+  let impactText = "";
+  if(currentGrade && grade.point !== null){
+    // มีเกรด A-F หรือ I → คำนวณ impact ถ้าเปลี่ยนเป็น A
+    const cum = calculateCumulative();
+    const curPoints = cum.totalPoints;
+    const curCredits = cum.totalCredits;
+    if(curCredits > 0){
+      const newPoints = curPoints - c.credits*grade.point + c.credits*4.0;
+      const newGpa = newPoints/curCredits;
+      const delta = newGpa - cum.gpa;
+      const sign = delta >= 0 ? "+" : "";
+      impactText = `<span class="impact-text">→A: ${fmt(newGpa)} (${sign}${delta.toFixed(2)})</span>`;
+    } else {
+      impactText = `<span class="impact-text">→A: 4.00</span>`;
+    }
+  } else if(!currentGrade){
+    // ยังไม่กรอก → ถ้าได้ A
+    const cum = calculateCumulative();
+    const newPoints = cum.totalPoints + c.credits*4.0;
+    const newCredits = cum.totalCredits + c.credits;
+    if(newCredits > 0){
+      const newGpa = newPoints/newCredits;
+      impactText = `<span class="impact-text">→A: ${fmt(newGpa)}</span>`;
+    }
+  } else {
+    // W/S/U/Au — ไม่มีผลต่อ GPA
+    impactText = `<span class="impact-text" style="color:var(--text-muted)">ไม่มีผล</span>`;
+  }
+
+  html += `<tr class="${cancelled?'row-cancelled':''}">
+    <td class="code">${escapeHtml(c.code)}</td>
+    <td class="name">${escapeHtml(c.name)}${cancelled?' <span style="font-size:10px;color:var(--text-muted)">(ยกเลิก 2570)</span>':''}</td>
+    <td class="credits">${c.credits}</td>
+    <td class="grade">
+      <select class="grade ${currentGrade?'has-grade':''}" data-code="${escapeHtml(c.code)}" data-sem="${escapeHtml(sem)}" ${cancelled?'disabled':''}>
+        ${Object.keys(GRADES).filter(k=>k!=="").map(k=>`<option value="${k}" ${currentGrade===k?'selected':''}>${GRADES[k].label}</option>`).join("")}
+      </select>
+    </td>
+    <td class="${cls}">${pointCell}</td>
+    <td class="impact">${impactText}</td>
+  </tr>`;
+}
+
+function getCatName(cat){
+  return ({
+    "1":"1. หมวดวิชาศึกษาทั่วไป",
+    "2.1":"2.1 หมวดวิชาเฉพาะ — พื้นฐานวิชาชีพ",
+    "2.2":"2.2 หมวดวิชาเฉพาะ — ชีพบังคับ",
+    "2.3":"2.3 หมวดวิชาเฉพาะ — ชีพเลือก"
+  })[cat] || cat;
+}
+
+function bindGradeEvents(){
+  document.querySelectorAll("select.grade").forEach(sel=>{
+    sel.addEventListener("change", e=>{
+      const code = e.target.dataset.code;
+      const sem = e.target.dataset.sem;
+      const val = e.target.value;
+      if(!state.grades[sem]) state.grades[sem] = {};
+      if(val) state.grades[sem][code] = val;
+      else delete state.grades[sem][code];
+      saveState();
+      render();
+    });
+  });
+}
+
+// ===================== CHART =====================
+let chart;
+function renderChart(gradeCount){
+  const order = ["A","B+","B","C+","C","D+","D","F","S","U","W","I","Au"];
+  const labels = order.filter(k=>gradeCount[k]);
+  const data = labels.map(k=>gradeCount[k]||0);
+  const colors = {"A":"#10b981","B+":"#34d399","B":"#60a5fa","C+":"#fbbf24","C":"#f59e0b","D+":"#fb923c","D":"#f97316","F":"#ef4444","S":"#94a3b8","U":"#cbd5e1","W":"#94a3b8","I":"#94a3b8","Au":"#cbd5e1"};
+  const ctx = document.getElementById("gradeChart");
+  if(chart) chart.destroy();
+  if(labels.length===0){
+    ctx.getContext("2d").clearRect(0,0,ctx.width,ctx.height);
+    document.getElementById("gradeList").innerHTML = '<p style="padding:40px 0;text-align:center">📋 ยังไม่มีข้อมูล — กรอกเกรดเพื่อดูกราฟ</p>';
+    return;
+  }
+  chart = new Chart(ctx, {
+    type:"bar",
+    data:{labels:labels.map(k=>GRADES[k]?.label||k), datasets:[{label:"จำนวนวิชา", data, backgroundColor:labels.map(k=>colors[k]||"#94a3b8"), borderRadius:6}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.raw} วิชา`}}},
+      scales:{y:{beginAtZero:true, ticks:{stepSize:1, precision:0}, title:{display:true,text:"จำนวนวิชา"}}, x:{title:{display:true,text:"เกรด"}}}
+    }
+  });
+  document.getElementById("gradeList").innerHTML = labels.map(k=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span><span style="display:inline-block;width:10px;height:10px;background:${colors[k]};border-radius:3px;margin-right:6px"></span>${GRADES[k].label}</span><strong>${gradeCount[k]||0} วิชา</strong></div>`).join("");
+}
+
+// ===================== EVENTS =====================
+document.getElementById("curriculum").addEventListener("change", e=>{
+  state.curriculum = e.target.value;
+  saveState(); render();
+});
+document.querySelectorAll(".sem-tab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    state.selectedSem = b.dataset.sem;
+    saveState(); render();
+  });
+});
+
+// Quick fill (defensive)
+document.querySelectorAll("[data-fill]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    const grade = b.dataset.fill;
+    if(!GRADES[grade]) { alert("เกรดไม่ถูกต้อง: " + grade); return; }
+    const scope = state.selectedSem;
+    const flag = state.curriculum==="2565" ? "in2565" : "in2570";
+    let count = 0;
+    if(scope === "all"){
+      if(!confirm(`เติมเกรด ${GRADES[grade].label} ให้ทุกวิชาทุกเทอม?\n(ข้อมูลเก่า?ะถูกทับ — กู้คืนไม่ได้)`)) return;
+      SEMESTER_KEYS.forEach(sk=>{
+        if(!state.grades[sk]) state.grades[sk] = {};
+        getSemCourses(sk).forEach(c=>{
+          if(c[flag]){ state.grades[sk][c.code] = grade; count++; }
+        });
+      });
+    } else {
+      if(!state.grades[scope]) state.grades[scope] = {};
+      getSemCourses(scope).forEach(c=>{
+        if(c[flag]){ state.grades[scope][c.code] = grade; count++; }
+      });
+    }
+    console.log(`Quick fill ${grade}: ${count} courses in ${scope}`);
+    saveState(); render();
+  });
+});
+document.querySelector("[data-clear-sem]")?.addEventListener("click", ()=>{
+  const scope = state.selectedSem;
+  if(scope === "all"){
+    if(!confirm("เคลียร์เกรดทั้งหมดทุกเทอม?")) return;
+    SEMESTER_KEYS.forEach(sk=>{ state.grades[sk] = {}; });
+  } else {
+    state.grades[scope] = {};
+  }
+  saveState(); render();
+});
+document.querySelector("[data-clear-all]")?.addEventListener("click", ()=>{
+  if(!confirm("⚠️ ล้างเกรดทั้งหมดทุกเทอมถาวร?\n(กู้คืนไม่ได้)")) return;
+  state.grades = {"1-1":{},"1-2":{},"2-1":{},"2-2":{}};
+  saveState(); render();
+});
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  if(confirm("⚠️ ล้างเกรดทั้งหมดทุกเทอม?\n(ข้อมูลจะหายถาวร กู้คืนไม่ได้)")){
+    state.grades = {"1-1":{},"1-2":{},"2-1":{},"2-2":{}};
+    saveState(); render();
+  }
+});
+document.getElementById("printBtn").addEventListener("click", ()=>window.print());
+
+
+document.getElementById("copyDebugBtn")?.addEventListener("click", ()=>{
+  const lines = [];
+  lines.push("== STATE ==");
+  lines.push("curriculum: " + state.curriculum);
+  lines.push("selectedSem: " + state.selectedSem);
+  lines.push("== GRADES ==");
+  SEMESTER_KEYS.forEach(sk=>{
+    const obj = state.grades[sk] || {};
+    const codes = Object.keys(obj);
+    lines.push(sk + ": " + codes.length + " grades");
+    codes.forEach(code=>{
+      lines.push("  " + code + " = " + obj[code]);
+    });
+  });
+  lines.push("== CALCULATION ==");
+  const cum = calculateCumulative();
+  lines.push("Cumulative: GPA=" + fmt(cum.gpa) + " cr=" + cum.totalCredits + " pts=" + cum.totalPoints.toFixed(1));
+  SEMESTER_KEYS.forEach(sk=>{
+    const r = calculateForScope(sk);
+    lines.push(sk + ": GPA=" + fmt(r.gpa) + " cr=" + r.totalCredits + " pass=" + r.creditsPass);
+  });
+  lines.push("== COURSE COUNTS ==");
+  lines.push("Active (2565): " + getActiveCourses().length);
+  lines.push("1-1: " + getSemCourses("1-1").length);
+  lines.push("1-2: " + getSemCourses("1-2").length);
+  lines.push("2-1: " + getSemCourses("2-1").length);
+  lines.push("2-2: " + getSemCourses("2-2").length);
+  lines.push("== LOCALSTORAGE ==");
+  lines.push("Storage key: " + STORAGE_KEY);
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw){
+    lines.push("Size: " + raw.length + " chars");
+    try{
+      const parsed = JSON.parse(raw);
+      lines.push("Keys: " + Object.keys(parsed).join(", "));
+    }catch(e){ lines.push("Parse error: " + e.message); }
+  } else {
+    lines.push("(empty)");
+  }
+  const output = lines.join("\n");
+  document.getElementById("debugOutput").textContent = output;
+  navigator.clipboard.writeText(output).then(()=>{
+    document.getElementById("copyDebugBtn").textContent = "✅ ก๊อปปี้แล้ว!";
+    setTimeout(()=>{
+      document.getElementById("copyDebugBtn").textContent = "📋 ก๊อปปี้ข้อมูลไปแปะแชท";
+    }, 2000);
+  }).catch(()=>{
+    document.getElementById("copyDebugBtn").textContent = "📋 เลือกข้อความด้านล่างแล้วก๊อปปี้";
+  });
+});
+
+// Init
+loadState();
+document.getElementById("curriculum").value = state.curriculum;
+render();
+</script>
+</body>
+</html>

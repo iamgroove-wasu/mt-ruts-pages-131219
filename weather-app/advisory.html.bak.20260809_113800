@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คำแนะนำรายตำบล — วช.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================ */
+  /* PROFESSIONAL DESIGN SYSTEM */
+  /* ============================================ */
+  :root {
+    --c-navy-50: #f0f4ff;
+    --c-navy-100: #dbe5fe;
+    --c-navy-200: #b6cdfe;
+    --c-navy-500: #3b5fb8;
+    --c-navy-600: #2a4894;
+    --c-navy-700: #1e3a8a;
+    --c-navy-800: #15296b;
+    --c-navy-900: #0a1e3f;
+    --c-slate-50: #f8fafc;
+    --c-slate-100: #f1f5f9;
+    --c-slate-200: #e2e8f0;
+    --c-slate-300: #cbd5e1;
+    --c-slate-400: #94a3b8;
+    --c-slate-500: #64748b;
+    --c-slate-600: #475569;
+    --c-slate-700: #334155;
+    --c-slate-800: #1e293b;
+    --c-slate-900: #0f172a;
+    --c-emerald-50: #ecfdf5;
+    --c-emerald-500: #10b981;
+    --c-emerald-600: #059669;
+    --c-emerald-700: #047857;
+    --c-amber-50: #fffbeb;
+    --c-amber-500: #f59e0b;
+    --c-amber-600: #d97706;
+    --c-rose-50: #fff1f2;
+    --c-rose-500: #f43f5e;
+    --c-rose-600: #e11d48;
+    --c-rose-700: #be123c;
+    --c-cyan-500: #06b6d4;
+    --c-sky-500: #0ea5e9;
+    --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 6px rgba(15,23,42,0.04), 0 2px 4px rgba(15,23,42,0.04);
+    --shadow-lg: 0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04);
+    --shadow-xl: 0 20px 25px rgba(15,23,42,0.08), 0 10px 10px rgba(15,23,42,0.04);
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body { font-family: 'Inter', 'Sarabun', sans-serif; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); color: var(--c-slate-900); letter-spacing: -0.011em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+  .navy { color: var(--c-navy-700); }
+  .bg-navy { background: var(--c-navy-700); }
+  /* Card refined */
+  .card { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition), transform var(--transition); }
+  .card:hover { box-shadow: var(--shadow-md); }
+  .card-elev { background: white; border: 1px solid var(--c-slate-200); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+  /* Section title refined */
+  h2.page-title { font-family: 'Sarabun', sans-serif; font-size: 28px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.02em; }
+  h2.section-title { font-family: 'Sarabun', sans-serif; font-size: 18px; font-weight: 700; color: var(--c-navy-800); letter-spacing: -0.01em; }
+  /* Zone tab refined */
+  .zone-tab { padding: 10px 14px; border-radius: var(--radius); font-weight: 600; font-size: 13px; background: white; border: 1.5px solid var(--c-slate-200); color: var(--c-slate-600); cursor: pointer; transition: all var(--transition); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .zone-tab:hover { border-color: var(--c-navy-300); color: var(--c-navy-700); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .zone-tab.active { background: var(--c-navy-700); color: white; border-color: var(--c-navy-700); box-shadow: 0 4px 12px rgba(30,58,138,0.25); }
+  /* Status pill refined */
+  .status-pill { padding: 5px 12px; border-radius: 999px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; letter-spacing: 0.01em; }
+  .status-danger { background: var(--c-rose-50); color: var(--c-rose-700); border: 1px solid rgba(225,29,72,0.25); }
+  .status-warn { background: var(--c-amber-50); color: var(--c-amber-600); border: 1px solid rgba(217,119,6,0.25); }
+  .status-ok { background: var(--c-emerald-50); color: var(--c-emerald-700); border: 1px solid rgba(4,120,87,0.25); }
+  /* Status dot refined */
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+  .status-active { background: var(--c-emerald-500); }
+  .status-warn { background: var(--c-amber-500); }
+  .status-danger { background: var(--c-rose-500); }
+  /* Hero refined */
+  .hero-card { background: linear-gradient(135deg, #f8fafc 0%, white 100%); border: 1px solid var(--c-slate-200); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-sm); }
+  .hero-title { font-family: 'Sarabun', sans-serif; font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: var(--c-navy-900); letter-spacing: -0.03em; line-height: 1.1; }
+  /* Project header refined */
+  .project-header { background: linear-gradient(135deg, #0a1e3f 0%, #15296b 50%, #1e3a8a 100%); color: white; padding: 16px 24px; box-shadow: 0 4px 20px rgba(10,30,63,0.25); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(251,191,36,0.3); }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 20px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 56px; width: auto; max-width: 92px; object-fit: contain; display: block; border-radius: 6px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); transition: transform var(--transition); }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 64px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.5), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', sans-serif; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; line-height: 1.45; margin-top: 6px; letter-spacing: -0.005em; word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.02em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 12px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+  /* Buttons refined */
+  button, .btn { font-family: 'Inter', sans-serif; font-weight: 600; transition: all var(--transition); cursor: pointer; }
+  button:active { transform: scale(0.98); }
+  /* Crop icon refined */
+  .crop-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; box-shadow: inset 0 0 0 3px white, 0 0 0 1px rgba(0,0,0,0.04); }
+  /* Day card refined */
+  .day-card { border-radius: var(--radius-md); padding: 14px 10px; text-align: center; transition: all var(--transition); cursor: pointer; border: 1.5px solid var(--c-slate-100); background: white; }
+  .day-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--c-navy-200); }
+  .day-card.today { background: linear-gradient(135deg, var(--c-navy-700) 0%, var(--c-navy-800) 100%); color: white; border-color: var(--c-navy-700); box-shadow: 0 6px 20px rgba(30,58,138,0.2); }
+  .day-card.today .day-temp { color: white; }
+  .weather-icon { font-size: 44px; line-height: 1; margin: 8px 0; }
+  /* Map marker refined */
+  .map-marker { background: white; border: 3px solid var(--c-navy-700); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform var(--transition); }
+  .map-marker.active { background: var(--c-navy-700); color: white; transform: scale(1.15); box-shadow: 0 6px 16px rgba(30,58,138,0.4); }
+  /* Hour cell refined */
+  .hour-cell { flex: 0 0 70px; text-align: center; padding: 10px 6px; border-radius: var(--radius-sm); background: white; border: 1px solid var(--c-slate-100); transition: background var(--transition); }
+  .hour-cell:hover { background: var(--c-navy-50); }
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--c-slate-100); }
+  ::-webkit-scrollbar-thumb { background: var(--c-slate-300); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-slate-400); }
+
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; }
+  .navy { color: #1e3a8a; } .bg-navy { background: #1e3a8a; }
+  .card { background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(15,23,42,0.06); overflow: hidden; }
+  .zone-tab { padding: 12px 18px; border-radius: 14px; font-weight: 600; font-size: 14px; background: white; border: 2px solid #e2e8f0; color: #475569; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+  .zone-tab:hover { border-color: #94a3b8; transform: translateY(-2px); }
+  .zone-tab.active { background: #1e3a8a; color: white; border-color: #1e3a8a; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30,58,138,0.3); }
+  .status-pill { padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+  .status-danger { background: #fee2e2; color: #dc2626; border: 1.5px solid #dc2626; }
+  .status-warn { background: #fef3c7; color: #d97706; border: 1.5px solid #d97706; }
+  .status-ok { background: #dcfce7; color: #16a34a; border: 1.5px solid #16a34a; }
+  .action-card { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; font-size: 14px; }
+  .action-trigger { background: #fef9c3; border-left: 4px solid #eab308; }
+  .action-do { background: #ecfdf5; border-left: 4px solid #16a34a; }
+  .big-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; flex-shrink: 0; box-shadow: inset 0 0 0 3px white, 0 0 0 2px rgba(0,0,0,0.05); }
+  .stat-bubble { display: flex; flex-direction: column; align-items: center; padding: 16px; background: linear-gradient(135deg, #f8fafc, #e2e8f0); border-radius: 14px; flex: 1; }
+  .stat-icon { font-size: 32px; margin-bottom: 4px; }
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .fade-enter { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .nav-link { padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; }
+  .nav-link.active { background: #1e3a8a; color: white; }
+  .nav-link:not(.active) { color: #475569; }
+  .nav-link:not(.active):hover { background: #f1f5f9; }
+  /* PROJECT HEADER (elegant + responsive) */
+  .project-header { background: linear-gradient(180deg, #0c1e3e 0%, #1e3a8a 50%, #1e40af 100%); color: white; padding: 14px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 50; border-bottom: 2px solid #fbbf24; }
+  .project-header-inner { max-width: 1320px; margin: 0 auto; }
+  .project-header-row { display: flex; align-items: center; gap: 18px; }
+  .logo-cluster { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .logo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .logo-img { height: 58px; width: auto; max-width: 95px; object-fit: contain; display: block; border-radius: 4px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); transition: transform 0.2s; }
+  .logo-img:hover { transform: scale(1.05); }
+  .header-divider { width: 1px; height: 60px; background: linear-gradient(180deg, transparent, rgba(251,191,36,0.4), transparent); }
+  .project-info { flex: 1; min-width: 0; text-align: center; }
+  .project-eyebrow { font-size: 9px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; color: #fbbf24; }
+  .project-name { font-family: 'Sarabun', 'Inter', serif; font-size: clamp(11px, 1.4vw, 15px); font-weight: 700; line-height: 1.4; margin-top: 6px; letter-spacing: -0.01em; text-shadow: 0 1px 3px rgba(0,0,0,0.3); word-wrap: break-word; overflow-wrap: break-word; }
+  .project-tagline { font-size: 10px; opacity: 0.7; margin-top: 4px; font-style: italic; letter-spacing: 0.03em; }
+  @media (max-width: 768px) { .project-header-row { flex-direction: column; align-items: flex-start; gap: 10px; } .header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-info { text-align: left; } }
+
+.header-divider { display: none; } .logo-img { height: 42px; max-width: 70px; } .project-name { font-size: 12px; } }
+
+.logo-img { height: 40px; max-width: 72px; } }
+
+}
+  .logo-cluster { display: flex; align-items: center; gap: 8px; }
+  .logo-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); flex-shrink: 0; font-weight: 800; font-size: 12px; }
+  .logo-circle-1 { background: #1e3a8a; color: white; }
+  .logo-circle-2 { background: #f59e0b; color: white; }
+  .logo-circle-3 { background: #059669; color: white; font-size: 18px; }
+  .logo-label { font-size: 9px; color: #64748b; text-align: center; max-width: 56px; line-height: 1.1; }
+
+
+@media (min-width: 768px) {
+}
+.pi-card { text-align: right; font-size: 11px; }
+  .pi-card-label { color: #64748b; font-weight: 600; }
+  .pi-card-name { color: #0f172a; font-weight: 700; }
+  .pi-card-org { color: #64748b; font-size: 10px; }
+
+</style>
+</head>
+<body class="min-h-screen">
+<!-- PROJECT HEADER (elegant) -->
+<header class="project-header">
+  <div class="project-header-inner">
+    <div class="project-header-row">
+      <!-- 3 Logos -->
+      <div class="logo-cluster">
+        <div class="logo-item">
+          <img src="assets/logos/logo-ruts.jpg" alt="มทร.ศรีวิชัย" class="logo-img" title="มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-wj.jpg" alt="วช." class="logo-img" title="สำนักงานการวิจัยแห่งชาติ (วช.)">
+        </div>
+        <div class="logo-item">
+          <img src="assets/logos/logo-doae.jpg" alt="DOAE" class="logo-img" title="กรมส่งเสริมการเกษตร">
+        </div>
+      </div>
+      <!-- Divider -->
+      <div class="header-divider"></div>
+      <!-- Project Name (elegant) -->
+      <div class="project-info">
+        <div class="project-eyebrow">โครงการวิจัย · สำนักงานการวิจัยแห่งชาติ (วช.)</div>
+        <div class="project-name">การเพิ่มประสิทธิภาพการใช้น้ำและเสริมความสามารถทางการประมงและการเกษตร</div>
+        <div class="project-tagline">ลุ่มน้ำทะเลสาบสงขลา · Songkhla Lake Basin</div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- END PROJECT HEADER --><!-- Header -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex justify-between items-center h-16">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-navy flex items-center justify-center text-white text-xl">🌾</div>
+        <div><h1 class="text-base font-bold navy">ลุ่มน้ำทะเลสาบสงขลา</h1></div>
+      </a>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="index.html" class="nav-link">🏠 หน้าหลัก</a>
+        <a href="advisory.html" class="nav-link active">🌿 คำแนะนำ</a>
+        <span class="nav-link opacity-50 cursor-not-allowed">📚 พืช</span>
+      </nav>
+      <div class="text-xs text-slate-500">✓ Verified</div>
+    </div>
+  </div>
+</header>
+
+<main x-data="advisoryApp()" x-init="init()" class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+  <!-- Hero -->
+  <section class="text-center mb-6 fade-enter">
+    <div class="text-5xl mb-2">🌿</div>
+    <h1 class="text-2xl sm:text-3xl font-bold navy mb-1">คำแนะนำรายตำบล</h1>
+    <p class="text-sm text-slate-600">5 ตำบล · 8 พืช · 2,210 ครัวเรือน</p>
+  </section>
+
+  <!-- Zone Tabs -->
+  <section class="mb-6 sticky top-16 z-20 bg-slate-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 border-b border-slate-200">
+    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+      <template x-for="z in zones" x-bind:key="z.id">
+        <button @click="activeZone = z.id" :class="activeZone === z.id ? 'active' : ''" class="zone-tab">
+          <span x-text="z.emoji"></span>
+          <span x-text="z.name"></span>
+        </button>
+      </template>
+    </div>
+  </section>
+
+  <!-- Zone Content -->
+  <template x-for="z in zones" x-bind:key="z.id">
+    <section x-show="activeZone === z.id" x-transition:enter="fade-enter" class="space-y-4 fade-enter">
+
+      <!-- Zone Hero Card -->
+      <div class="card">
+        <div class="p-5 sm:p-6 text-center" :style="'background: linear-gradient(135deg, ' + z.bg + ');'">
+          <div class="text-6xl mb-2" x-text="z.emoji"></div>
+          <h2 class="text-2xl sm:text-3xl font-bold" :style="'color: ' + z.color" x-text="z.name"></h2>
+          <p class="text-sm text-slate-700 mt-1" x-text="z.province + ' · ' + z.amphoe"></p>
+          <p class="text-xs text-slate-600 mt-2 max-w-xl mx-auto" x-text="z.summary"></p>
+        </div>
+
+        <!-- 3 Stat Bubbles -->
+        <div class="grid grid-cols-3 gap-3 p-4 border-t border-slate-100 bg-slate-50">
+          <div class="stat-bubble">
+            <div class="stat-icon">👨‍🌾</div>
+            <div class="text-2xl font-bold navy font-mono" x-text="z.total_farmers.toLocaleString('th-TH')"></div>
+            <div class="text-[10px] text-slate-600 uppercase tracking-wider">ครัวเรือน</div>
+          </div>
+          <div class="stat-bubble">
+            <div class="stat-icon">🌾</div>
+            <div class="text-2xl font-bold text-emerald-700 font-mono" x-text="z.crops.length"></div>
+            <div class="text-[10px] text-slate-600 uppercase tracking-wider">พืชหลัก</div>
+          </div>
+          <div class="stat-bubble">
+            <div class="stat-icon">📏</div>
+            <div class="text-2xl font-bold text-amber-700 font-mono" x-text="z.total_area_rai.toLocaleString('th-TH')"></div>
+            <div class="text-[10px] text-slate-600 uppercase tracking-wider">ไร่</div>
+          </div>
+        </div>
+
+        <!-- Pain Points -->
+        <div class="p-4 border-t border-slate-100">
+          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">⚠ ปัญหาหลัก</div>
+          <div class="flex flex-wrap justify-center gap-2">
+            <template x-for="(pain, idx) in z.pain_points" x-bind:key="idx">
+              <span class="status-pill status-danger">
+                <span class="text-base" x-text="pain.icon"></span>
+                <span x-text="pain.text"></span>
+              </span>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Crop Cards -->
+      <template x-for="crop in z.crops" x-bind:key="crop.id">
+        <div class="card">
+          <!-- Crop Header with SVG Illustration -->
+          <div class="p-5 flex items-center gap-4" :style="'background: linear-gradient(135deg, ' + crop.bg_light + ', white);'">
+            <!-- SVG Illustration -->
+            <div class="big-circle flex-shrink-0" :style="'background: ' + crop.bg_icon" x-html="crop.svg"></div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-xl font-bold navy mb-1" x-text="crop.name"></h3>
+              <div class="text-xs text-slate-600" x-text="crop.sci_name"></div>
+            </div>
+            <div class="flex-shrink-0">
+              <span :class="'status-pill ' + crop.status_class">
+                <span x-text="crop.status_icon"></span>
+                <span x-text="crop.status_label"></span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Key Stats (3 bubbles) -->
+          <div class="grid grid-cols-3 gap-px bg-slate-100">
+            <div class="bg-white p-3 text-center">
+              <div class="text-2xl mb-1">👨‍🌾</div>
+              <div class="text-lg font-bold navy font-mono" x-text="crop.farmer_count.toLocaleString('th-TH')"></div>
+              <div class="text-[10px] text-slate-500">ครัวเรือน</div>
+            </div>
+            <div class="bg-white p-3 text-center">
+              <div class="text-2xl mb-1">📏</div>
+              <div class="text-lg font-bold text-emerald-700 font-mono" x-text="crop.area_rai.toLocaleString('th-TH')"></div>
+              <div class="text-[10px] text-slate-500">ไร่</div>
+            </div>
+            <div class="bg-white p-3 text-center">
+              <div class="text-2xl mb-1">📦</div>
+              <div class="text-lg font-bold text-amber-700 font-mono" x-text="crop.production.toLocaleString('th-TH')"></div>
+              <div class="text-[10px] text-slate-500">ตัน/ปี</div>
+            </div>
+          </div>
+
+          <!-- Trigger (1 line icon + text) -->
+          <div class="px-5 py-3 bg-amber-50 border-t border-amber-100">
+            <div class="flex items-center gap-3">
+              <div class="text-3xl">⚠️</div>
+              <div class="flex-1">
+                <div class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">เงื่อนไขเตือนภัย</div>
+                <div class="text-sm font-semibold text-slate-800 mt-0.5" x-text="crop.trigger_short"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Items (visual icons + 1-line) -->
+          <div class="p-5 space-y-2 bg-white">
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">✅ ต้องทำ</div>
+            <template x-for="(action, idx) in crop.actions" x-bind:key="idx">
+              <div class="action-card action-trigger">
+                <div class="text-3xl flex-shrink-0" x-text="action.icon"></div>
+                <div class="flex-1">
+                  <div class="text-[10px] font-bold text-amber-800 uppercase tracking-wider" x-text="'เมื่อ ' + action.when"></div>
+                  <div class="text-sm font-semibold text-slate-800 mt-0.5" x-text="action.do"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Outcome (1 line) -->
+          <div class="px-5 py-3 bg-emerald-50 border-t border-emerald-100">
+            <div class="flex items-center gap-3">
+              <div class="text-3xl">📈</div>
+              <div class="flex-1">
+                <div class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">ผลที่คาดหวัง</div>
+                <div class="text-sm font-semibold text-emerald-900 mt-0.5" x-text="crop.outcome_short"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </section>
+  </template>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 mt-12 py-6 px-4 text-center">
+  <p class="text-xs">🌾 วช. ทะเลสาบสงขลา · ✓ Verified from วช.</p>
+  <p class="text-[10px] text-slate-500 mt-1">ข้อมูลจาก research-baseline.json · 71 หน้า · 40 papers verified</p>
+</footer>
+
+<script>
+function advisoryApp() {
+  return {
+    activeZone: 'khuan_maphrao',
+    zones: [],
+    
+    // SVG illustrations for crops (universal, no language barrier)
+    svg: {
+      rice: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 8 L32 56" stroke="#854d0e" stroke-width="2" stroke-linecap="round"/><path d="M32 18 C 28 16, 24 14, 22 18 C 24 22, 28 22, 32 20" fill="#fbbf24"/><path d="M32 26 C 36 24, 40 22, 42 26 C 40 30, 36 30, 32 28" fill="#fbbf24"/><path d="M32 34 C 28 32, 24 30, 22 34 C 24 38, 28 38, 32 36" fill="#fbbf24"/><path d="M32 42 C 36 40, 40 38, 42 42 C 40 46, 36 46, 32 44" fill="#fbbf24"/></svg>`,
+      vegetable: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="40" r="14" fill="#16a34a"/><path d="M22 30 Q 18 20, 22 16" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M32 26 Q 30 14, 34 10" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M42 30 Q 46 22, 42 18" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+      betel: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M16 50 Q 16 30, 32 20 Q 48 10, 50 14" stroke="#16a34a" stroke-width="3" fill="none"/><circle cx="50" cy="14" r="8" fill="#16a34a"/><circle cx="42" cy="20" r="6" fill="#22c55e"/><circle cx="34" cy="26" r="5" fill="#16a34a"/></svg>`,
+      banana: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M14 22 Q 10 14, 18 12" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M18 14 Q 30 18, 46 38 Q 50 44, 46 48 Q 32 48, 14 30 Q 10 26, 14 22 Z" fill="#fbbf24"/></svg>`,
+      coconut: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="32" width="4" height="22" fill="#92400e"/><path d="M32 32 L 14 14 M 32 32 L 50 14 M 32 32 L 32 8 M 32 32 L 22 8 M 32 32 L 42 8" stroke="#16a34a" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="42" r="5" fill="#92400e"/><circle cx="32" cy="46" r="5" fill="#92400e"/><circle cx="44" cy="42" r="5" fill="#92400e"/></svg>`,
+      chili: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M22 16 Q 18 14, 18 18 L 22 18" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M32 12 Q 24 12, 22 18 L 28 50 Q 30 56, 36 54 Q 42 50, 38 28 Q 36 14, 32 12 Z" fill="#dc2626"/><path d="M30 22 Q 32 20, 34 22" stroke="#fbbf24" stroke-width="2" fill="none"/></svg>`,
+      prawn: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M14 32 Q 20 22, 32 22 Q 44 22, 50 28 L 54 26 M 50 28 L 54 30 M 50 28 L 54 30" stroke="#f97316" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M14 32 Q 12 36, 16 40 L 22 38" stroke="#f97316" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="46" cy="26" r="1.5" fill="#0f172a"/></svg>`
+    },
+    
+    init() {
+      this.zones = [
+        {
+          id: 'khuan_maphrao', name: 'ควนมะพร้าว', province: 'พัทลุง', amphoe: 'อ.เมือง',
+          emoji: '🌊', color: '#1e40af', bg: '#dbeafe, #eff6ff',
+          total_farmers: 170, total_area_rai: 700,
+          summary: 'พื้นที่ราบลุ่ม เสี่ยงน้ำท่วม — 13 ครั้งใน 7 ปี',
+          pain_points: [{icon: '🌊', text: 'น้ำท่วม 13 ครั้ง/7 ปี'}, {icon: '🏘️', text: '16 หมู่บ้าน เคยถูกท่วม'}],
+          crops: [
+            {id:'rice', name:'ข้าวสังข์หยด', sci_name:'Oryza sativa · GI Phatthalung', farmer_count:120, area_rai:600, production:200,
+              svg: this.svg.rice, bg_light: '#fef9c3, #fffbeb', bg_icon: '#fde047',
+              status_class:'status-ok', status_icon:'✓', status_label:'ปกติ',
+              trigger_short: 'ฝน 7 วัน >100 mm (เสี่ยงท่วม)',
+              actions:[
+                {icon:'🌊', when:'ฝน 7 วัน >100 mm', do:'ระบายน้ำออกจากแปลง'},
+                {icon:'⏰', when:'น้ำท่วม >7 วัน', do:'งดใส่ปุ๋ย ตรวจระดับน้ำ'},
+                {icon:'☀️', when:'ฝนทิ้งช่วง >7 วัน', do:'สูบน้ำพลังแสงอาทิตย์'}
+              ],
+              outcome_short:'ผลผลิต +100 กก./ไร่ · รายได้ +1,000 บ./ไร่/ปี'},
+            {id:'veg', name:'ผักเศรษฐกิจ', sci_name:'Mixed vegetables', farmer_count:50, area_rai:100, production:200,
+              svg: this.svg.vegetable, bg_light: '#dcfce7, #f0fdf4', bg_icon: '#22c55e',
+              status_class:'status-ok', status_icon:'✓', status_label:'ปกติ',
+              trigger_short: 'น้ำท่วมขัง >30 วัน',
+              actions:[
+                {icon:'💧', when:'ฝนตกหนัก', do:'ระบายน้ำ คลุมแปลง'},
+                {icon:'☣️', when:'ความชื้น >85%', do:'พ่น Bacillus ป้องกันเชื้อรา'}
+              ],
+              outcome_short:'ผลผลิต +200 กก./ไร่ · รายได้ +6,000 บ./ไร่'}
+          ]},
+          {
+          id: 'tha_khae', name: 'ท่าแค', province: 'พัทลุง', amphoe: 'อ.เมือง',
+          emoji: '☀️', color: '#b45309', bg: '#fed7aa, #fef3c7',
+          total_farmers: 400, total_area_rai: 800,
+          summary: 'นอกเขตชลประทาน — เสี่ยงน้ำแล้ง + น้ำเค็ม ก.พ.-พ.ค.',
+          pain_points: [{icon: '☀️', text: 'น้ำแล้ง นอกเขตชลประทาน'}, {icon: '🧂', text: 'น้ำเค็มรุกล้ำ ก.พ.-พ.ค.'}],
+          crops: [
+            {id:'betel', name:'พลู', sci_name:'Piper betle', farmer_count:400, area_rai:800, production:400,
+              svg: this.svg.betel, bg_light: '#d1fae5, #ecfdf5', bg_icon: '#10b981',
+              status_class:'status-warn', status_icon:'⚠', status_label:'เฝ้าระวัง',
+              trigger_short: 'ไม่มีฝน >14 วัน',
+              actions:[
+                {icon:'☀️', when:'ฝนทิ้งช่วง >7 วัน', do:'เตรียมสูบน้ำ คลุมดิน'},
+                {icon:'🚰', when:'ฝนไม่ตก >14 วัน', do:'สูบน้ำจากแหล่งสำรอง'},
+                {icon:'🧂', when:'ความเค็ม >2 ppt', do:'ใช้น้ำบ่อ/น้ำฝน'}
+              ],
+              outcome_short:'ผลผลิต +300 กก./ไร่ · รายได้ +22,500 บ./ไร่'}
+          ]},
+          {
+          id: 'khao_chai_son', name: 'เขาชัยสน', province: 'พัทลุง', amphoe: 'อ.เขาชัยสน',
+          emoji: '⛰️', color: '#a16207', bg: '#fef3c7, #fef9c3',
+          total_farmers: 40, total_area_rai: 200,
+          summary: 'เชิงเขาบรรทัด — ทางผ่านน้ำป่า · กล้วยท่วม 3 วันตาย',
+          pain_points: [{icon: '🌊', text: 'น้ำป่าไหลผ่าน'}, {icon: '💧', text: 'ชลประทานเข้าไม่ถึง'}],
+          crops: [
+            {id:'banana', name:'กล้วยหอมทอง', sci_name:'Musa (Kluai Hom Thong)', farmer_count:40, area_rai:200, production:800,
+              svg: this.svg.banana, bg_light: '#fef9c3, #fffbeb', bg_icon: '#fbbf24',
+              status_class:'status-ok', status_icon:'✓', status_label:'ปกติ',
+              trigger_short: 'ฝน 7 วัน >150 mm',
+              actions:[
+                {icon:'🌊', when:'ฝนตกหนัก', do:'ระบายน้ำออกจากแปลง'},
+                {icon:'⏰', when:'น้ำท่วม >3 วัน', do:'ตัดเครือที่จมน้ำ'}
+              ],
+              outcome_short:'ผลผลิต +500 กก./ไร่ · รายได้ +12,000 บ./ไร่'}
+          ]},
+          {
+          id: 'ban_mai', name: 'บ้านใหม่', province: 'สงขลา', amphoe: 'อ.ระโนด',
+          emoji: '🧂', color: '#be123c', bg: '#fecaca, #fee2e2',
+          total_farmers: 500, total_area_rai: 2400,
+          summary: 'ริมทะเลสาบ — ฤดูแล้งน้ำเค็มหนุน ก.พ.-พ.ค.',
+          pain_points: [{icon: '🧂', text: 'น้ำเค็มหนุน ก.พ.-พ.ค.'}, {icon: '🌊', text: 'ทะเลหนุนท่วม'}],
+          crops: [
+            {id:'coconut', name:'มะพร้าวน้ำหอม', sci_name:'Cocos nucifera (Nam Hom)', farmer_count:500, area_rai:2400, production:9000,
+              svg: this.svg.coconut, bg_light: '#fed7aa, #fef3c7', bg_icon: '#fb923c',
+              status_class:'status-warn', status_icon:'⚠', status_label:'เฝ้าระวัง',
+              trigger_short: 'ความเค็ม >2 ppt',
+              actions:[
+                {icon:'🧂', when:'ความเค็ม >2 ppt', do:'สูบน้ำจืดชะล้างดิน'},
+                {icon:'🌊', when:'ทะเลหนุนท่วม', do:'ใช้เรือเก็บผลผลิต'},
+                {icon:'🌱', when:'หลังน้ำท่วม', do:'ตรวจรากเน่า ใส่ปุ๋ยคอก'}
+              ],
+              outcome_short:'ผลผลิต +1,000 กก./ไร่ · รายได้ +10,000 บ./ไร่'}
+          ]},
+          {
+          id: 'ban_khao', name: 'บ้านขาว', province: 'สงขลา', amphoe: 'อ.ระโนด',
+          emoji: '🦐', color: '#9333ea', bg: '#e9d5ff, #f3e8ff',
+          total_farmers: 1100, total_area_rai: 3200,
+          summary: 'ทะเลสาบตอนกลาง — ฝนตกหนักทำให้ความเค็มลด (กุ้งช็อก)',
+          pain_points: [{icon: '🦐', text: 'ความเค็มลดฉับพลัน'}, {icon: '🌶️', text: 'พริกท่วม 5 วัน ตาย'}],
+          crops: [
+            {id:'coconut_bk', name:'มะพร้าวน้ำหอม', sci_name:'Cocos nucifera (Nam Hom)', farmer_count:400, area_rai:2000, production:8000,
+              svg: this.svg.coconut, bg_light: '#fed7aa, #fef3c7', bg_icon: '#fb923c',
+              status_class:'status-warn', status_icon:'⚠', status_label:'เฝ้าระวัง',
+              trigger_short: 'ความเค็ม >2 ppt',
+              actions:[
+                {icon:'🧂', when:'ความเค็ม >2 ppt', do:'สูบน้ำจืดชะล้าง'},
+                {icon:'🌊', when:'ทะเลหนุน', do:'ใช้เรือเก็บผล'}
+              ],
+              outcome_short:'รายได้ +10,000 บ./ไร่/ปี'},
+            {id:'chili', name:'พริก', sci_name:'Capsicum annuum', farmer_count:400, area_rai:1200, production:2000,
+              svg: this.svg.chili, bg_light: '#fee2e2, #fef2f2', bg_icon: '#dc2626',
+              status_class:'status-ok', status_icon:'✓', status_label:'ปกติ',
+              trigger_short: 'น้ำท่วม >5 วัน',
+              actions:[
+                {icon:'🌊', when:'ฝนตกหนัก', do:'ระบายน้ำ ตรวจโรค'},
+                {icon:'⏰', when:'ท่วม >5 วัน', do:'ตัดต้นตาย เตรียมใหม่'}
+              ],
+              outcome_short:'ผลผลิต +200 กก./ไร่ · รายได้ +6,000 บ./ไร่'},
+            {id:'prawn', name:'กุ้งก้ามกราม', sci_name:'Macrobrachium rosenbergii', farmer_count:300, area_rai:0, production:40,
+              svg: this.svg.prawn, bg_light: '#fce7f3, #fdf2f8', bg_icon: '#ec4899',
+              status_class:'status-danger', status_icon:'🔴', status_label:'เตือนภัย',
+              trigger_short: 'ความเค็ม <5 ppt (กุ้งช็อก)',
+              actions:[
+                {icon:'🌧️', when:'ฝนตกหนัก', do:'ตรวจความเค็มทุก 6 ชม.'},
+                {icon:'💧', when:'ความเค็ม <5 ppt', do:'ใช้น้ำทะเลเติม'},
+                {icon:'🚨', when:'ความเค็มลดฉับพลัน', do:'ย้ายกุ้งไปบ่อสำรอง'}
+              ],
+              outcome_short:'รายได้ +20,000 บ./ครัวเรือน/ปี · ลดการตาย 50%'}
+          ]}
+      ];
+    }
+  };
+}
+</script>
+</body>
+</html>

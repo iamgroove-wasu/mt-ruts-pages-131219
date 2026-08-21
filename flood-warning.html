@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚨 ระบบเตือนภัยน้ำท่วม/น้ำแล้ง + Predictive</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a1929; --card: #1a2332; --card-hover: #243447;
+    --text: #e8eef5; --text-dim: #94a3b8; --border: #2d3e54;
+    --normal: #6ee7b7; --watch: #fbbf24; --warning: #f97316; --danger: #f87171;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", sans-serif;
+    background: linear-gradient(135deg, #0a1929 0%, #0f2942 100%);
+    color: var(--text); min-height: 100vh; padding: 20px;
+  }
+  .container { max-width: 1500px; margin: 0 auto; }
+
+  /* Header */
+  .header { margin-bottom: 20px; }
+  .header h1 { font-size: 26px; margin-bottom: 4px; }
+  .header .subtitle { color: var(--text-dim); font-size: 13px; }
+  .header .meta { color: var(--text-dim); font-size: 11px; margin-top: 6px; }
+  .header a { color: var(--watch); text-decoration: none; }
+
+  /* Overall banner */
+  .overall {
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 2px solid;
+  }
+  .overall.normal  { background: rgba(110, 231, 183, 0.15); border-color: var(--normal); }
+  .overall.watch   { background: rgba(251, 191, 36, 0.15); border-color: var(--watch); }
+  .overall.warning { background: rgba(249, 115, 22, 0.15); border-color: var(--warning); }
+  .overall.danger  { background: rgba(248, 113, 113, 0.20); border-color: var(--danger); animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.5); }
+    50% { box-shadow: 0 0 0 12px rgba(248, 113, 113, 0); }
+  }
+  .overall .icon { font-size: 48px; margin-bottom: 8px; }
+  .overall .label { font-size: 28px; font-weight: 700; }
+  .overall .summary { color: var(--text-dim); font-size: 14px; margin-top: 6px; }
+
+  /* Baseline panel */
+  .baseline-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .baseline-title {
+    font-size: 14px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .baseline-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  }
+  .baseline-stat {
+    padding: 10px; background: var(--bg);
+    border-radius: 8px; text-align: center;
+  }
+  .baseline-stat .label { color: var(--text-dim); font-size: 11px; }
+  .baseline-stat .value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+  .baseline-stat .note { color: var(--text-dim); font-size: 10px; margin-top: 2px; }
+
+  /* Zone grid */
+  .zone-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 16px;
+  }
+  .zone-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .zone-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .zone-name { font-size: 18px; font-weight: 700; }
+  .households { color: var(--text-dim); font-size: 11px; margin-top: 2px; }
+
+  /* Risk panels (flood + drought) */
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .risk-panel {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid;
+    text-align: center;
+  }
+  .risk-panel.flood { background: rgba(96, 165, 250, 0.08); }
+  .risk-panel.drought { background: rgba(245, 158, 11, 0.08); }
+  .risk-panel.normal  { border-color: var(--normal); }
+  .risk-panel.watch   { border-color: var(--watch); }
+  .risk-panel.warning { border-color: var(--warning); }
+  .risk-panel.danger  { border-color: var(--danger); }
+  .risk-type { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .risk-icon { font-size: 28px; margin: 4px 0; }
+  .risk-label { font-size: 13px; font-weight: 600; }
+  .risk-panel.flood .risk-label { color: var(--flood-color); }
+  .risk-panel.drought .risk-label { color: var(--drought-color); }
+
+  /* P(flood) prediction */
+  .prediction {
+    padding: 12px; border-radius: 8px; margin-bottom: 12px;
+    background: rgba(167, 139, 250, 0.1);
+    border: 1px solid #a78bfa;
+  }
+  .prediction-title { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .prediction-prob { font-size: 32px; font-weight: 800; text-align: center; color: #a78bfa; }
+  .prediction-level { font-size: 14px; text-align: center; margin-top: 2px; }
+  .prediction-level.minimal  { color: var(--normal); }
+  .prediction-level.low      { color: #93c5fd; }
+  .prediction-level.moderate { color: var(--watch); }
+  .prediction-level.high     { color: var(--warning); }
+  .prediction-level.extreme  { color: var(--danger); }
+
+  .components {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+    margin-top: 8px; font-size: 10px;
+  }
+  .comp {
+    text-align: center; padding: 4px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+  }
+  .comp .c-label { color: var(--text-dim); }
+  .comp .c-value { font-weight: 700; margin-top: 2px; }
+
+  /* Anomaly */
+  .anomaly {
+    margin-top: 8px; padding: 6px 10px;
+    border-radius: 6px; font-size: 11px;
+  }
+  .anomaly.normal       { background: rgba(110, 231, 183, 0.1); color: var(--normal); }
+  .anomaly.above_normal { background: rgba(251, 191, 36, 0.15); color: var(--watch); }
+  .anomaly.extreme      { background: rgba(248, 113, 113, 0.15); color: var(--danger); }
+  .anomaly.unknown      { background: rgba(148, 163, 184, 0.1); color: var(--text-dim); }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .metric { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; }
+  .metric-label { color: var(--text-dim); }
+  .metric-value { font-weight: 600; }
+
+  .footer {
+    text-align: center; color: var(--text-dim); font-size: 11px;
+    padding: 20px; margin-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .loading { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+  .spinner {
+    display: inline-block; width: 32px; height: 32px;
+    border: 3px solid var(--border); border-top-color: var(--watch);
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>🚨 ระบบเตือนภัยน้ำท่วม/น้ำแล้ง + Predictive Model</h1>
+    <div class="subtitle">มทร.ศรีวิชัย · 5 ตำบล · 350 ครัวเรือน · <b>Predictive WCS v1.0</b></div>
+    <div class="meta">
+      อัพเดท: <span id="updatedAt">-</span> · 
+      SKA: <span id="skaUpdated">-</span> · 
+      Sources: <span id="sources">-</span> · 
+      <a href="/flood-warning.php?format=summary">JSON</a> · 
+      <a href="/flood-warning.php">Full</a> · 
+      <a href="/flood-history.html">📊 10 ปี</a>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div>กำลังโหลดข้อมูล...</div>
+  </div>
+
+  <div id="content" style="display:none;">
+    <div id="overall" class="overall"></div>
+    <div id="baselinePanel" class="baseline-panel"></div>
+    <div id="zoneGrid" class="zone-grid"></div>
+  </div>
+
+  <div class="footer">
+    Flood Warning v1.2 · Predictive WCS + DDPM 10-year baseline (2558-2568) · 
+    Auto-refresh ทุก 5 นาที
+  </div>
+</div>
+
+<script>
+const STATUS = { normal: {label:'ปกติ',icon:'🟢'}, watch:{label:'เฝ้าระวัง',icon:'🟡'}, warning:{label:'เตือนภัย',icon:'🟠'}, danger:{label:'อันตราย',icon:'🔴'} };
+const P_LEVEL = {
+  minimal:  {label:'🟢 ต่ำมาก', color:'minimal'},
+  low:      {label:'🟡 ต่ำ',     color:'low'},
+  moderate: {label:'🟠 ปานกลาง', color:'moderate'},
+  high:     {label:'🔴 สูง',     color:'high'},
+  extreme:  {label:'🔴🔴 สูงมาก',color:'extreme'},
+};
+
+async function loadWarning() {
+  try {
+    const [summaryRes, fullRes] = await Promise.all([
+      fetch('/flood-warning.php?format=summary'),
+      fetch('/flood-warning.php'),
+    ]);
+    const summary = await summaryRes.json();
+    const full = await fullRes.json();
+    render(summary, full);
+  } catch (e) {
+    document.getElementById('loading').innerHTML = 
+      '<div style="color: var(--danger);">โหลดข้อมูลไม่สำเร็จ: ' + e.message + '</div>';
+  }
+}
+
+function render(summary, full) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  document.getElementById('updatedAt').textContent = 
+    new Date(summary.generated_at || Date.now()).toLocaleString('th-TH');
+  document.getElementById('skaUpdated').textContent = 
+    full.ska_cache_updated ? new Date(full.ska_cache_updated).toLocaleString('th-TH') : 'N/A';
+  document.getElementById('sources').textContent = (full.sources_used || []).join(', ');
+
+  // Overall
+  const overall = document.getElementById('overall');
+  const ov = STATUS[summary.overall_status];
+  overall.className = 'overall ' + summary.overall_status;
+  overall.innerHTML = `
+    <div class="icon">${summary.overall_icon}</div>
+    <div class="label">${summary.overall_label}</div>
+    <div class="summary">สถานะรวม 5 ตำบล · อัพเดทล่าสุด ${new Date(summary.generated_at).toLocaleTimeString('th-TH')}</div>
+  `;
+
+  // Baseline panel
+  const bl = summary.baseline;
+  if (bl) {
+    const ex = bl.villages_affected.extreme_threshold;
+    const avg = bl.villages_affected.mean;
+    document.getElementById('baselinePanel').innerHTML = `
+      <div class="baseline-title">📊 DDPM Baseline (2558-2568, 11 ปี — จ.พัทลุง)</div>
+      <div class="baseline-grid">
+        <div class="baseline-stat">
+          <div class="label">ครั้ง/ปี (avg)</div>
+          <div class="value">${bl.occurrences.mean.toFixed(1)}</div>
+          <div class="note">⚠️ ≥${bl.occurrences.extreme_threshold} = extreme</div>
+        </div>
+        <div class="baseline-stat">
+          <div class="label">อำเภอ (avg)</div>
+          <div class="value">${bl.districts_affected.mean.toFixed(0)}/11</div>
+          <div class="note">11 = ครอบคลุมทั้งหมด</div>
+        </div>
+        <div class="baseline-stat">
+          <div class="label">ตำบล (avg)</div>
+          <div class="value">${bl.subdistricts_affected.mean.toFixed(0)}/65</div>
+          <div class="note">ปกติ: ${bl.subdistricts_affected.typical_range[0]}-${bl.subdistricts_affected.typical_range[1]}</div>
+        </div>
+        <div class="baseline-stat">
+          <div class="label">หมู่บ้าน (avg)</div>
+          <div class="value">${avg.toFixed(0)}</div>
+          <div class="note">extreme: ≥${ex}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Zone cards
+  const grid = document.getElementById('zoneGrid');
+  grid.innerHTML = (full.zones || []).map(z => {
+    const f = z.flood;
+    const d = z.drought;
+    const fc = STATUS[f.status];
+    const dc = STATUS[d.status];
+    const p = z.prediction || {};
+    const pLevel = P_LEVEL[p.level] || P_LEVEL.minimal;
+    const c = p.components || {};
+    const anomClass = z.anomaly?.status || 'unknown';
+    const anomNote = z.anomaly?.note || '';
+    
+    return `
+      <div class="zone-card">
+        <div class="zone-header">
+          <div>
+            <div class="zone-name">${getZoneEmoji(z.zone.id)} ${z.zone.name}</div>
+            <div class="households">${z.zone.households || 0} ครัวเรือน</div>
+          </div>
+        </div>
+        <div class="risk-grid">
+          <div class="risk-panel flood ${f.status}">
+            <div class="risk-type">🌊 น้ำท่วม</div>
+            <div class="risk-icon">${fc.icon}</div>
+            <div class="risk-label">${fc.label}</div>
+          </div>
+          <div class="risk-panel drought ${d.status}">
+            <div class="risk-type">🏜️ น้ำแล้ง</div>
+            <div class="risk-icon">${dc.icon}</div>
+            <div class="risk-label">${dc.label}</div>
+          </div>
+        </div>
+        <div class="prediction">
+          <div class="prediction-title">🔮 P(flood) — Predictive Model WCS v1.0</div>
+          <div class="prediction-prob">${(p.probability || 0).toFixed(2)}</div>
+          <div class="prediction-level ${pLevel.color}">${pLevel.label}</div>
+          <div class="components">
+            <div class="comp"><div class="c-label">🌧️ ฝน</div><div class="c-value">${(c.rain||0).toFixed(2)}</div></div>
+            <div class="comp"><div class="c-label">📅 ฤดู</div><div class="c-value">${(c.season||0).toFixed(2)}</div></div>
+            <div class="comp"><div class="c-label">📊 ประวัติ</div><div class="c-value">${(c.historical||0).toFixed(2)}</div></div>
+            <div class="comp"><div class="c-label">🌊 น้ำ</div><div class="c-value">${(c.water||0).toFixed(2)}</div></div>
+          </div>
+          <div class="anomaly ${anomClass}">
+            <b>Anomaly:</b> ${anomNote}
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span class="metric-label">🌧️ ฝน 24h</span><span class="metric-value">${z.forecast.rain_24h_mm.toFixed(1)} mm</span></div>
+          <div class="metric"><span class="metric-label">🌧️ ฝน 72h</span><span class="metric-value">${z.forecast.rain_72h_mm.toFixed(1)} mm</span></div>
+          <div class="metric"><span class="metric-label">🌧️ ฝน 7 วัน</span><span class="metric-value">${z.forecast.rain_7d_mm.toFixed(1)} mm</span></div>
+          <div class="metric"><span class="metric-label">📅 ฝนแห้งต่อ</span><span class="metric-value">${z.forecast.consecutive_dry_forecast} วัน</span></div>
+          <div class="metric"><span class="metric-label">🌊 ระดับน้ำ (SKA)</span><span class="metric-value">${z.ska_water_level_m != null ? z.ska_water_level_m.toFixed(2) + ' m' : '—'}</span></div>
+          <div class="metric"><span class="metric-label">📡 สถานี SKA</span><span class="metric-value" style="font-size:11px;">${z.ska_station || '—'}</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getZoneEmoji(id) {
+  const e = { khuan_maphrao: '🌾', tha_khae: '🌳', khao_chai_son: '⛰️', ban_mai: '🏘️', ban_khao: '🏘️' };
+  return e[id] || '📍';
+}
+
+loadWarning();
+setInterval(loadWarning, 5 * 60 * 1000);
+</script>
+</body>
+</html>

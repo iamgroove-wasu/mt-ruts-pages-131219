@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการระบบ - Admin</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .header h1 { color: #2c3e50; font-size: 24px; }
+        .header p { color: #7f8c8d; margin-top: 5px; }
+        
+        /* Tab Navigation */
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 24px; background: white; border: none; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 14px; font-weight: 600; color: #7f8c8d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .tab-btn:hover { color: #3498db; }
+        .tab-btn.active { background: #3498db; color: white; }
+        
+        .tab-content { display: none; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .tab-content.active { display: block; }
+        
+        .btn-add { padding: 12px 24px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-add:hover { background: #219a52; }
+        .btn-edit { padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-delete { padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        
+        /* Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+        .card { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #e9ecef; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .card-title { font-size: 15px; font-weight: 600; color: #2c3e50; }
+        .card-badge { padding: 3px 10px; border-radius: 15px; font-size: 11px; color: white; }
+        .badge-sale { background: #e74c3c; }
+        .badge-rent { background: #3498db; }
+        .badge-available { background: #2ecc71; }
+        .badge-sold { background: #95a5a6; }
+        .card-price { font-size: 18px; font-weight: 700; color: #e74c3c; margin: 5px 0; }
+        .card-location { font-size: 12px; color: #7f8c8d; margin: 3px 0; }
+        .card-info { font-size: 12px; color: #95a5a6; margin: 2px 0; }
+        .card-actions { display: flex; gap: 5px; margin-top: 10px; }
+        
+        /* Tables */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #34495e; color: white; padding: 12px; text-align: left; font-size: 13px; }
+        td { padding: 10px 12px; border-bottom: 1px solid #ecf0f1; font-size: 13px; }
+        tr:hover { background: #f8f9fa; }
+        
+        /* Stats */
+        .stats { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; }
+        .stat-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 25px; border-radius: 10px; flex: 1; min-width: 120px; text-align: center; }
+        .stat-box.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .stat-box.red { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); }
+        .stat-box.orange { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); }
+        .stat-number { font-size: 28px; font-weight: 700; }
+        .stat-label { font-size: 11px; opacity: 0.9; }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal-content h2 { color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #7f8c8d; font-size: 13px; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 14px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; }
+        .form-group textarea { height: 80px; resize: vertical; }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-save { flex: 1; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-cancel { flex: 1; padding: 12px; background: #95a5a6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        
+        .loading { text-align: center; padding: 40px; color: #7f8c8d; }
+        
+        .back-link { display: inline-block; margin-bottom: 15px; color: #3498db; text-decoration: none; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
+        .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid #dfe6e9; border-radius: 6px; }
+        
+        .badge { padding: 3px 8px; border-radius: 10px; font-size: 11px; color: white; }
+        .badge-waiting { background: #f39c12; }
+        .badge-progress { background: #3498db; }
+        .badge-done { background: #2ecc71; }
+        .badge-cancel { background: #95a5a6; }
+        
+        /* Customer Form (Public Page) */
+        .customer-page { display: none; }
+        .customer-header { background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); color: white; padding: 40px 20px; text-align: center; }
+        .customer-header h1 { font-size: 28px; margin-bottom: 10px; }
+        .customer-header p { opacity: 0.8; }
+        .customer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px; }
+        .customer-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .customer-card-img { height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; }
+        .customer-card-body { padding: 15px; }
+        .customer-form-box { max-width: 500px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
+        @media (max-width: 768px) {
+            .form-row, .form-row-3 { grid-template-columns: 1fr; }
+            .tabs { flex-direction: column; }
+            .tab-btn { border-radius: 8px; margin-bottom: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="borrow.html" class="back-link">← กลับไปหน้าระบบยืม-คืน</a>
+        
+        <div class="header">
+            <h1>⚙️ Admin Panel - จัดการระบบทั้งหมด</h1>
+            <p>จัดการเครื่องมือวัด | อสังหาริมทรัพย์ | ลูกค้า | ดีล | พนักงาน</p>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('devices')">🔧 เครื่องมือวัด</button>
+            <button class="tab-btn" onclick="showTab('properties')">🏠 ทรัพย์สิน</button>
+            <button class="tab-btn" onclick="showTab('leads')">👥 ลูกค้า</button>
+            <button class="tab-btn" onclick="showTab('deals')">💰 ดีล</button>
+            <button class="tab-btn" onclick="showTab('agents')">👔 พนักงาน</button>
+            <button class="tab-btn" onclick="showTab('customer')">🌐 หน้าลูกค้า</button>
+        </div>
+        
+        <!-- TAB: DEVICES -->
+        <div id="tab-devices" class="tab-content active">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h2 style="color:#2c3e50;">🔧 จัดการเครื่องมือวัด</h2>
+                <button class="btn-add" onclick="openDeviceModal()">➕ เพิ่มเครื่องมือใหม่</button>
+            </div>
+            <div id="deviceList" class="grid"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+        
+        <!-- TAB: PROPERTIES -->
+        <div id="tab-properties" class="tab-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h2 style="color:#2c3e50;">🏠 จัดการทรัพย์สิน</h2>
+                <button class="btn-add" onclick="openPropModal()">➕ เพิ่มทรัพย์สิน</button>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats" id="propStats">
+                <div class="stat-box"><div class="stat-number" id="statTotalProps">0</div><div class="stat-label">ทรัพย์สินทั้งหมด</div></div>
+                <div class="stat-box green"><div class="stat-number" id="statAvailable">0</div><div class="stat-label">ว่าง</div></div>
+                <div class="stat-box red"><div class="stat-number" id="statSold">0</div><div class="stat-label">ขาย/เช่าแล้ว</div></div>
+                <div class="stat-box orange"><div class="stat-number" id="statTotalCommission">0</div><div class="stat-label">ค่าคอมรวม(บาท)</div></div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="filter-bar">
+                <select id="propTypeFilter" onchange="loadProperties()">
+                    <option value="">-- ประเภท --</option>
+                    <option value="คอนโด">คอนโด</option>
+                    <option value="บ้าน">บ้าน</option>
+                    <option value="อาคารพาณิชย์">อาคารพาณิชย์</option>
+                    <option value="ที่ดิน">ที่ดิน</option>
+                    <option value="โรงงาน">โรงงาน</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+                <select id="propStatusFilter" onchange="loadProperties()">
+                    <option value="">-- สถานะ --</option>
+                    <option value="ว่าง">ว่าง</option>
+                    <option value="จอง">จอง</option>
+                    <option value="ขายแล้ว">ขายแล้ว</option>
+                    <option value="เช่าแล้ว">เช่าแล้ว</option>
+                </select>
+            </div>
+            
+            <div id="propertyList" class="grid"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+        
+        <!-- TAB: LEADS -->
+        <div id="tab-leads" class="tab-content">
+            <h2 style="color:#2c3e50;margin-bottom:15px;">👥 ลูกค้าทั้งหมด</h2>
+            <div class="filter-bar">
+                <select id="leadStatusFilter" onchange="loadLeads()">
+                    <option value="">-- สถานะ --</option>
+                    <option value="รอติดต่อ">รอติดต่อ</option>
+                    <option value="นัดดู">นัดดู</option>
+                    <option value="เจรจา">เจรจา</option>
+                    <option value="ปิดดีล">ปิดดีล</option>
+                    <option value="ยกเลิก">ยกเลิก</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>วันที่</th><th>ชื่อ</th><th>เบอร์/Line</th><th>ทรัพย์สิน</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+                    <tbody id="leadTableBody"><tr><td colspan="6" class="loading">กำลังโหลด...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- TAB: DEALS -->
+        <div id="tab-deals" class="tab-content">
+            <h2 style="color:#2c3e50;margin-bottom:15px;">💰 ดีลทั้งหมด</h2>
+            <div class="stats">
+                <div class="stat-box"><div class="stat-number" id="statTotalDeals">0</div><div class="stat-label">ดีลทั้งหมด</div></div>
+                <div class="stat-box green"><div class="stat-number" id="statClosedDeals">0</div><div class="stat-label">ดีลปิดแล้ว</div></div>
+                <div class="stat-box red"><div class="stat-number" id="statTotalCommission2">0</div><div class="stat-label">ค่าคอมรวม(บาท)</div></div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>วันที่</th><th>ลูกค้า</th><th>ทรัพย์สิน</th><th>ราคา</th><th>ค่าคอม</th><th>พนักงาน</th><th>สถานะ</th></tr></thead>
+                    <tbody id="dealTableBody"><tr><td colspan="7" class="loading">กำลังโหลด...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- TAB: AGENTS -->
+        <div id="tab-agents" class="tab-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h2 style="color:#2c3e50;">👔 พนักงาน/ทีม</h2>
+                <button class="btn-add" onclick="openAgentModal()">➕ เพิ่มพนักงาน</button>
+            </div>
+            <div id="agentList" class="grid"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+        
+        <!-- TAB: CUSTOMER (Public Page Preview) -->
+        <div id="tab-customer" class="tab-content">
+            <h2 style="color:#2c3e50;margin-bottom:15px;">🌐 หน้าลูกค้า (Public)</h2>
+            <p style="color:#7f8c8d;margin-bottom:15px;">ลิ้งสำหรับลูกค้า: <a href="rent.php" target="_blank">https://wasu-schedule.serveousercontent.com/rent.php</a></p>
+            <div id="customerPreview"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+    </div>
+
+    <!-- Modal: Device -->
+    <div class="modal" id="deviceModal">
+        <div class="modal-content">
+            <h2 id="deviceModalTitle">➕ เพิ่มเครื่องมือใหม่</h2>
+            <div class="form-row">
+                <div class="form-group"><label>ชื่อเครื่องมือ *</label><input type="text" id="deviceName" placeholder="เช่น เครื่องวัดแรงดัน"></div>
+                <div class="form-group"><label>เลขคุรุภัณฑ์ *</label><input type="text" id="deviceCode" placeholder="เช่น 3101-001"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>ตำแหน่งที่ตั้ง</label><input type="text" id="devicePosition" placeholder="ห้องปฏิบัติการเครื่องกล"></div>
+                <div class="form-group"><label>ที่เก็บ</label><input type="text" id="deviceStorage" placeholder="ตู้เก็บเครื่องมือ ชั้น 1"></div>
+            </div>
+            <div class="form-group"><label>รายละเอียด</label><textarea id="deviceDesc" placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
+            <div class="form-group"><label>รูปภาพ (URL)</label><input type="text" id="deviceImgUrl" placeholder="https://..."></div>
+            <div class="btn-row">
+                <button class="btn-save" onclick="saveDevice()">💾 บันทึก</button>
+                <button class="btn-cancel" onclick="closeModal('deviceModal')">✖ ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Property -->
+    <div class="modal" id="propModal">
+        <div class="modal-content">
+            <h2 id="propModalTitle">➕ เพิ่มทรัพย์สินใหม่</h2>
+            <div class="form-row">
+                <div class="form-group"><label>ประเภท *</label>
+                    <select id="propType"><option value="">-- เลือก --</option><option value="คอนโด">คอนโด</option><option value="บ้าน">บ้าน</option><option value="อาคารพาณิชย์">อาคารพาณิชย์</option><option value="ที่ดิน">ที่ดิน</option><option value="โรงงาน">โรงงาน</option><option value="อื่นๆ">อื่นๆ</option></select>
+                </div>
+                <div class="form-group"><label>ขาย/เช่า *</label>
+                    <select id="propPriceType"><option value="ขาย">ขาย</option><option value="เช่า">เช่า</option></select>
+                </div>
+            </div>
+            <div class="form-group"><label>ชื่อทรัพย์สิน *</label><input type="text" id="propTitle" placeholder="เช่น คอนโดมิเชียร์ หาดใหญ่"></div>
+            <div class="form-row">
+                <div class="form-group"><label>ราคา (บาท) *</label><input type="number" id="propPrice" placeholder="เช่น 2500000"></div>
+                <div class="form-group"><label>ขนาด</label><input type="number" id="propSize" placeholder="เช่น 35"></div>
+            </div>
+            <div class="form-group"><label>ที่อยู่/ทำเล *</label><input type="text" id="propLocation" placeholder="เช่น 123/45 ถ.เพชรบูรณ์"></div>
+            <div class="form-group"><label>จังหวัด *</label><input type="text" id="propProvince" placeholder="เช่น สงขลา"></div>
+            <div class="form-row-3">
+                <div class="form-group"><label>ห้องนอน</label><input type="number" id="propBedrooms" placeholder="0"></div>
+                <div class="form-group"><label>ห้องน้ำ</label><input type="number" id="propBathrooms" placeholder="0"></div>
+                <div class="form-group"><label>ชั้น</label><input type="number" id="propFloor" placeholder="0"></div>
+            </div>
+            <div class="form-group"><label>รายละเอียด</label><textarea id="propDesc" placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
+            <div class="form-row">
+                <div class="form-group"><label>% ค่าคอมมิชชั่น</label><input type="number" id="propCommission" value="2" step="0.5"></div>
+                <div class="form-group"><label>ติดต่อ</label><input type="text" id="propContact" placeholder="เบอร์ผู้ดูแล"></div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-save" onclick="saveProperty()">💾 บันทึก</button>
+                <button class="btn-cancel" onclick="closeModal('propModal')">✖ ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Lead Edit -->
+    <div class="modal" id="leadModal">
+        <div class="modal-content">
+            <h2>✏️ แก้ไขลูกค้า</h2>
+            <input type="hidden" id="leadEditId">
+            <div class="form-group"><label>สถานะ</label>
+                <select id="leadStatus"><option value="รอติดต่อ">รอติดต่อ</option><option value="นัดดู">นัดดู</option><option value="เจรจา">เจรจา</option><option value="ปิดดีล">ปิดดีล</option><option value="ยกเลิก">ยกเลิก</option></select>
+            </div>
+            <div class="form-group"><label>พนักงานรับผิดชอบ</label><select id="leadAssigned"></select></div>
+            <div class="form-group"><label>บันทึก</label><textarea id="leadNote" placeholder="บันทึกเพิ่มเติม..."></textarea></div>
+            <div class="btn-row">
+                <button class="btn-save" onclick="saveLead()">💾 บันทึก</button>
+                <button class="btn-cancel" onclick="closeModal('leadModal')">✖ ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agent -->
+    <div class="modal" id="agentModal">
+        <div class="modal-content">
+            <h2>➕ เพิ่มพนักงานใหม่</h2>
+            <div class="form-group"><label>ชื่อ-นามสกุล *</label><input type="text" id="agentName" placeholder="เช่น สมชาย ใจดี"></div>
+            <div class="form-group"><label>เบอร์โทร *</label><input type="text" id="agentPhone" placeholder="เช่น 081-234-5678"></div>
+            <div class="form-group"><label>อีเมล</label><input type="email" id="agentEmail" placeholder="เช่น somchai@email.com"></div>
+            <div class="form-group"><label>หมายเหตุ</label><textarea id="agentNote" placeholder="ทีม/แผนก/หมายเหตุอื่นๆ"></textarea></div>
+            <div class="btn-row">
+                <button class="btn-save" onclick="saveAgent()">💾 บันทึก</button>
+                <button class="btn-cancel" onclick="closeModal('agentModal')">✖ ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIG =====
+        var DEVICE_API = 'https://wasu-schedule.serveousercontent.com/devices.php';
+        var RENT_API = 'https://wasu-schedule.serveousercontent.com/rent_api.php';
+        
+        // ===== STATE =====
+        var devices = [];
+        var properties = [];
+        var leads = [];
+        var deals = [];
+        var agents = [];
+        var editingPropId = null;
+        
+        // ===== INIT =====
+        window.onload = function() {
+            loadDevices();
+            loadProperties();
+            loadLeads();
+            loadDeals();
+            loadAgents();
+        };
+        
+        // ===== TAB SWITCH =====
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+        
+        // ===== API HELPERS =====
+        function api(url, method, data) {
+            return fetch(url, {
+                method: method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(r => r.json());
+        }
+        
+        // ===== DEVICES =====
+        function loadDevices() {
+            fetch(DEVICE_API).then(r => r.json()).then(data => {
+                devices = data || [];
+                renderDevices();
+            }).catch(e => { document.getElementById('deviceList').innerHTML = '<div class="loading">❌ โหลดไม่ได้</div>'; });
+        }
+        
+        function renderDevices() {
+            var list = document.getElementById('deviceList');
+            if (devices.length === 0) { list.innerHTML = '<div class="loading">ยังไม่มีเครื่องมือ</div>'; return; }
+            var html = '';
+            devices.forEach(function(d) {
+                html += '<div class="card"><div class="card-header"><span class="card-title">' + d.name + '</span><span style="color:#e74c3c;font-size:12px;">📋 ' + d.code + '</span></div>';
+                html += '<div class="card-location">📍 ' + (d.position || '-') + '</div>';
+                html += '<div class="card-info">🗄️ ' + (d.storage || '-') + '</div>';
+                html += '<div class="card-actions"><button class="btn-edit" onclick="editDevice(' + d.id + ')">✏️</button><button class="btn-delete" onclick="deleteDevice(' + d.id + ')">🗑️</button></div></div>';
+            });
+            list.innerHTML = html;
+        }
+        
+        function openDeviceModal(id) {
+            editingPropId = id;
+            document.getElementById('deviceModalTitle').textContent = id ? '✏️ แก้ไข' : '➕ เพิ่มเครื่องมือใหม่';
+            if (id) {
+                var d = devices.find(x => x.id === id);
+                if (d) {
+                    document.getElementById('deviceName').value = d.name || '';
+                    document.getElementById('deviceCode').value = d.code || '';
+                    document.getElementById('devicePosition').value = d.position || '';
+                    document.getElementById('deviceStorage').value = d.storage || '';
+                    document.getElementById('deviceDesc').value = d.desc || '';
+                    document.getElementById('deviceImgUrl').value = d.img || '';
+                }
+            } else {
+                ['deviceName','deviceCode','devicePosition','deviceStorage','deviceDesc','deviceImgUrl'].forEach(function(id) { document.getElementById(id).value = ''; });
+            }
+            document.getElementById('deviceModal').classList.add('show');
+        }
+        
+        var openDeviceModal = openDeviceModal; // fix reference
+        
+        function editDevice(id) {
+            var d = devices.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('deviceModalTitle').textContent = '✏️ แก้ไขเครื่องมือ';
+            document.getElementById('deviceName').value = d.name || '';
+            document.getElementById('deviceCode').value = d.code || '';
+            document.getElementById('devicePosition').value = d.position || '';
+            document.getElementById('deviceStorage').value = d.storage || '';
+            document.getElementById('deviceDesc').value = d.desc || '';
+            document.getElementById('deviceImgUrl').value = d.img || '';
+            document.getElementById('deviceModal').dataset.editing = id;
+            document.getElementById('deviceModal').classList.add('show');
+        }
+        
+        function saveDevice() {
+            var data = {
+                name: document.getElementById('deviceName').value.trim(),
+                code: document.getElementById('deviceCode').value.trim(),
+                position: document.getElementById('devicePosition').value.trim(),
+                storage: document.getElementById('deviceStorage').value.trim(),
+                desc: document.getElementById('deviceDesc').value.trim(),
+                img: document.getElementById('deviceImgUrl').value.trim()
+            };
+            if (!data.name || !data.code) { alert('กรุณากรอกชื่อและเลขคุรุภัณฑ์'); return; }
+            
+            var editingId = document.getElementById('deviceModal').dataset.editing;
+            var action = editingId ? 'update' : 'add';
+            if (editingId) data.id = editingId;
+            
+            api(DEVICE_API, 'POST', {action: action, ...data}).then(result => {
+                alert(result.message || 'บันทึกสำเร็จ');
+                closeModal('deviceModal');
+                loadDevices();
+                delete document.getElementById('deviceModal').dataset.editing;
+            });
+        }
+        
+        function deleteDevice(id) {
+            if (!confirm('ต้องการลบเครื่องมือนี้?')) return;
+            api(DEVICE_API, 'POST', {action: 'delete', id: id}).then(result => {
+                alert(result.message || 'ลบสำเร็จ');
+                loadDevices();
+            });
+        }
+        
+        // ===== PROPERTIES =====
+        function loadProperties() {
+            var type = document.getElementById('propTypeFilter').value;
+            var status = document.getElementById('propStatusFilter').value;
+            var url = RENT_API + '?action=properties';
+            if (type) url += '&type=' + encodeURIComponent(type);
+            if (status) url += '&status=' + encodeURIComponent(status);
+            
+            fetch(url).then(r => r.json()).then(result => {
+                properties = result.data || [];
+                renderProperties();
+                updatePropStats();
+            });
+        }
+        
+        function updatePropStats() {
+            var total = properties.length;
+            var available = properties.filter(p => p.status === 'ว่าง').length;
+            var sold = total - available;
+            document.getElementById('statTotalProps').textContent = total;
+            document.getElementById('statAvailable').textContent = available;
+            document.getElementById('statSold').textContent = sold;
+            
+            // Load commission from deals
+            fetch(RENT_API + '?action=stats').then(r => r.json()).then(result => {
+                document.getElementById('statTotalCommission').textContent = (result.data?.totalCommission || 0).toLocaleString();
+            });
+        }
+        
+        function renderProperties() {
+            var list = document.getElementById('propertyList');
+            if (properties.length === 0) { list.innerHTML = '<div class="loading">ยังไม่มีทรัพย์สิน</div>'; return; }
+            
+            var icons = {'คอนโด':'🏢','บ้าน':'🏠','อาคารพาณิชย์':'🏬','ที่ดิน':'🏔️','โรงงาน':'🏭','อื่นๆ':'🏭'};
+            var html = '';
+            properties.forEach(function(p) {
+                var icon = icons[p.type] || '🏭';
+                var statusClass = p.status === 'ว่าง' ? 'badge-available' : 'badge-sold';
+                var priceTypeClass = p.price_type === 'เช่า' ? 'badge-rent' : 'badge-sale';
+                html += '<div class="card">';
+                html += '<div style="height:120px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;margin-bottom:10px;">' + icon + '</div>';
+                html += '<div style="margin-bottom:5px;"><span class="card-badge ' + statusClass + '">' + p.status + '</span> <span class="card-badge ' + priceTypeClass + '">' + p.price_type + '</span></div>';
+                html += '<div class="card-title">' + p.title + '</div>';
+                html += '<div class="card-price">' + (p.price || 0).toLocaleString() + ' บาท</div>';
+                html += '<div class="card-location">📍 ' + p.location + '</div>';
+                html += '<div class="card-info">📐 ' + (p.size || '-') + ' ' + (p.unit || 'ตร.ม.') + '</div>';
+                html += '<div class="card-actions">';
+                html += '<button class="btn-edit" onclick="editProperty(\'' + p.id + '\')">✏️ แก้ไข</button>';
+                html += '<button class="btn-delete" onclick="deleteProperty(\'' + p.id + '\')">🗑️ ลบ</button>';
+                html += '</div></div>';
+            });
+            list.innerHTML = html;
+        }
+        
+        function openPropModal() {
+            editingPropId = null;
+            document.getElementById('propModalTitle').textContent = '➕ เพิ่มทรัพย์สินใหม่';
+            ['propType','propPriceType','propTitle','propPrice','propSize','propLocation','propProvince','propBedrooms','propBathrooms','propFloor','propDesc','propCommission','propContact'].forEach(function(id) { document.getElementById(id).value = ''; });
+            document.getElementById('propCommission').value = '2';
+            document.getElementById('propModal').classList.add('show');
+        }
+        
+        function editProperty(id) {
+            var p = properties.find(x => x.id === id);
+            if (!p) return;
+            editingPropId = id;
+            document.getElementById('propModalTitle').textContent = '✏️ แก้ไขทรัพย์สิน';
+            document.getElementById('propType').value = p.type || '';
+            document.getElementById('propPriceType').value = p.price_type || 'ขาย';
+            document.getElementById('propTitle').value = p.title || '';
+            document.getElementById('propPrice').value = p.price || '';
+            document.getElementById('propSize').value = p.size || '';
+            document.getElementById('propLocation').value = p.location || '';
+            document.getElementById('propProvince').value = p.province || '';
+            document.getElementById('propBedrooms').value = p.bedrooms || '';
+            document.getElementById('propBathrooms').value = p.bathrooms || '';
+            document.getElementById('propFloor').value = p.floor || '';
+            document.getElementById('propDesc').value = p.description || '';
+            document.getElementById('propCommission').value = p.commission || '2';
+            document.getElementById('propContact').value = p.contact || '';
+            document.getElementById('propModal').classList.add('show');
+        }
+        
+        function saveProperty() {
+            var data = {
+                type: document.getElementById('propType').value,
+                price_type: document.getElementById('propPriceType').value,
+                title: document.getElementById('propTitle').value.trim(),
+                price: parseFloat(document.getElementById('propPrice').value) || 0,
+                size: parseFloat(document.getElementById('propSize').value) || 0,
+                unit: 'ตร.ม.',
+                location: document.getElementById('propLocation').value.trim(),
+                province: document.getElementById('propProvince').value.trim(),
+                bedrooms: parseInt(document.getElementById('propBedrooms').value) || 0,
+                bathrooms: parseInt(document.getElementById('propBathrooms').value) || 0,
+                floor: parseInt(document.getElementById('propFloor').value) || 0,
+                description: document.getElementById('propDesc').value.trim(),
+                commission: parseFloat(document.getElementById('propCommission').value) || 2,
+                contact: document.getElementById('propContact').value.trim()
+            };
+            if (!data.type || !data.title || !data.price) { alert('กรุณากรอกข้อมูลที่จำเป็น'); return; }
+            
+            var action = editingPropId ? 'update_property' : 'add_property';
+            if (editingPropId) data.id = editingPropId;
+            
+            api(RENT_API, 'POST', {action: action, ...data}).then(result => {
+                alert(result.message || 'บันทึกสำเร็จ');
+                closeModal('propModal');
+                loadProperties();
+            });
+        }
+        
+        function deleteProperty(id) {
+            if (!confirm('ต้องการลบทรัพย์สินนี้?')) return;
+            api(RENT_API, 'POST', {action: 'delete_property', id: id}).then(result => {
+                alert(result.message || 'ลบสำเร็จ');
+                loadProperties();
+            });
+        }
+        
+        // ===== LEADS =====
+        function loadLeads() {
+            var status = document.getElementById('leadStatusFilter').value;
+            var url = RENT_API + '?action=leads';
+            if (status) url += '&status=' + encodeURIComponent(status);
+            
+            fetch(url).then(r => r.json()).then(result => {
+                leads = result.data || [];
+                renderLeads();
+            });
+        }
+        
+        function renderLeads() {
+            var tbody = document.getElementById('leadTableBody');
+            if (leads.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="loading">ไม่มีลูกค้า</td></tr>'; return; }
+            
+            var statusBadge = {'รอติดต่อ':'badge-waiting','นัดดู':'badge-progress','เจรจา':'badge-progress','ปิดดีล':'badge-done','ยกเลิก':'badge-cancel'};
+            var html = '';
+            leads.slice().reverse().forEach(function(l) {
+                var prop = properties.find(p => p.id === l.property_id);
+                html += '<tr>';
+                html += '<td>' + new Date(l.created).toLocaleDateString('th-TH') + '</td>';
+                html += '<td><b>' + l.customer_name + '</b></td>';
+                html += '<td>' + l.phone + '<br><span style="color:#7f8c8d;font-size:11px;">Line: ' + (l.line || '-') + '</span></td>';
+                html += '<td>' + (prop ? prop.title : '-') + '</td>';
+                html += '<td><span class="badge ' + (statusBadge[l.status] || 'badge-waiting') + '">' + l.status + '</span></td>';
+                html += '<td><button class="btn-edit" onclick="editLead(\'' + l.id + '\')">✏️</button></td>';
+                html += '</tr>';
+            });
+            tbody.innerHTML = html;
+        }
+        
+        function editLead(id) {
+            var l = leads.find(x => x.id === id);
+            if (!l) return;
+            document.getElementById('leadEditId').value = l.id;
+            document.getElementById('leadStatus').value = l.status || 'รอติดต่อ';
+            document.getElementById('leadAssigned').value = l.assigned_to || '';
+            document.getElementById('leadNote').value = l.note || '';
+            
+            // Populate agents dropdown
+            var agentOptions = '<option value="">-- ไม่มี --</option>';
+            agents.forEach(function(a) { agentOptions += '<option value="' + a.name + '">' + a.name + '</option>'; });
+            document.getElementById('leadAssigned').innerHTML = agentOptions;
+            document.getElementById('leadAssigned').value = l.assigned_to || '';
+            
+            document.getElementById('leadModal').classList.add('show');
+        }
+        
+        function saveLead() {
+            var data = {
+                id: document.getElementById('leadEditId').value,
+                status: document.getElementById('leadStatus').value,
+                assigned_to: document.getElementById('leadAssigned').value,
+                note: document.getElementById('leadNote').value
+            };
+            api(RENT_API, 'POST', {action: 'update_lead', ...data}).then(result => {
+                alert(result.message || 'บันทึกสำเร็จ');
+                closeModal('leadModal');
+                loadLeads();
+            });
+        }
+        
+        // ===== DEALS =====
+        function loadDeals() {
+            fetch(RENT_API + '?action=deals').then(r => r.json()).then(result => {
+                deals = result.data || [];
+                renderDeals();
+                updateDealStats();
+            });
+        }
+        
+        function updateDealStats() {
+            var total = deals.length;
+            var closed = deals.filter(d => d.status === 'จ่ายแล้ว').length;
+            var commission = deals.reduce((sum, d) => sum + (d.commission_total || 0), 0);
+            document.getElementById('statTotalDeals').textContent = total;
+            document.getElementById('statClosedDeals').textContent = closed;
+            document.getElementById('statTotalCommission2').textContent = commission.toLocaleString();
+        }
+        
+        function renderDeals() {
+            var tbody = document.getElementById('dealTableBody');
+            if (deals.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="loading">ไม่มีดีล</td></tr>'; return; }
+            
+            var statusBadge = {'รอจ่าย':'badge-waiting','จ่ายแล้ว':'badge-done','ยกเลิก':'badge-cancel'};
+            var html = '';
+            deals.slice().reverse().forEach(function(d) {
+                var prop = properties.find(p => p.id === d.property_id);
+                var agentsList = Array.isArray(d.agents) ? d.agents.join(', ') : (d.agents || '-');
+                html += '<tr>';
+                html += '<td>' + new Date(d.close_date).toLocaleDateString('th-TH') + '</td>';
+                html += '<td><b>' + d.customer_name + '</b></td>';
+                html += '<td>' + (prop ? prop.title : '-') + '</td>';
+                html += '<td>' + (d.price || 0).toLocaleString() + '</td>';
+                html += '<td>' + (d.commission_percent || 0) + '% = <b style="color:#e74c3c">' + (d.commission_total || 0).toLocaleString() + '</b></td>';
+                html += '<td><span style="font-size:11px;color:#7f8c8d;">' + agentsList + '</span></td>';
+                html += '<td><span class="badge ' + (statusBadge[d.status] || 'badge-waiting') + '">' + d.status + '</span></td>';
+                html += '</tr>';
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // ===== AGENTS =====
+        function loadAgents() {
+            fetch(RENT_API + '?action=agents').then(r => r.json()).then(result => {
+                agents = result.data || [];
+                renderAgents();
+                renderCustomerPreview();
+            });
+        }
+        
+        function renderAgents() {
+            var list = document.getElementById('agentList');
+            if (agents.length === 0) { list.innerHTML = '<div class="loading">ยังไม่มีพนักงาน</div>'; return; }
+            
+            var html = '';
+            agents.forEach(function(a) {
+                var agentDeals = deals.filter(d => Array.isArray(d.agents) && d.agents.includes(a.name));
+                var closedDeals = agentDeals.filter(d => d.status === 'จ่ายแล้ว');
+                var totalCommission = 0;
+                closedDeals.forEach(function(d) {
+                    var count = d.agents.length;
+                    totalCommission += count > 0 ? (d.commission_total / count) : 0;
+                });
+                
+                html += '<div class="card">';
+                html += '<div style="text-align:center;padding:20px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;color:white;margin-bottom:15px;">';
+                html += '<div style="font-size:48px;">👔</div>';
+                html += '<div style="font-size:18px;font-weight:600;">' + a.name + '</div>';
+                html += '<div style="opacity:0.8;font-size:12px;">' + a.phone + '</div>';
+                html += '</div>';
+                html += '<div style="display:flex;justify-content:space-around;text-align:center;">';
+                html += '<div><b style="font-size:20px;color:#3498db;">' + agentDeals.length + '</b><br><span style="font-size:11px;color:#7f8c8d;">ดีล</span></div>';
+                html += '<div><b style="font-size:20px;color:#2ecc71;">' + closedDeals.length + '</b><br><span style="font-size:11px;color:#7f8c8d;">ปิดแล้ว</span></div>';
+                html += '<div><b style="font-size:20px;color:#e74c3c;">' + totalCommission.toLocaleString() + '</b><br><span style="font-size:11px;color:#7f8c8d;">ค่าคอม(บาท)</span></div>';
+                html += '</div>';
+                html += '<div style="margin-top:15px;text-align:center;"><button class="btn-delete" onclick="deleteAgent(\'' + a.id + '\')">🗑️ ลบ</button></div>';
+                html += '</div>';
+            });
+            list.innerHTML = html;
+        }
+        
+        function openAgentModal() {
+            ['agentName','agentPhone','agentEmail','agentNote'].forEach(function(id) { document.getElementById(id).value = ''; });
+            document.getElementById('agentModal').classList.add('show');
+        }
+        
+        function saveAgent() {
+            var data = {
+                name: document.getElementById('agentName').value.trim(),
+                phone: document.getElementById('agentPhone').value.trim(),
+                email: document.getElementById('agentEmail').value.trim(),
+                note: document.getElementById('agentNote').value.trim()
+            };
+            if (!data.name || !data.phone) { alert('กรุณากรอกชื่อและเบอร์โทร'); return; }
+            
+            api(RENT_API, 'POST', {action: 'add_agent', ...data}).then(result => {
+                alert(result.message || 'บันทึกสำเร็จ');
+                closeModal('agentModal');
+                loadAgents();
+            });
+        }
+        
+        function deleteAgent(id) {
+            if (!confirm('ต้องการลบพนักงานนี้?')) return;
+            api(RENT_API, 'POST', {action: 'delete_agent', id: id}).then(result => {
+                alert(result.message || 'ลบสำเร็จ');
+                loadAgents();
+            });
+        }
+        
+        // ===== CUSTOMER PREVIEW =====
+        function renderCustomerPreview() {
+            var preview = document.getElementById('customerPreview');
+            if (properties.length === 0) {
+                preview.innerHTML = '<div class="loading">ยังไม่มีทรัพย์สิน ลูกค้าจะเห็นหน้าว่าง</div>';
+                return;
+            }
+            
+            var icons = {'คอนโด':'🏢','บ้าน':'🏠','อาคารพาณิชย์':'🏬','ที่ดิน':'🏔️','โรงงาน':'🏭','อื่นๆ':'🏭'};
+            var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">';
+            
+            var displayProps = properties.filter(p => p.status === 'ว่าง').slice(0, 6);
+            displayProps.forEach(function(p) {
+                var icon = icons[p.type] || '🏭';
+                html += '<div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1);">';
+                html += '<div style="height:140px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:48px;color:white;">' + icon + '</div>';
+                html += '<div style="padding:15px;">';
+                html += '<div style="font-weight:600;color:#2c3e50;margin-bottom:5px;">' + p.title + '</div>';
+                html += '<div style="font-size:18px;font-weight:700;color:#e74c3c;margin-bottom:5px;">' + (p.price || 0).toLocaleString() + ' บาท</div>';
+                html += '<div style="font-size:12px;color:#7f8c8d;">📍 ' + p.location + '</div>';
+                html += '</div></div>';
+            });
+            
+            html += '</div>';
+            html += '<p style="margin-top:20px;text-align:center;color:#7f8c8d;">ดูหน้าเต็ม: <a href="rent.php" target="_blank">https://wasu-schedule.serveousercontent.com/rent.php</a></p>';
+            preview.innerHTML = html;
+        }
+        
+        // ===== UTIL =====
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(function(m) {
+            m.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+        });
+    </script>
+</body>
+</html>
